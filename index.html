@@ -143,7 +143,7 @@
         #rift-loader { 
             background: rgba(2, 6, 23, 0.95); 
             backdrop-filter: blur(20px);
-            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
@@ -152,25 +152,27 @@
 
         /* --- MAGIC LIGHTNING SYSTEM --- */
         .rift-sidebar {
-            position: fixed; top: 0; bottom: 0; width: 40px; z-index: 50; 
+            position: fixed; top: 0; bottom: 0; width: 100px; z-index: 50; 
             pointer-events: none; display: flex; justify-content: center; align-items: center;
         }
-        .rift-sidebar.left { left: 0; }
-        .rift-sidebar.right { right: 0; }
+        .rift-sidebar.left { left: -30px; }
+        .rift-sidebar.right { right: -30px; }
 
         .magic-lightning {
-            width: 2px; height: 100%;
+            width: 4px; height: 100%;
             background: #ffffff;
-            box-shadow: 0 0 15px #fff, 0 0 30px #8b5cf6, 0 0 60px #3b82f6, 0 0 90px #3b82f6;
+            box-shadow: 0 0 15px #fff, 0 0 30px #8b5cf6, 0 0 60px #3b82f6, 0 0 100px #3b82f6;
             filter: url(#lightning-displacement);
-            animation: lightning-flicker 0.2s infinite alternate;
+            animation: lightning-flicker 0.15s infinite alternate;
             opacity: 0.8;
+            transition: all 0.5s ease-out;
         }
         
         .system-surge .magic-lightning {
-            width: 5px;
-            box-shadow: 0 0 30px #fff, 0 0 60px #c084fc, 0 0 120px #8b5cf6, 0 0 150px #3b82f6;
-            animation: lightning-flicker 0.05s infinite alternate;
+            width: 25px;
+            background: #ffffff;
+            box-shadow: 0 0 40px #fff, 0 0 80px #fff, 0 0 150px #c084fc, 0 0 250px #8b5cf6, 0 0 400px #3b82f6;
+            animation: lightning-flicker 0.04s infinite alternate;
             opacity: 1;
         }
 
@@ -219,8 +221,8 @@
     <!-- SVG Filter für die magischen Blitze -->
     <svg class="hidden absolute w-0 h-0">
         <filter id="lightning-displacement">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02 0.5" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.015 0.3" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="50" xChannelSelector="R" yChannelSelector="G" />
         </filter>
     </svg>
 
@@ -285,9 +287,9 @@
         </div>
 
         <!-- Dramatischer Text -->
-        <div id="rift-text" class="mt-40 text-center space-y-4 z-20 relative transition-opacity duration-300">
-            <h3 class="font-magic text-4xl md:text-6xl text-white tracking-[0.3em] text-glow-rift animate-pulse">ENTLADUNG</h3>
-            <p class="font-tech text-bone-400 text-sm md:text-base tracking-[0.5em] uppercase">Der Schleier reißt...</p>
+        <div id="rift-text" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center space-y-4 z-20 w-full px-4 transition-opacity duration-300">
+            <h3 class="font-magic text-4xl md:text-6xl text-white tracking-[0.2em] md:tracking-[0.3em] text-glow-rift animate-pulse">DER SCHRITT INS NICHTS</h3>
+            <p class="font-tech text-bone-300 text-sm md:text-lg tracking-[0.3em] md:tracking-[0.5em] uppercase drop-shadow-[0_0_8px_#000]">Du lässt die alte Welt hinter dir...</p>
         </div>
     </div>
 
@@ -1376,7 +1378,7 @@
             files: [] 
         };
 
-        const LOADER_DURATION = 3200; 
+        const LOADER_DURATION = 5000; 
 
         // STATE MACHINE
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
@@ -1602,7 +1604,7 @@
                 }
             });
             
-            // Sidebars vibrieren lassen
+            // Sidebars explodieren lassen (Magie lädt sich extrem auf)
             document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
             
             // Reset Animation CSS
@@ -1611,6 +1613,7 @@
             tear.style.width = '4px';
             tear.style.borderRadius = '100%';
             tear.style.boxShadow = '0 0 30px #fff,0 0 60px #c084fc,0 0 120px #3b82f6';
+            tear.style.background = '#fff';
             
             aura.style.transition = 'none';
             aura.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -1619,57 +1622,59 @@
             text.style.opacity = '1';
             loader.classList.remove('animate-shake');
             
-            // Loader einblenden
+            // Loader einblenden (Das Portal öffnet sich langsam vor einem)
             loader.classList.add('active');
 
             // --- ANIMATIONS TIMELINE ---
 
-            // Schritt 1: Der vertikale Blitzeinschlag (Der Riss öffnet sich nach oben und unten) & Bildschirmbeben
+            // Schritt 1: Aufladung. Der User liest den Text, die Ränder glühen mächtig. 
+            // Nach 1.2 Sekunden schlägt der Riss vertikal ein und die Welt bebt.
             setTimeout(() => {
-                tear.style.transition = 'height 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out';
+                tear.style.transition = 'height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.8s ease-out';
                 tear.style.height = '150vh';
                 
-                aura.style.transition = 'transform 1.5s ease-in';
-                aura.style.transform = 'translate(-50%, -50%) scale(40)';
+                aura.style.transition = 'transform 2s ease-in';
+                aura.style.transform = 'translate(-50%, -50%) scale(50)';
                 
                 loader.classList.add('animate-shake'); // Das Beben beginnt
-            }, 100);
+            }, 1200);
 
-            // Schritt 2: Der Riss reißt horizontal auf und flutet den Bildschirm mit weißem Licht
+            // Schritt 2: Der Riss reißt horizontal auf und verschluckt alles (Der Schritt durchs Portal)
             setTimeout(() => {
-                tear.style.transition = 'width 0.4s cubic-bezier(0.8, 0, 0.2, 1), border-radius 0.4s';
-                tear.style.width = '250vw'; // Breitet sich über den ganzen Bildschirm aus
-                tear.style.borderRadius = '0'; // Wird eckig und verschluckt alles
+                tear.style.transition = 'width 0.5s cubic-bezier(0.8, 0, 0.2, 1), border-radius 0.5s, background 0.2s';
+                tear.style.width = '300vw'; // Breitet sich komplett aus
+                tear.style.borderRadius = '0'; // Verschluckt den Bildschirm
+                tear.style.background = '#ffffff';
                 tear.style.boxShadow = '0 0 200px #fff, 0 0 300px #c084fc';
                 
                 text.style.transition = 'opacity 0.2s';
-                text.style.opacity = '0'; // Text verschwindet im grellen Licht
-            }, 1000);
+                text.style.opacity = '0'; // Text verschwindet im blendenden Licht
+            }, 2500);
 
-            // Schritt 3: Während der Bildschirm komplett weiß/erhellt ist, wechseln wir die Seite im Hintergrund
+            // Schritt 3: Während alles grell leuchtet, wechseln wir leise im Hintergrund die Seite
             setTimeout(() => {
                 if (currentPage) { currentPage.classList.remove('page-active'); currentPage.style.display = 'none'; }
                 if (targetPage) { targetPage.style.display = 'block'; requestAnimationFrame(() => targetPage.classList.add('page-active')); }
                 currentPageId = targetId;
                 
-                loader.classList.remove('animate-shake'); // Beben stoppt
-                startCooldown(); // Magie-Blitze an der Seite beruhigen sich wieder
-            }, 1400);
+                loader.classList.remove('animate-shake'); // Beben stoppt, man ist durch
+                startCooldown(); // Die Magie der Welt beruhigt sich
+            }, 2900);
 
-            // Schritt 4: Die Energie verblasst langsam und gibt den Blick auf die neue Seite frei
+            // Schritt 4: Die Energie verblasst sanft und gibt den Blick auf die Welt wieder frei
             setTimeout(() => {
-                loader.style.transition = 'opacity 1s ease-out, visibility 1s ease-out';
+                loader.style.transition = 'opacity 1.5s ease-out, visibility 1.5s ease-out';
                 loader.classList.remove('active');
                 
                 // Riss nach dem Ausblenden zurücksetzen für das nächste Mal
                 setTimeout(() => {
-                    loader.style.transition = 'opacity 0.8s ease-out, visibility 0.8s ease-out'; // Standard-Fade wiederherstellen
+                    loader.style.transition = 'opacity 1s ease-out, visibility 1s ease-out'; 
                     tear.style.transition = 'none';
                     tear.style.height = '0%';
                     tear.style.width = '4px';
                     tear.style.borderRadius = '100%';
-                }, 1000);
-            }, 1500); 
+                }, 1500);
+            }, 3500); 
         }
         
         function startCooldown() {
