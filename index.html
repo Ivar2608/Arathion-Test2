@@ -49,7 +49,8 @@
                         'rift-pulse': 'rift-pulse 4s ease-in-out infinite',
                         'spin-slow': 'spin 8s linear infinite',
                         'float': 'float 6s ease-in-out infinite',
-                        'lightning-flicker': 'lightning-flicker 0.2s infinite alternate'
+                        'lightning-flicker': 'lightning-flicker 0.2s infinite alternate',
+                        'shake': 'shake 0.1s ease-in-out infinite'
                     },
                     keyframes: {
                         materialize: {
@@ -68,6 +69,12 @@
                             '0%, 100%': { opacity: 1, transform: 'translateX(0)' },
                             '50%': { opacity: 0.6, transform: 'translateX(2px)' },
                             '75%': { opacity: 0.8, transform: 'translateX(-1px)' }
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'scale(1.02) translate(0, 0)' },
+                            '25%': { transform: 'scale(1.02) translate(4px, -4px)' },
+                            '50%': { transform: 'scale(1.02) translate(-4px, 4px)' },
+                            '75%': { transform: 'scale(1.02) translate(-4px, -4px)' },
                         }
                     }
                 }
@@ -132,22 +139,16 @@
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #57534e; border-radius: 3px; }
 
-        /* Loader */
+        /* EPIC RIFT LOADER */
         #rift-loader { 
-            background: #0a050a; 
-            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+            background: rgba(2, 6, 23, 0.95); 
+            backdrop-filter: blur(20px);
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
         }
         #rift-loader.active { opacity: 1; pointer-events: all; visibility: visible; }
-
-        .rift-tear {
-            width: 4px; height: 0%;
-            background: #fff;
-            box-shadow: 0 0 20px #fff, 0 0 40px #8b5cf6, 0 0 80px #3b82f6;
-            transition: height 3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         /* --- MAGIC LIGHTNING SYSTEM --- */
         .rift-sidebar {
@@ -273,18 +274,20 @@
         </div>
     </div>
 
-    <!-- RIFT LOADER -->
+    <!-- EPIC RIFT LOADER (Neuer Überwältigender Effekt) -->
     <div id="rift-loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center">
-        <div class="absolute inset-0 bg-rift-900/50 backdrop-blur-md"></div>
-        <div class="relative w-full h-[60vh] flex items-center justify-center">
-            <!-- Rift Background Glow -->
-            <div class="absolute w-64 h-[400px] bg-rift-500/20 blur-[100px] rounded-[100%] animate-rift-pulse"></div>
-            <!-- The Tear -->
-            <div id="tear-element" class="rift-tear absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[100%]"></div>
+        <!-- Expandierende magische Aura im Hintergrund -->
+        <div id="rift-aura" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-rift-400 rounded-full blur-[80px] opacity-80 pointer-events-none transform scale-1"></div>
+        
+        <!-- Der physische Riss, der die Welt zerteilt -->
+        <div class="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <div id="tear-element" class="w-[4px] h-0 bg-white rounded-[100%] shadow-[0_0_30px_#fff,0_0_60px_#c084fc,0_0_120px_#3b82f6]"></div>
         </div>
-        <div class="mt-8 text-center space-y-4 z-20 relative">
-            <h3 class="font-magic text-3xl md:text-5xl text-white tracking-[0.2em] text-glow-rift animate-pulse">DER RISS ÖFFNET SICH</h3>
-            <p class="font-tech text-bone-400 text-sm md:text-base tracking-[0.4em] uppercase">Die Farben verblassen...</p>
+
+        <!-- Dramatischer Text -->
+        <div id="rift-text" class="mt-40 text-center space-y-4 z-20 relative transition-opacity duration-300">
+            <h3 class="font-magic text-4xl md:text-6xl text-white tracking-[0.3em] text-glow-rift animate-pulse">ENTLADUNG</h3>
+            <p class="font-tech text-bone-400 text-sm md:text-base tracking-[0.5em] uppercase">Der Schleier reißt...</p>
         </div>
     </div>
 
@@ -908,7 +911,7 @@
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Welten-Einstellungen & Accessoires</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="book-open" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Begriffserklärung</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
@@ -929,7 +932,7 @@
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Spiel-Einstellungen & Accessoires</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Welten-Einstellungen & Accessoires</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
@@ -1373,8 +1376,7 @@
             files: [] 
         };
 
-        const SURGE_DURATION = 3500; 
-        const LOADER_DURATION = 2000; 
+        const LOADER_DURATION = 3200; 
 
         // STATE MACHINE
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
@@ -1570,10 +1572,8 @@
                 }
             }
         }
-        
-        function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-        // --- TRANSITIONS ---
+        // --- EPIC TRANSITION ANIMATION ---
         function switchPage(targetId) {
             if (currentState !== STATE.IDLE || targetId === currentPageId) return;
             
@@ -1581,9 +1581,13 @@
             
             const loader = document.getElementById('rift-loader');
             const tear = document.getElementById('tear-element');
+            const aura = document.getElementById('rift-aura');
+            const text = document.getElementById('rift-text');
+            
             const currentPage = document.getElementById(currentPageId);
             const targetPage = document.getElementById(targetId);
 
+            // Navigations-Knöpfe anpassen
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 const isBone = btn.dataset.target === 'char';
                 const activeColor = isBone ? 'text-bone-400' : 'text-rift-400';
@@ -1598,43 +1602,74 @@
                 }
             });
             
-            // Sidebars zum Surge animieren
+            // Sidebars vibrieren lassen
             document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
             
-            let startTime = performance.now();
-            const startVal = Math.floor(idleCurrent);
-            const endVal = 120; // Maximaler Ausschlag
+            // Reset Animation CSS
+            tear.style.transition = 'none';
+            tear.style.height = '0%';
+            tear.style.width = '4px';
+            tear.style.borderRadius = '100%';
+            tear.style.boxShadow = '0 0 30px #fff,0 0 60px #c084fc,0 0 120px #3b82f6';
+            
+            aura.style.transition = 'none';
+            aura.style.transform = 'translate(-50%, -50%) scale(1)';
+            
+            text.style.transition = 'none';
+            text.style.opacity = '1';
+            loader.classList.remove('animate-shake');
+            
+            // Loader einblenden
+            loader.classList.add('active');
 
-            function animateSurge(timestamp) {
-                if (currentState !== STATE.SURGE) return; 
+            // --- ANIMATIONS TIMELINE ---
 
-                const progress = timestamp - startTime;
-                const percent = Math.min(progress / (SURGE_DURATION/2), 1);
-                const currentVal = startVal + (endVal - startVal) * easeInOutCubic(percent);
+            // Schritt 1: Der vertikale Blitzeinschlag (Der Riss öffnet sich nach oben und unten) & Bildschirmbeben
+            setTimeout(() => {
+                tear.style.transition = 'height 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out';
+                tear.style.height = '150vh';
+                
+                aura.style.transition = 'transform 1.5s ease-in';
+                aura.style.transform = 'translate(-50%, -50%) scale(40)';
+                
+                loader.classList.add('animate-shake'); // Das Beben beginnt
+            }, 100);
 
-                updateUI(currentVal); 
+            // Schritt 2: Der Riss reißt horizontal auf und flutet den Bildschirm mit weißem Licht
+            setTimeout(() => {
+                tear.style.transition = 'width 0.4s cubic-bezier(0.8, 0, 0.2, 1), border-radius 0.4s';
+                tear.style.width = '250vw'; // Breitet sich über den ganzen Bildschirm aus
+                tear.style.borderRadius = '0'; // Wird eckig und verschluckt alles
+                tear.style.boxShadow = '0 0 200px #fff, 0 0 300px #c084fc';
+                
+                text.style.transition = 'opacity 0.2s';
+                text.style.opacity = '0'; // Text verschwindet im grellen Licht
+            }, 1000);
 
-                if (progress < (SURGE_DURATION/2)) {
-                    requestAnimationFrame(animateSurge);
-                }
-            }
-            requestAnimationFrame(animateSurge);
-
-            if (loader) loader.classList.add('active');
-            if (tear) setTimeout(() => tear.style.height = '100%', 100);
-
+            // Schritt 3: Während der Bildschirm komplett weiß/erhellt ist, wechseln wir die Seite im Hintergrund
             setTimeout(() => {
                 if (currentPage) { currentPage.classList.remove('page-active'); currentPage.style.display = 'none'; }
                 if (targetPage) { targetPage.style.display = 'block'; requestAnimationFrame(() => targetPage.classList.add('page-active')); }
                 currentPageId = targetId;
+                
+                loader.classList.remove('animate-shake'); // Beben stoppt
+                startCooldown(); // Magie-Blitze an der Seite beruhigen sich wieder
+            }, 1400);
 
+            // Schritt 4: Die Energie verblasst langsam und gibt den Blick auf die neue Seite frei
+            setTimeout(() => {
+                loader.style.transition = 'opacity 1s ease-out, visibility 1s ease-out';
+                loader.classList.remove('active');
+                
+                // Riss nach dem Ausblenden zurücksetzen für das nächste Mal
                 setTimeout(() => {
-                    if (tear) tear.style.height = '0%';
-                    if (loader) setTimeout(() => loader.classList.remove('active'), 500);
-                    
-                    startCooldown();
-                }, 1000); 
-            }, LOADER_DURATION); 
+                    loader.style.transition = 'opacity 0.8s ease-out, visibility 0.8s ease-out'; // Standard-Fade wiederherstellen
+                    tear.style.transition = 'none';
+                    tear.style.height = '0%';
+                    tear.style.width = '4px';
+                    tear.style.borderRadius = '100%';
+                }, 1000);
+            }, 1500); 
         }
         
         function startCooldown() {
@@ -1751,7 +1786,7 @@
                     menu.classList.add('opacity-0', 'pointer-events-none');
                     menu.classList.remove('opacity-100', 'pointer-events-auto');
                 }
-            }, 3200);
+            }, LOADER_DURATION);
         }
 
         async function copyIP() {
