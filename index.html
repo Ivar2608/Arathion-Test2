@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arathion - Das Echo von Olyndra | Conan Exiles RP</title>
+    <meta name="description" content="Der immersive Conan Exiles Survival RP Server. Ein Riss im Himmel, eine karge Welt. Überlebe.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rift: {
+                            900: '#130814', 
+                            800: '#2d1433', 
+                            500: '#c026d3', 
+                            400: '#d946ef', 
+                            300: '#e879f9',
+                            glow: 'rgba(217, 70, 239, 0.6)'
+                        },
+                        bone: {
+                            900: '#1c1917',
+                            800: '#292524',
+                            600: '#57534e',
+                            500: '#78716c', 
+                            400: '#a8a29e', 
+                            300: '#d6d3d1', 
+                        }
+                    },
+                    fontFamily: {
+                        magic: ['Cinzel', 'serif'],
+                        tech: ['Rajdhani', 'sans-serif'], 
+                    },
+                    animation: {
+                        'materialize': 'materialize 1s ease-out forwards', 
+                        'rift-pulse': 'rift-pulse 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        materialize: {
+                            '0%': { opacity: 0, transform: 'scale(0.98) translateY(10px)', filter: 'blur(5px)' },
+                            '100%': { opacity: 1, transform: 'scale(1) translateY(0)', filter: 'blur(0)' },
+                        },
+                        'rift-pulse': {
+                            '0%, 100%': { transform: 'scale(1)', opacity: 0.8, filter: 'brightness(1)' },
+                            '50%': { transform: 'scale(1.05)', opacity: 1, filter: 'brightness(1.3)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a050a;
+            color: #d6d3d1;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden; 
+        }
+
+        /* Düsterer Hintergrund mit Vignette */
+        .world-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 0%, #2d1433 0%, #0a050a 60%);
+            z-index: -2;
+        }
+
+        /* Staub / Noise Overlay */
+        .dust-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+            pointer-events: none; z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Gallery */
+        .holo-card {
+            position: relative; overflow: hidden;
+            border: 1px solid rgba(168, 162, 158, 0.3); background: rgba(28, 25, 23, 0.8);
+            transition: all 0.4s ease; opacity: 0; animation: materialize 0.8s ease-out forwards;
+        }
+        .holo-card:hover { border-color: #d946ef; box-shadow: 0 0 20px rgba(217, 70, 239, 0.3); transform: translateY(-5px); }
+        .holo-img { width: 100%; height: 200px; object-fit: cover; filter: grayscale(0.6) sepia(0.3) hue-rotate(250deg) brightness(0.7); transition: filter 0.5s; }
+        .holo-card:hover .holo-img { filter: grayscale(0.2) sepia(0) hue-rotate(0) brightness(1); }
+        .holo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #130814, transparent); padding: 1rem; }
+
+        /* Page Layout */
+        .page-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow-y: auto; padding-bottom: 6rem;
+            padding-left: 1.5rem; padding-right: 1.5rem; 
+            display: none; scrollbar-width: thin; scrollbar-color: #57534e #130814;
+        }
+        
+        .page-container::before {
+            content: ''; display: block; height: 100px; width: 100%; flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .page-container { padding-left: 4rem; padding-right: 4rem; }
+            .page-container::before { height: 120px; }
+        }
+
+        .page-active { display: block; animation: materialize 0.8s ease-out forwards; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #130814; }
+        ::-webkit-scrollbar-thumb { background: #57534e; border-radius: 3px; }
+
+        /* Loader */
+        #rift-loader { 
+            background: #0a050a; 
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+            pointer-events: none;
+        }
+        #rift-loader.active { opacity: 1; pointer-events: all; visibility: visible; }
+
+        .rift-tear {
+            width: 4px; height: 0%;
+            background: #fff;
+            box-shadow: 0 0 20px #fff, 0 0 40px #d946ef, 0 0 80px #c026d3;
+            transition: height 3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Modals */
+        .info-modal-bg {
+            background: rgba(10, 5, 10, 0.95);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.3s ease; 
+        }
+        .hidden-modal { opacity: 0; pointer-events: none; }
+
+        .text-glow-rift { text-shadow: 0 0 15px rgba(217, 70, 239, 0.6); }
+        .text-glow-bone { text-shadow: 0 0 10px rgba(168, 162, 158, 0.5); }
+
+        /* Panels (Ehemals Tech-Panel) */
+        .rift-panel { 
+            background: rgba(28, 25, 23, 0.85); 
+            border: 1px solid #44403c; 
+            position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            backdrop-filter: blur(5px);
+        }
+        .rift-panel::before, .rift-panel::after {
+            content: ''; position: absolute; width: 12px; height: 12px; border: 2px solid transparent; transition: border-color 0.3s;
+        }
+        .rift-panel::before { top: -1px; left: -1px; border-top-color: #78716c; border-left-color: #78716c; }
+        .rift-panel::after { bottom: -1px; right: -1px; border-bottom-color: #78716c; border-right-color: #78716c; }
+        .rift-panel:hover::before, .rift-panel:hover::after { border-color: #d946ef; box-shadow: 0 0 10px rgba(217, 70, 239, 0.3); }
+
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary { border-bottom: 1px solid rgba(120, 113, 108, 0.3); }
+        details[open] .arrow-icon { transform: rotate(180deg); color: #d946ef; }
+
+        input, textarea, select { background: rgba(19, 8, 20, 0.8); border: 1px solid #57534e; color: #f5f5f4; font-family: 'Rajdhani', sans-serif; }
+        input:focus, textarea:focus, select:focus { border-color: #d946ef; box-shadow: 0 0 15px rgba(217, 70, 239, 0.2); outline: none; }
+        
+        .legal-content h3 { color: #d6d3d1; font-family: 'Cinzel', serif; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;}
+        .legal-content h4 { color: #d946ef; font-weight: bold; margin-top: 1.25rem; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+        .legal-content p, .legal-content ul { color: #a8a29e; margin-bottom: 1rem; line-height: 1.6; }
+        .legal-content ul { list-style-type: disc; padding-left: 1.5rem; }
+    </style>
+</head>
+<body class="bg-rift-900 text-bone-300 selection:bg-rift-500 selection:text-white relative h-screen w-screen overflow-hidden">
+
+    <div class="world-bg"></div>
+    <div class="dust-overlay"></div>
+
+    <!-- FX Canvas (Asche) -->
+    <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-60"></canvas>
+
+    <!-- WIP MODAL -->
+    <div id="wip-modal" class="info-modal-bg fixed inset-0 flex items-center justify-center p-4 z-[200]">
+        <div class="rift-panel p-6 md:p-8 max-w-lg w-full text-center relative border-bone-500">
+            <i data-lucide="skull" class="w-12 h-12 md:w-16 md:h-16 text-bone-400 mx-auto mb-4 animate-float"></i>
+            <h2 class="font-magic text-3xl text-white mb-2 tracking-widest">WORK IN PROGRESS</h2>
+            <div class="h-[1px] w-full bg-bone-600/50 my-4"></div>
+            <p class="text-gray-400 mb-6 leading-relaxed font-tech">
+                Achtung: Diese Aufzeichnungen sind unvollständig. Alle Inhalte, Texte und Überlebens-Mechaniken befinden sich im Aufbau und können sich jederzeit ändern.
+            </p>
+            <button onclick="closeWipModal()" class="w-full bg-bone-800 hover:bg-bone-600 text-white font-bold py-3 uppercase tracking-widest border border-bone-500 transition-all hover:shadow-[0_0_15px_#78716c]">
+                Ich verstehe
+            </button>
+        </div>
+    </div>
+
+    <!-- FIELD INFO MODAL (Dynamic Form Help) -->
+    <div id="field-info-modal" class="info-modal-bg hidden-modal fixed inset-0 flex items-center justify-center p-4 z-[300]">
+        <div class="rift-panel p-6 max-w-md w-full relative border-rift-500">
+            <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="flex items-center gap-3 mb-4 border-b border-rift-800 pb-3">
+                <i data-lucide="book" class="text-rift-400 w-6 h-6"></i>
+                <h3 id="info-modal-title" class="font-magic text-2xl text-white text-glow-rift m-0">Info</h3>
+            </div>
+            <p id="info-modal-text" class="text-gray-300 font-tech text-base leading-relaxed"></p>
+            <button onclick="closeInfoModal()" class="w-full mt-6 bg-rift-900 border border-rift-500 text-rift-400 hover:bg-rift-800 hover:text-white font-bold py-2 uppercase tracking-widest transition-colors">
+                Schließen
+            </button>
+        </div>
+    </div>
+
+    <!-- RIFT LOADER -->
+    <div id="rift-loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center">
+        <div class="absolute inset-0 bg-rift-900/50 backdrop-blur-md"></div>
+        <div class="relative w-full h-[60vh] flex items-center justify-center">
+            <!-- Rift Background Glow -->
+            <div class="absolute w-64 h-[400px] bg-rift-500/20 blur-[100px] rounded-[100%] animate-rift-pulse"></div>
+            <!-- The Tear -->
+            <div id="tear-element" class="rift-tear absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[100%]"></div>
+        </div>
+        <div class="mt-8 text-center space-y-4 z-20 relative">
+            <h3 class="font-magic text-3xl md:text-5xl text-white tracking-[0.2em] text-glow-rift animate-pulse">DER RISS ÖFFNET SICH</h3>
+            <p class="font-tech text-bone-400 text-sm md:text-base tracking-[0.4em] uppercase">Die Farben verblassen...</p>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 w-full z-50 h-20 bg-rift-900/80 border-b border-bone-800 backdrop-blur-md shadow-[0_5px_30px_rgba(0,0,0,0.8)]">
+        <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="switchPage('home')">
+                <div class="w-10 h-10 border border-rift-500/50 flex items-center justify-center rotate-45 group-hover:rotate-180 group-hover:border-rift-400 transition-all duration-700 bg-black/50 shadow-[0_0_10px_rgba(217,70,239,0.2)]">
+                    <div class="w-4 h-4 bg-rift-500/50 rounded-full animate-pulse shadow-[0_0_10px_#d946ef]"></div>
+                </div>
+                <div>
+                    <h1 class="font-magic text-2xl text-white tracking-widest group-hover:text-rift-300 transition-colors">ARATHION</h1>
+                    <div class="h-[1px] w-full bg-gradient-to-r from-rift-500 to-transparent"></div>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-1">
+                <button onclick="switchPage('home')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-rift-400 border-rift-500" data-target="home">Staub</button>
+                <button onclick="switchPage('classes')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-gray-400" data-target="classes">Wesen</button>
+                <button onclick="switchPage('lore')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-gray-400" data-target="lore">Echos</button>
+                <button onclick="switchPage('gallery')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-gray-400" data-target="gallery">Visionen</button>
+                <button onclick="switchPage('rules')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-gray-400" data-target="rules">Gesetze</button>
+                <button onclick="switchPage('faq')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-rift-500 transition-all text-gray-400" data-target="faq">Wissen</button>
+                <button onclick="switchPage('char')" class="nav-btn px-4 py-2 font-tech font-bold uppercase tracking-wider hover:text-white hover:bg-rift-500/10 border-b-2 border-transparent hover:border-bone-400 transition-all text-gray-400" data-target="char" data-color="bone">Identität</button>
+            </div>
+            <div class="hidden md:block">
+                <button onclick="switchPage('connect')" class="bg-bone-800 hover:bg-bone-600 text-bone-300 hover:text-white font-tech font-bold uppercase px-6 py-2 border border-bone-500 shadow-[0_0_15px_rgba(87,83,78,0.4)] transition-all hover:shadow-[0_0_20px_rgba(214,211,209,0.3)]">
+                    Erwachen <i data-lucide="eye" class="inline w-4 h-4 ml-1"></i>
+                </button>
+            </div>
+            <button onclick="toggleMobile()" class="md:hidden text-rift-400 hover:text-white">
+                <i data-lucide="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-rift-900/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <button onclick="navigateFromMobile('home')" class="text-2xl font-tech uppercase text-rift-400 hover:scale-105 transition-transform">Staub (Start)</button>
+        <button onclick="navigateFromMobile('classes')" class="text-2xl font-tech uppercase text-gray-400 hover:text-white hover:scale-105 transition-transform">Wesen (Klassen)</button>
+        <button onclick="navigateFromMobile('lore')" class="text-2xl font-tech uppercase text-gray-400 hover:text-white hover:scale-105 transition-transform">Echos (Lore)</button>
+        <button onclick="navigateFromMobile('gallery')" class="text-2xl font-tech uppercase text-gray-400 hover:text-white hover:scale-105 transition-transform">Visionen (Galerie)</button>
+        <button onclick="navigateFromMobile('rules')" class="text-2xl font-tech uppercase text-gray-400 hover:text-white hover:scale-105 transition-transform">Gesetze</button>
+        <button onclick="navigateFromMobile('faq')" class="text-2xl font-tech uppercase text-gray-400 hover:text-white hover:scale-105 transition-transform">Wissen (FAQ)</button>
+        <button onclick="navigateFromMobile('char')" class="text-2xl font-tech uppercase text-bone-400 hover:scale-105 transition-transform">Identität</button>
+        <button onclick="navigateFromMobile('connect')" class="text-2xl font-tech uppercase text-white bg-bone-800 px-6 py-2 hover:bg-bone-600 transition-colors">Erwachen</button>
+        <div class="h-[1px] w-24 bg-bone-800"></div>
+        <button onclick="navigateFromMobile('legal-imprint')" class="text-xl font-tech uppercase text-bone-500 hover:text-white">Impressum</button>
+        <button onclick="navigateFromMobile('legal-privacy')" class="text-xl font-tech uppercase text-bone-500 hover:text-white">Datenschutz</button>
+        <button onclick="toggleMobile()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
+    </div>
+
+    <!-- MAIN -->
+    <main class="relative w-full h-full z-10">
+        <!-- STARTSEITE -->
+        <div id="home" class="page-container page-active">
+            <div class="py-12 md:py-20 flex flex-col items-center px-4 relative">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-96 bg-rift-500/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+                
+                <div class="max-w-5xl w-full text-center space-y-8 z-10 mt-10">
+                    <div class="inline-flex items-center gap-2 border border-rift-500/30 bg-black/40 px-4 py-1 rounded-full">
+                        <div class="w-2 h-2 bg-rift-500 rounded-full shadow-[0_0_8px_#d946ef] animate-pulse"></div>
+                        <span class="text-xs font-tech uppercase tracking-[0.2em] text-bone-300">Realität verzerrt • Olyndra ruft</span>
+                    </div>
+                    
+                    <h1 class="font-magic text-6xl md:text-8xl lg:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay">ARATHION</h1>
+                    
+                    <div class="flex items-center justify-center gap-4">
+                        <div class="h-[1px] w-12 bg-bone-500"></div>
+                        <h2 class="font-tech text-xl md:text-3xl text-bone-400 uppercase tracking-[0.4em] text-glow-bone">Das Echo von Olyndra</h2>
+                        <div class="h-[1px] w-12 bg-bone-500"></div>
+                    </div>
+                    
+                    <div class="text-gray-300 font-tech text-lg md:text-xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-500/50 pl-6 text-left bg-gradient-to-r from-rift-900/60 to-transparent p-6 rounded-r">
+                        <p class="mb-4">Wer auf der Seite von Olyndra aus dem Riss tritt, fällt nicht weich. Man landet im Staub eines ungezähmten Landes. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück.</p>
+                        <p class="text-rift-300 italic">Hier zeigt sich, wer die Kraft hat, aus dem Nichts eine Existenz zu formen.</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                        <button onclick="switchPage('connect')" class="group relative px-8 py-4 bg-rift-900 border border-rift-500 text-white font-tech font-bold uppercase tracking-wider overflow-hidden transition-all hover:shadow-[0_0_20px_#d946ef]">
+                            <div class="absolute inset-0 w-full h-full bg-rift-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                            <span class="relative flex items-center gap-2">Den Riss betreten <i data-lucide="arrow-right"></i></span>
+                        </button>
+                        <button onclick="switchPage('lore')" class="group px-8 py-4 border border-bone-600 text-bone-300 font-tech font-bold uppercase tracking-wider hover:bg-bone-900/50 transition-all hover:text-white hover:border-bone-400">Das Echo lesen</button>
+                    </div>
+                </div>
+            </div>
+             <div class="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="rift-panel p-6 transform hover:-translate-y-2 transition-transform duration-300">
+                    <i data-lucide="mic" class="w-10 h-10 text-bone-400 mb-4"></i>
+                    <h3 class="font-magic text-xl text-white mb-2">Stimme der Welt</h3>
+                    <p class="text-sm text-gray-400">Das gesprochene Wort ist Gesetz. Kein Textchat stört die Immersion. Deine Stimme formt das Schicksal im Staub von Olyndra.</p>
+                </div>
+                <div class="rift-panel p-6 transform hover:-translate-y-2 transition-transform duration-300 border-rift-800">
+                    <i data-lucide="flame" class="w-10 h-10 text-rift-500 mb-4"></i>
+                    <h3 class="font-magic text-xl text-white mb-2">Nichts zu verlieren</h3>
+                    <p class="text-sm text-gray-400">Der Schritt durch den Riss ist kein Zufall, sondern der letzte Akt des freien Willens. Lass die alte Welt brennen und baue neu auf.</p>
+                </div>
+                <div class="rift-panel p-6 transform hover:-translate-y-2 transition-transform duration-300">
+                    <i data-lucide="skull" class="w-10 h-10 text-bone-400 mb-4"></i>
+                    <h3 class="font-magic text-xl text-white mb-2">Staub & Überleben</h3>
+                    <p class="text-sm text-gray-400">Keine Taverne empfängt dich, kein Heiler eilt herbei. Nur Bestien und Misstrauen. Du bist dein eigener Herr, und dein eigener Untergang.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LORE -->
+        <div id="lore" class="page-container">
+            <div class="max-w-5xl mx-auto px-4 py-12 space-y-12">
+                <div class="text-center mb-16 relative">
+                    <i data-lucide="tornado" class="w-20 h-20 text-rift-500 mx-auto mb-6 animate-spin-slow opacity-50"></i>
+                    <h2 class="font-magic text-5xl md:text-6xl text-white text-glow-rift mb-4 relative z-10">Das Echo von Olyndra</h2>
+                    <p class="font-tech text-bone-400 uppercase tracking-widest relative z-10">Ein zerrissener Himmel. Eine leere Welt.</p>
+                </div>
+
+                <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-rift-500/30 before:to-transparent">
+                    
+                    <!-- Timeline Item 1 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-rift-500 bg-black text-rift-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(217,70,239,0.4)] z-10">
+                            <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-8">
+                            <h3 class="font-magic text-2xl text-white mb-3 text-glow-rift">Der Riss im Himmel</h3>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                In der Stille von Olyndra klafft ein Riss im Himmel. Dieser Riss ist das letzte Echo des Zusammenbruchs, der Städte, Häuser und auch Wesen verschlang. Dieses Phänomen ist kein stabiler Durchgang, sondern ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben. Es ist ein Riss, der nicht heilt, sondern wie eine glühende Wunde über der kargen Landschaft schwebt und alles anzieht, was im Gefüge der Realitäten keinen Platz mehr findet.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Item 2 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-bone-500 bg-black text-bone-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                            <i data-lucide="footprints" class="w-5 h-5"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-8 border-bone-700">
+                            <h3 class="font-magic text-2xl text-bone-300 mb-3">Der letzte freie Wille</h3>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                Jeder Wanderer, der heute in Olyndra eintrifft, stand einst auf der anderen Seite. Sie sahen das Flimmern in der Luft, das Flüstern der Energie und spürten etwas, das an ihnen zerrte. Der Schritt durch den Riss ist kein Zufall, sondern der letzte Akt des freien Willens in einer Welt, die ihnen den Rücken gekehrt hat.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Item 3 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-rift-500 bg-black text-rift-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(217,70,239,0.4)] z-10">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-8">
+                            <h3 class="font-magic text-2xl text-white mb-3 text-glow-rift">Ein Wimpernschlag</h3>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                Sobald man den Entschluss fasst und den Schleier durchschreitet, gibt es kein Zögern mehr. Die Realität biegt sich, die Farben der alten Welt verblassen zu einem fahlen Grau, und für einen Wimpernschlag existiert man außerhalb von Zeit und Raum. Es ist ein schmerzhafter, reinigender Prozess. Alles, was man war, wird abgestreift. Alles, was man sein wird, liegt auf der anderen Seite.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Item 4 -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-bone-500 bg-black text-bone-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                            <i data-lucide="mountain" class="w-5 h-5"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-8 border-bone-700">
+                            <h3 class="font-magic text-2xl text-bone-300 mb-3">Im Staub von Olyndra</h3>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                Die Ankömmlinge finden sich in einer Welt wieder, die leer ist. Keine Taverne empfängt sie, kein Heiler eilt herbei. Nur das ferne Gebrüll der wilden Bestien und das Misstrauen derer, die bereits vor ihnen durch den Riss traten, bilden den Empfangsausschuss. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-20 text-center max-w-3xl mx-auto border-t border-b border-rift-500/30 py-10 bg-rift-900/40">
+                    <h3 class="font-magic text-3xl text-white mb-6 leading-relaxed">
+                        Wer durch den Riss tritt, lässt seine Ketten fallen,<br>
+                        <span class="text-rift-400">verliert aber auch seinen Schutz.</span>
+                    </h3>
+                    <p class="text-gray-400 font-tech text-lg">
+                        In Olyndra bist du dein eigener Herr, dein eigener Knecht und... wenn du nicht achtsam bist... dein eigener Untergang. Denn Arathion verzeiht keine Schwäche. Es belohnt den Mut durch den Riss zu gehen.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLASSES / RACES -->
+        <div id="classes" class="page-container">
+            <div class="max-w-6xl mx-auto px-4 py-12 space-y-12">
+                <div class="text-center mb-12">
+                    <h2 class="font-magic text-5xl text-white text-glow-rift mb-4">Biologische & Pfad-Datenbank</h2>
+                    <p class="font-tech text-bone-400 uppercase tracking-widest">Rassen-Register & Klassen-Spezifikationen</p>
+                </div>
+
+                <div class="rift-panel p-8 bg-black/50">
+                    <h3 class="font-magic text-3xl text-rift-400 mb-6 flex items-center gap-3"><i data-lucide="dna" class="w-8 h-8"></i> Rassenübersicht</h3>
+                    <p class="text-gray-400 text-sm mb-6">Wähle weise, denn dein Blut bestimmt deinen Weg. Aktuell in den Archiven von Arathion verzeichnete und spielbare Rassen:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-black/40 border border-green-900/50 p-4 rounded-sm shadow-[0_0_15px_rgba(74,222,128,0.05)]">
+                            <h4 class="font-tech text-green-400 uppercase tracking-widest mb-3 border-b border-green-900/50 pb-1">--- Naturvölker ---</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 border border-green-500/30 bg-green-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Elfen</span>
+                                <span class="px-3 py-1 border border-green-500/30 bg-green-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Halblinge</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-yellow-900/50 p-4 rounded-sm shadow-[0_0_15px_rgba(250,204,21,0.05)]">
+                            <h4 class="font-tech text-yellow-500 uppercase tracking-widest mb-3 border-b border-yellow-900/50 pb-1">--- Berg & Stein ---</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 border border-yellow-500/30 bg-yellow-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Zwerge</span>
+                                <span class="px-3 py-1 border border-yellow-500/30 bg-yellow-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Gnome</span>
+                                <span class="px-3 py-1 border border-yellow-500/30 bg-yellow-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Riesen</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-red-900/50 p-4 rounded-sm shadow-[0_0_15px_rgba(248,113,113,0.05)]">
+                            <h4 class="font-tech text-red-500 uppercase tracking-widest mb-3 border-b border-red-900/50 pb-1">--- Wilde Völker ---</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 border border-red-500/30 bg-red-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Orks</span>
+                                <span class="px-3 py-1 border border-red-500/30 bg-red-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Gobline</span>
+                                <span class="px-3 py-1 border border-red-500/30 bg-red-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Trolle</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-pink-900/50 p-4 rounded-sm shadow-[0_0_15px_rgba(244,114,182,0.05)] md:col-span-2 lg:col-span-1">
+                            <h4 class="font-tech text-pink-400 uppercase tracking-widest mb-3 border-b border-pink-900/50 pb-1">--- Mystik & Finsternis ---</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 border border-pink-500/30 bg-pink-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Vampire</span>
+                                <span class="px-3 py-1 border border-pink-500/30 bg-pink-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Werwesen</span>
+                                <span class="px-3 py-1 border border-pink-500/30 bg-pink-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Tierwesen</span>
+                                <span class="px-3 py-1 border border-pink-500/30 bg-pink-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Dimensionales</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-rift-900 p-4 rounded-sm shadow-[0_0_15px_rgba(217,70,239,0.05)] md:col-span-2 lg:col-span-2">
+                            <h4 class="font-tech text-rift-400 uppercase tracking-widest mb-3 border-b border-rift-900/50 pb-1">--- Zivilisation & Technik ---</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 border border-rift-500/30 bg-rift-900/20 text-gray-300 font-tech tracking-wider text-sm uppercase rounded-sm">Menschen</span>
+                                <span class="px-3 py-1 border border-rift-500/50 bg-rift-900/40 text-rift-300 font-tech tracking-wider text-sm uppercase rounded-sm shadow-[0_0_10px_rgba(217,70,239,0.2)]">Cyborgs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-magic text-4xl text-white mb-8 border-b-2 border-bone-600 pb-2 inline-block">Die Pfade (Klassen)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-rift-400 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="paw-print" class="text-rift-400 w-8 h-8"></i> Wandler</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Wandler sind Meister der Anpassung, deren Körper so wandelbar sind wie die Zeitrisse selbst. Sie können ihre Gestalt in die verschiedensten Kreaturen oder Bestien verändern, um im Kampf an vorderster Front zu bestehen oder lautlos zu spähen. Diese Vielseitigkeit macht sie unberechenbar: Wo eben noch ein Mensch stand, kann im nächsten Moment eine reißende Bestie angreifen. Ihr Weg ist einer der Instinkte und der tiefen Verbundenheit zur inneren Natur.</p>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-rift-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte bis mittlere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Nahkampf - Shapeshift</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-rift-400 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="crosshair" class="text-rift-400 w-8 h-8"></i> Jäger</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Jäger sind die unbestrittenen Meister des Fernkampfs und des Überlebens in der Wildnis. Ob mit dem traditionellen Langbogen oder einer modifizierten Waffe aus einem Zeitriss – sie treffen ihr Ziel mit tödlicher Präzision aus der Distanz. Sie verstehen es, das Gelände zu nutzen, Fallen zu stellen und die Spuren ihrer Feinde zu lesen. Ein Jäger in Arathion ist oft ein einsamer Wolf, der den ersten und letzten Schuss eines Kampfes abgibt.</p>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-rift-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte bis mittlere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Fernkampf - mit Begleiter</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-rift-400 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="swords" class="text-rift-400 w-8 h-8"></i> Assassine</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Der Assassine ist die Verkörperung des lautlosen Todes. In den Schatten Arathions zu Hause, nutzen sie Schnelligkeit, Tarnung und Gifte, um ihre Ziele auszuschalten, bevor der Kampf überhaupt begonnen hat. Sie meiden das offene Schlachtfeld und setzen stattdessen auf präzise Stiche in die Schwachstellen ihrer Gegner. Für einen Assassinen ist Ehre zweitrangig – nur das Ergebnis zählt, und das ist meistens ein lautloses Ende im Dunkeln.</p>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-rift-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte bis mittlere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Nahkampf - Fernkampf</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-rift-400 transition-all flex flex-col h-full">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="sparkles" class="text-rift-400 w-8 h-8"></i> Magier</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Magier sind Gelehrte, die die instabilen Energien der Welt manipulieren. Sie beherrschen sowohl die zerstörerischen Elemente als auch arkane Manipulationen, um das Schlachtfeld zu kontrollieren. Ein Magier kann Feuer regnen lassen oder die Realität krümmen, doch diese Macht ist gefährlich. Wer die arkane Energie nicht mit eisernem Willen führt, läuft Gefahr, von der Magie, die er beschwört, selbst verzehrt zu werden.</p>
+                            <div class="p-3 mb-4 bg-red-900/30 border border-red-500/50 rounded-sm">
+                                <p class="text-red-400 text-xs font-bold uppercase tracking-wider"><i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i> ACHTUNG:</p>
+                                <p class="text-gray-300 text-xs mt-1">Wer die Seelenmagie wählt, hat keine andere Wahl, als sich mit Spinnen auseinander zu setzen! Dies liegt am AOC System. Wir empfehlen also dies mit einer so enorm ausgeprägten Arachnophobie zu vermeiden!</p>
+                            </div>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-rift-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Fernkampf - Magie</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-bone-400 transition-all flex flex-col h-full border-bone-600">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="shield" class="text-bone-300 w-8 h-8"></i> Krieger</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Der Krieger ist das stählerne Rückgrat einer jeden Gruppe. Ob in schwerer Platte mit Schild oder als rücksichtsloser Schadenskämpfer mit zwei Äxten – sie suchen den direkten Kontakt zum Feind. Ein Krieger in Arathion verlässt sich auf jahrelanges Training, pure Kraft und unerschütterlichen Mut. Sie sind es, die den Ansturm abfangen und die Linie halten, wenn alles andere im Chaos der Magie und der Zeitrisse zu versinken droht.</p>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-bone-600/50 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> mittlere bis schwere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Nahkampf</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-red-400 transition-all flex flex-col h-full border-red-900/50">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="droplet" class="text-red-500 w-8 h-8"></i> Vampir</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Vampire sind zeitlose Raubtiere, die oft durch uralte Risse nach Arathion gelangten. Sie besitzen übermenschliche Reflexe, enorme Kraft und die Fähigkeit, sich nach Verletzungen rasch zu regenerieren – solange sie ihren Durst nach Lebenskraft stillen. In der Gesellschaft Arathions sind sie oft elegante, aber gefürchtete Außenseiter. Ihr Dasein ist ein ständiger Kampf zwischen ihrer menschlichen Vernunft und dem ewigen Hunger der Nacht.</p>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-red-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte bis mittlere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Nahkampf</p>
+                            </div>
+                        </div>
+
+                        <div class="rift-panel p-6 bg-rift-900/40 hover:border-gray-400 transition-all flex flex-col h-full md:col-span-2 lg:col-span-1 lg:col-start-2">
+                            <h4 class="font-bold text-white text-2xl mb-3 flex items-center gap-3"><i data-lucide="moon" class="text-gray-400 w-8 h-8"></i> Werwesen</h4>
+                            <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">Werwesen tragen einen unbändigen Fluch in sich, der sie in hybride Bestien verwandelt. In ihrer verwandelten Form sind sie eine Urgewalt aus Muskeln, Krallen und Zähnen, die kaum aufzuhalten ist. Sie zeichnen sich durch extreme Widerstandskraft und animalische Wildheit aus. Während sie in Menschengestalt oft ruhig wirken, brodelt unter der Oberfläche stets der Instinkt der Jagd, der nur darauf wartet, im Kampf entfesselt zu werden.</p>
+                            <div class="p-3 mb-4 bg-gray-900/80 border border-gray-500/50 rounded-sm">
+                                <p class="text-gray-300 text-xs font-bold uppercase tracking-wider"><i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i> ACHTUNG:</p>
+                                <p class="text-gray-400 text-xs mt-1">In gewandelter Form kann der Charakter nicht sprechen!</p>
+                            </div>
+                            <div class="space-y-2 text-xs font-tech uppercase tracking-wider bg-black/50 p-3 border border-gray-500/30 rounded-sm">
+                                <p class="text-bone-300"><span class="text-gray-500">Rüstung:</span> leichte bis mittlere Rüstung</p>
+                                <p class="text-rift-400"><span class="text-gray-500">Kampfart:</span> Nahkampf - Werwolfwandlung über Indrids</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-bone-500/50 to-transparent my-16"></div>
+
+                <div>
+                    <h3 class="font-magic text-4xl text-white mb-4 border-b-2 border-bone-600 pb-2 inline-block">Wirtschafts- & Gildenregister (Berufe)</h3>
+                    <p class="text-gray-400 text-sm mb-8 max-w-3xl leading-relaxed">Unsere Berufe werden in Gilden unterteilt. In jeder dieser Gilden finden dann Übungen für jene statt, die noch Unterstützung in der Erlernung ihres Berufes brauchen. Auch Forschungsgruppen, um sich weitere Kenntnisse anzueignen, finden innerhalb der Gilde statt. Niemand ist mit seiner Forschung auf sich allein gestellt!</p>
+
+                    <div class="mb-12">
+                        <h4 class="font-tech text-2xl text-bone-300 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="hammer"></i> Hauptberufe</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="rift-panel p-6 bg-black/40 border-bone-700">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="swords" class="text-bone-400 w-5 h-5"></i> Der Waffenschmied</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Zuständig dafür jedwede Arten von Waffen zu erstellen, unterstützt der Waffenschmied die Zitadelle mit seinen Künsten. Er ist wichtig für jeden in der Zitadelle. Denn neben den Waffen und Schilden ist er auch für die Werkzeuge zuständig. Jeder Beruf ist also abhängig von ihm!</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-bone-700">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="shield" class="text-bone-400 w-5 h-5"></i> Der Rüstschmied</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Was würden wir nur ohne den Rüstschmied tun? Mal ganz abgesehen davon, dass er ebenso Werkzeuge und Schilde herstellt und jeden mit vernünftigen Rüstungen ausstattet, egal ob leichte Stoffe, Leder oder schwere Platten. Doch ist er auch für die schönen Gewandungen zuständig. Er macht uns alle einzigartig in unserem Aussehen!</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-bone-700">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="gem" class="text-bone-400 w-5 h-5"></i> Der Juwelier</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Natürlich ist der Juwelier für all den schönen Schmuck zuständig. Aber auch nützliche Dinge wie verwunschene Ketten und verzauberte Ringe können über ihn bezogen werden. Doch ist es nicht nur das. Oft brauchen andere Berufe auch die schönen Edelsteine von ihm, die der Juwelier passgenau schleifen muss.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-bone-700">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="target" class="text-bone-400 w-5 h-5"></i> Der Bogner</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Wer einen anständigen Bogen will, bezieht ihn vom Bogner. Aber auch die Büchsen und jedwede Munition für diese Dinge erlangt man nur über den Bogner. Pfeile jeder Art sind nur vom Bogner zu beziehen.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-bone-700 md:col-span-2">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="flask-conical" class="text-bone-400 w-5 h-5"></i> Der Alchemist</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">So gut wie jeder bezieht irgendwas vom Alchemisten. Ob es nun für die Berufe ist, oder letztlich einfache Tränke. Irgendwie hat jeder mit ihm zutun. Schließlich ist der Alchemist nicht nur für Substanzen zuständig, die zur Weiterverarbeitung in den Berufen gedacht sind, sondern auch für Tränke und Gifte.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-12">
+                        <h4 class="font-tech text-2xl text-rift-400 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="briefcase"></i> Nebenberufe</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="rift-panel p-6 bg-black/40 border-rift-800 lg:col-span-2">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="users" class="text-rift-400 w-5 h-5"></i> Der Sklavenhändler</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Die Betitelung klingt im ersten Moment schlimmer als sie ist. Die meisten von ihnen bezeichnen sich selbst sogar anders. Vermittler und derlei Begriffe sind üblich. Sie vermitteln nämlich Arbeitskräfte und suchen Mitarbeiter, Kämpfer, Tänzer und vieles andere, was in der Zitadelle schließlich Arbeit finden kann.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-rift-800">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="leaf" class="text-rift-400 w-5 h-5"></i> Der Gärtner</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Zuständig für jede Art von Pflanzen und Pilzen. Sie kümmern sich um diese Art von Leben mit höchster Leidenschaft und versorgen somit viele Berufsgruppen mit ihren Kräutern und Ähnlichem.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-rift-800">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="coins" class="text-rift-400 w-5 h-5"></i> Der Händler</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Wer irgendetwas über den Großmarkt beziehen will, der wendet sich an den Händler. Egal was man braucht, was nicht von einer der anderen Berufsgruppen gefertigt werden kann, der lässt es vom Händler bestellen.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-rift-800">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="utensils" class="text-rift-400 w-5 h-5"></i> Der Koch</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Jeder muss sich gesund ernähren. Eine ausgewogene Ernährung kann nur der Koch gewährleisten. Er kann von einfachen Speisen für unterwegs, über ganze Festmahle und fantastische Getränke alles herrichten.</p>
+                            </div>
+                            <div class="rift-panel p-6 bg-black/40 border-rift-800">
+                                <h5 class="font-bold text-white text-xl mb-2 flex items-center gap-2"><i data-lucide="paw-print" class="text-rift-400 w-5 h-5"></i> Der Tierbändiger</h5>
+                                <p class="text-gray-300 text-sm leading-relaxed">Sie kümmern sich mit Leib und Seele um die Lebewesen, die uns begleiten. Von der Aufzucht über die Versorgung bis hin zur Wundversorgung oder auch Auswilderung. Hier ist der Tierbändiger in seinem absoluten Element!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-tech text-2xl text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="theater"></i> RP-Berufe</h4>
+                        <p class="text-gray-400 text-sm mb-4">Dies sind Berufe, die das RP unterstützen, sich aber kaum bis gar nicht auf die Engine beziehen. Jeder dieser Berufe arbeitet in der Regel eigenverantwortlich.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-4 rounded-sm flex items-center gap-3">
+                                <i data-lucide="bot" class="text-gray-400 w-6 h-6"></i>
+                                <div><h6 class="text-white font-bold">Golembauer</h6><span class="text-xs text-gray-500">Ein wenig Engine bezogen</span></div>
+                            </div>
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-4 rounded-sm flex items-center gap-3">
+                                <i data-lucide="swords" class="text-gray-400 w-6 h-6"></i>
+                                <div><h6 class="text-white font-bold">Söldner</h6><span class="text-xs text-gray-500">Reiner RP Beruf</span></div>
+                            </div>
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-4 rounded-sm flex items-center gap-3">
+                                <i data-lucide="book" class="text-gray-400 w-6 h-6"></i>
+                                <div><h6 class="text-white font-bold">Bibliothekar</h6><span class="text-xs text-gray-500">Reiner RP Beruf</span></div>
+                            </div>
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-4 rounded-sm flex items-center gap-3">
+                                <i data-lucide="eye-off" class="text-gray-400 w-6 h-6"></i>
+                                <div><h6 class="text-white font-bold">Dieb</h6><span class="text-xs text-gray-500">Reiner RP Beruf</span></div>
+                            </div>
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-4 rounded-sm flex items-center gap-3">
+                                <i data-lucide="music" class="text-gray-400 w-6 h-6"></i>
+                                <div><h6 class="text-white font-bold">Barde</h6><span class="text-xs text-gray-500">Reiner RP Beruf</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        <h4 class="font-tech text-2xl text-red-400 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="heart-pulse"></i> Zusatz-Rolle: Heiler</h4>
+                        <div class="rift-panel p-6 bg-red-900/10 border-red-900/50">
+                            <p class="text-gray-300 text-sm leading-relaxed mb-4">Der Heiler nimmt eine absolute Sonderrolle ein und ist enorm wichtig für das Überleben der Bürger in Arathion (aufgrund des strengen Knocksystems). Daher kann der Weg des Heilers <strong>zusätzlich</strong> zu jedem Haupt-, Neben- und RP-Beruf erlernt und ausgeübt werden.</p>
+                            <div class="flex items-center gap-2 text-xs font-tech uppercase text-red-400 tracking-wider">
+                                <i data-lucide="info" class="w-4 h-4"></i> Darf beliebig mit allen anderen Berufen kombiniert werden
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-rift-500/50 to-transparent my-16"></div>
+
+                <div class="mb-8">
+                    <div class="text-center mb-8">
+                        <h3 class="font-magic text-4xl text-white mb-2 text-glow-rift">Gestaltwandler-Archive</h3>
+                        <p class="font-tech text-gray-400 uppercase tracking-widest text-sm">Dokumentierte Morph-Signaturen</p>
+                    </div>
+                    
+                    <div class="rift-panel p-8 bg-black/40 mb-10 border-rift-900">
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed text-center max-w-4xl mx-auto">Der Pfad des Wandlers erlaubt das Annehmen der verschiedensten Kreaturenformen. Dies ist ein Auszug der aktuell verzeichneten Gestalten, deren genetischer Code entschlüsselt wurde:</p>
+                        
+                        <div class="flex flex-wrap gap-2 justify-center">
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Yakith</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Panther</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">White Tiger</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Lion</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Mountain Lion</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Mountain Lion Alpha</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Snow Leopard</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Tiger</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Sand Beast</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Jaguar</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Wolf</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">White Wolf</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Brown Wolf</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Black Wolf</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Revonous Wolf</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Wolf Puppy (Normal/White/Black)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Feral Dog (Red/Sick/Black/Beige)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">White Lynx</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Rabbit</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Siptha Bear</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Black Bear</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Brown Bear</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Demon Bat</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Devolved Bat Black</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Child of Jhil</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Blood Moon Beast (Flesh/Albino)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">King Beneath</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Crow</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Wolfman (Brute/Armored/White)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Panther (Corrupted/Demonic)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Serpentman (Devolved/Armored/Brute)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Mountain Dragon</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Striped Werehyena</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Demon Spider (Base/Ancient/Black)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Deer</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Goat</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Donkey</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Elk King</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Rocknose (Moss/Copper)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Quilin Teal</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Werecroc</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Red Succubus</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Housecat (Black/Siamese/Tabby)</span>
+                            <span class="px-2 py-1 bg-rift-900/60 border border-rift-500/20 text-gray-400 font-tech text-[11px] tracking-wider rounded-sm hover:text-rift-300 hover:border-rift-500 transition-colors cursor-default">Werebear</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <a href="https://docs.google.com/document/d/1tQsupKtN3iaNzVfWIeNrVAhXLPpuslz7bQYz6O-ea4c/edit?tab=t.y1f7hvqyqjbh" target="_blank" rel="noopener noreferrer" class="group relative px-6 py-3 md:px-8 md:py-4 bg-rift-900/80 border border-rift-500 text-white font-tech font-bold uppercase tracking-wider overflow-hidden transition-all hover:shadow-[0_0_20px_#d946ef] flex items-center gap-3 cursor-pointer">
+                            <div class="absolute inset-0 w-full h-full bg-rift-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                            <i data-lucide="book-open" class="w-5 h-5 md:w-6 md:h-6 text-rift-400 relative z-10"></i>
+                            <span class="relative z-10 text-sm md:text-base">Fähigkeiten & Bilder ansehen</span>
+                            <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors relative z-10"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- GALLERY -->
+        <div id="gallery" class="page-container">
+            <div class="max-w-6xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="font-magic text-5xl text-white text-glow-rift mb-4">Visuelle Datenbank</h2>
+                    <p class="font-tech text-bone-400 uppercase tracking-widest">Visionen aus dem Staub</p>
+                </div>
+                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </div>
+
+        <!-- RULES -->
+        <div id="rules" class="page-container">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <h2 class="font-magic text-4xl text-center text-white mb-8">System-Protokolle & Gesetze</h2>
+                <div class="grid gap-6">
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="scale" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">§1 Grundsatz & Ethik</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong>Grundsatz:</strong> "Sei kein Idiot" & "Schütze dein Leben". IC und OOC sind strikt zu trennen!</p>
+                                <p><strong>FSK 18:</strong> Die Teilnahme am Spielbetrieb sowie dem Discord ist nur mit Vollendung des 18. Lebensjahres erlaubt.</p>
+                                <p><strong>Voice RP:</strong> Klarer Fokus auf Voice-RP. Schreib-RP ist nur in Ausnahmefällen (überfüllte Szenen, emotionale Ausnahmesituationen oder Technikprobleme) gestattet.</p>
+                                <p><strong>Ethik:</strong> Respektvolles Miteinander. Beleidigen, Hetze und Mobbing (egal ob im RP oder OOC) sind strikt untersagt.</p>
+                                <p><strong>Inaktivität:</strong> Wer ohne triftige Abmeldung länger als 14 Tage inaktiv ist, verliert seine Whitelist.</p>
+                            </div>
+                        </details>
+                    </div>
+                    
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="hammer" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">§2 Bauregeln & Clans</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <ul class="list-disc pl-4 space-y-2">
+                                    <li><strong>Clans:</strong> Maximale Mitgliederzahl liegt bei 40.</li>
+                                    <li><strong>Bauort:</strong> Muss zwingend über ein Supportticket angemeldet und genehmigt werden.</li>
+                                    <li><strong>Baulimits (pro Clan/Kachel):</strong> Max. 3000 Bauteile und 1000 Dekoteile.</li>
+                                    <li><strong>Persönliche Limits:</strong> Max. 250 Dekoteile, 2 Rüstungspuppen, 1 Glockentier und 1 Katze pro Person.</li>
+                                    <li><strong>Werkbänke:</strong> Größenanpassung nur in realistischem (RP) Rahmen. Größer/kleiner ziehen um Platz zu sparen ist verboten. Max. 2 Werkbänke gleicher Art & 2 Öfen pro Clan.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="users" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">§3 Begleiter & Thralls</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <ul class="list-disc pl-4 space-y-2">
+                                    <li><strong>Personen Limit:</strong> 2 Reittiere, 4 Tiere, 6 Thralls, 2 Golems.</li>
+                                    <li><strong>Clan Limit:</strong> Max. 20 Tiere, 30 Thralls, 4 Golems (davon max. 2 Farm Golems).</li>
+                                    <li><strong>Boni:</strong> Tierzüchter/Sklavenhändler erhalten pro Clan +5 extra Tiere/Thralls.</li>
+                                    <li><strong>Wichtig:</strong> Jeder Thrall benötigt zwingend ein eigenes Bett! Magischen Thralls dürfen Plaketten nicht entnommen werden.</li>
+                                    <li><strong>AoC Thralls:</strong> Nur nach vorheriger Absprache mit dem Team (Ticket) gestattet. Ohne Genehmigung ist ihr Einsatz verboten!</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="swords" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">§4 RP-Regeln & Kampf</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong>PvP & Diebstahl:</strong> PvP nur mit RP-Hintergrund! Angriffe auf Thralls/Pets gelten als PvP. Diebstahl ist in realistischen Mengen erlaubt (PoI hinterlassen, Ticket öffnen). Diebstahl von Magie/Plot-Gegenständen ist strengstens untersagt.</p>
+                                <p><strong>Identität & Maskierung:</strong> Maskierte dürfen nicht anhand der Stimme erkannt werden. Tatkräftige Beweise (besondere Tattoos, Narben, Kleidung) sind erforderlich. Voicechanger bedürfen einer Genehmigung.</p>
+                                <p><strong>Knock-System (Kranken RP):</strong> Bis zu 4x Bewusstlosigkeit möglich, danach Enginetod. Nach Knocks muss zwingend ein Heiler aufgesucht und Kranken-RP gespielt werden. Wer den Enginetod erleidet, wird von der Leere korrumpiert (Sonder-Ängste müssen 7 Tage ausgespielt werden).</p>
+                                <p><strong>Magie & Rassen:</strong> Magie unterteilt sich in Feuer, Wasser, Luft, Erde (sowie Licht, Schatten, Arkan, Seele). Keine Blut-, Heilige- oder Unheilige Magie. Magische Waffen dürfen nur von Charakteren mit entsprechender magischer Fähigkeit geführt werden.</p>
+                                <p><strong>Alte-Freunde-Regel:</strong> Charaktere können nur verknüpft werden, wenn beide Namen bereits bei Einreichung in den Storys hinterlegt wurden.</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="alert-triangle" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">§5 Verbotenes & Strafen</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong>Verbotene Aktionen:</strong> Missbrauch von Flugfähigkeiten zur Flucht aus dem Kampf, Ausnutzen von Engine-Bugs/Glitches, RDM, Power-RP, Metagaming, Stream Sniping, Fail-RP. Ausgeloggte oder AFK-Spieler dürfen nicht angegriffen/ausgeraubt werden.</p>
+                                <p><strong>Verbotene Items/Perks:</strong> Flask of Repair, Trank des Tierinstinkts, Perk "Lastentier", Bau von Magie-Altären durch Nicht-Magier. Betreten der Stadt "Vel Arom" ist verboten.</p>
+                                <p><strong>Strafenkatalog:</strong></p>
+                                <ul class="list-decimal pl-4 space-y-1 text-bone-300 font-bold">
+                                    <li>Verstoß: <span class="text-gray-400 font-normal">Auf Level 1 gesetzt</span></li>
+                                    <li>Verstoß: <span class="text-gray-400 font-normal">Char Tod & Start mit Level 1</span></li>
+                                    <li>Verstoß: <span class="text-gray-400 font-normal">2 Wochen Whitelist-Entzug, Char Tod & Start mit Level 1</span></li>
+                                    <li>Verstoß: <span class="text-gray-400 font-normal">Perma-Ausschluss für mind. 1 Season (3 Monate)</span></li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div id="faq" class="page-container">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="font-magic text-4xl text-white mb-4 text-glow-rift">Häufige Fragen & Systeme</h2>
+                    <p class="font-tech text-bone-400 uppercase tracking-widest">Wissensdatenbank & Mod-Kollektion</p>
+                </div>
+
+                <!-- Mod List Button -->
+                <div class="flex justify-center mb-12">
+                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3615903129" target="_blank" rel="noopener noreferrer" class="group relative px-8 py-4 bg-bone-900/40 border border-bone-500 text-white font-tech font-bold uppercase tracking-wider overflow-hidden transition-all hover:shadow-[0_0_20px_#a8a29e] flex items-center gap-3 cursor-pointer">
+                        <div class="absolute inset-0 w-full h-full bg-bone-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                        <i data-lucide="package" class="w-6 h-6 text-bone-400 relative z-10"></i>
+                        <span class="relative z-10">Steam Mod-Kollektion Öffnen</span>
+                        <i data-lucide="external-link" class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors relative z-10"></i>
+                    </a>
+                </div>
+
+                <div class="grid gap-6">
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="book-open" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Begriffserklärung</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <ul class="space-y-2">
+                                    <li><strong class="text-rift-300">OOC (Out of Character):</strong> Du bespielst deinen Charakter gerade nicht.</li>
+                                    <li><strong class="text-rift-300">IC (In Character):</strong> Du befindest dich in deiner Rolle.</li>
+                                    <li><strong class="text-rift-300">Metagaming:</strong> Das Verwenden von Infos im RP, die du OOC erhalten hast (z.B. aus Streams). Verboten!</li>
+                                    <li><strong class="text-rift-300">Backseat Gaming:</strong> Anderen OOC vorschreiben, was sie IC tun sollen.</li>
+                                    <li><strong class="text-rift-300">Stream Sniping:</strong> Standorte oder Infos aus Streams IC verwenden.</li>
+                                    <li><strong class="text-rift-300">Fail-RP:</strong> Unlogisches RP, das eine reale Person so nicht machen/sagen würde.</li>
+                                    <li><strong class="text-rift-300">R-D-M (Random Death Match):</strong> Absichtliches Töten ohne triftigen RP-Hintergrund.</li>
+                                    <li><strong class="text-rift-300">Power-RP:</strong> Dem Gegenüber keine Reaktionsmöglichkeit oder Wahl lassen.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Spiel-Einstellungen & Accessoires</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong class="text-bone-300">Accessoires:</strong> Insofern Accessoires über SHIFT + B auszurüsten sind, ist dieses Menü auch zu nutzen!</p>
+                                <p><strong class="text-bone-300">Foot Print (Fußabdrücke):</strong><br>1. <code>Shift+B</code> (Tot! Einstellungen) -> <code>Bodies</code><br>2. <code>Current Body</code> bearbeiten (Stift-Icon)<br>3. <code>Body</code> -> <code>Footprint</code> wählen (Bare, Generic Shoes, High Heels, Wide Heel).</p>
+                                <p><strong class="text-bone-300">Tot! Chat Fix (Fenster durchsichtig):</strong><br>Wenn du mit der Maus reinklicken musst: Gehe in die Escape-Einstellungen -> 'Steuerung' -> 'Kommunikation'. Setze für den <em>Globalchat</em> eine Taste ein, die du nie benutzt. Setze für <em>'Chat Fenster Ein/Ausblenden'</em> die <code>[Enter]</code> Taste ein.</p>
+                                <p><strong class="text-bone-300">Scripted Lights (Tag/Nacht Lichter):</strong><br>Platziere die Lichtquelle, halte <code>E</code> gedrückt und wähle 'Scripted Light'. Trage als Namen <strong>Nachtlicht</strong> ein. Zum Verschieben muss es zerstört und neu platziert werden. Check erfolgt alle 5 Minuten.</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="heart-pulse" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Kranken-RP & Enginetod</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong>Das Knocksystem:</strong> Bis zu 4x Bewusstlosigkeit, danach folgt der Enginetod. Nach jedem Knock MUSS ein Heiler aufgesucht und RP betrieben werden!</p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>1x Knock:</strong> Sehr leicht verletzt (Kratzer, blaue Flecken).</li>
+                                    <li><strong>2x Knock:</strong> Leicht verletzt (Prellungen, Schnittwunden).</li>
+                                    <li><strong>3x Knock:</strong> Mittelschwer (Knochenbrüche, tiefe Wunden). Kranken-RP am Folgetag.</li>
+                                    <li><strong>4x Knock:</strong> Schwer verletzt (Enorme Verletzungen). Kranken-RP für zwei Folgetage.</li>
+                                    <li><strong>5x Knock (Enginetod):</strong> Der Charakter wird von der Leere korrumpiert (Seelenschaden). Du erhältst per Ticket für 7 Tage "Ängste", die aktiv ausgespielt werden müssen (z.B. Angst in Stille, Panik bei Waffen).</li>
+                                </ul>
+                                <p class="italic text-gray-500">Hinweis: Wiederholungstäter beim "Sterben" erhalten serverseitige Mali bis hin zum Chartod. Jede Heilung wird von uns per Log kontrolliert.</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="cross" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Heiler-System & Befehle</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p>Verletzte am Boden können <strong>nur von Heilern</strong> aufgehoben werden. Andere können sie nur aus der Gefahrenzone ziehen. Es gibt gewisse "Liegezeiten" ab dem Knock, habt etwas Geduld im RP.</p>
+                                <p><strong>Befehle für Heiler (Chat):</strong></p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><code>/helfen</code> -> Spieler auswählen -> Angezeigtes Wort eingeben, um aufzuhelfen.</li>
+                                    <li><code>/heilen</code> -> Spieler auswählen -> Knock wird zurückgesetzt.</li>
+                                    <li><code>/HBericht</code> -> Öffnet das IC-Heilerbuch zum Dokumentieren (ersetzt den alten DC-Kanal).</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="message-square" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Sprachen & Völker</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p>Sprachen zu lernen erfordert Hingabe und stetiges Ausspielen. Vier Sprachen sind jedoch besonders und keine humanoiden Dialekte, sie können auch nicht geschrieben werden:</p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>Lupin:</strong> Sprache der Hundeartigen (Bellen, Knurren).</li>
+                                    <li><strong>Felorisch:</strong> Sprache der Katzenartigen (Miauen, Schnurren).</li>
+                                    <li><strong>Arakai:</strong> Sprache der Vögel (Zwitschern, Krächzen).</li>
+                                    <li><strong>Nymvalisch:</strong> Sprache der Natur (Pflanzen & Kleintiere). Sehr subtile, geräuschlose oder fast unhörbare Kommunikation.</li>
+                                </ul>
+                                <p class="text-bone-400 mt-2 text-xs uppercase">Befehl: <code>/char</code> aktualisiert/debuggt deinen Charakter!</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-rift-900/60 hover:bg-rift-800 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="flask-conical" class="text-bone-400"></i><h3 class="font-tech text-xl text-rift-400 uppercase font-bold m-0">Entwicklung & Forschung</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-6 text-gray-300 text-sm space-y-3 border-t border-bone-700">
+                                <p><strong>Training:</strong> Muss <em>aktiv im RP</em> ausgespielt werden (nicht nur offline "ich war heute 2h rennen"). Bei viel qualitativem Ausspielen ist eine Aufwertung per Ticket möglich.</p>
+                                <p><strong>Forschung & Beruf:</strong> Forschungen müssen IC durch Interaktion, Austausch und Experimente erarbeitet werden. Ihr seid meist auf andere angewiesen. Wenn ihr meint, reif für einen Durchbruch zu sein, öffnet ein Supportticket.</p>
+                                <p class="text-red-400 italic">Hinweis: KI-generierte Texte (z.B. ChatGPT) ersetzen keine RP-Erfahrung! Sie dürfen maximal zur Korrektur genutzt werden.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAR / IDENTITÄT -->
+        <div id="char" class="page-container">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <h2 class="font-magic text-4xl text-center text-white mb-2">Identitäts-Kern</h2>
+                <p class="text-center text-gray-400 font-tech mb-8">Dieser Bogen muss vollständig ausgefüllt werden. Nutze die ( i ) Icons für Erklärungen.</p>
+                
+                <div class="rift-panel p-8 bg-black/60">
+                    <form class="space-y-6">
+                        
+                        <!-- Row 1: System IDs -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-tech uppercase text-rift-400 mb-1 flex justify-between items-center">
+                                    Steam64 ID
+                                    <button type="button" onclick="openInfo('steam')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <input type="text" id="steamID" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500">
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-rift-400 mb-1 flex justify-between items-center">
+                                    Discord Tag
+                                    <button type="button" onclick="openInfo('discord')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <input type="text" id="discordID" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500">
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Basic Info -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Name
+                                    <button type="button" onclick="openInfo('name')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <input type="text" id="charName" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500" placeholder="Max Mustermann, Graf von...">
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Alter
+                                    <button type="button" onclick="openInfo('alter')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <input type="text" id="charAge" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500">
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Character Specifics -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Rasse / Spezies
+                                    <button type="button" onclick="openInfo('rasse')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charRace" onchange="toggleCustomRace()" class="w-full p-2 rounded-sm bg-rift-900 text-rift-300 focus:border-rift-500">
+                                    <option value="Nicht angegeben">- Rasse wählen -</option>
+                                    <optgroup label="--- Naturvölker ---">
+                                        <option value="Elfen">Elfen</option>
+                                        <option value="Halblinge">Halblinge</option>
+                                    </optgroup>
+                                    <optgroup label="--- Berg & Stein ---">
+                                        <option value="Zwerge">Zwerge</option>
+                                        <option value="Gnome">Gnome</option>
+                                        <option value="Riesen">Riesen</option>
+                                    </optgroup>
+                                    <optgroup label="--- Wilde Völker ---">
+                                        <option value="Orks">Orks</option>
+                                        <option value="Gobline">Gobline</option>
+                                        <option value="Trolle">Trolle</option>
+                                    </optgroup>
+                                    <optgroup label="--- Mystik & Finsternis ---">
+                                        <option value="Vampire">Vampire</option>
+                                        <option value="Werwesen">Werwesen</option>
+                                        <option value="Tierwesen">Tierwesen</option>
+                                        <option value="Dimensionales">Dimensionales</option>
+                                    </optgroup>
+                                    <optgroup label="--- Zivilisation & Technik ---">
+                                        <option value="Menschen">Menschen</option>
+                                        <option value="Cyborgs">Cyborgs</option>
+                                    </optgroup>
+                                    <optgroup label="--- Unbekannt ---">
+                                        <option value="Neue Rasse">-- Neue Rasse erstellen --</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Kampfklasse
+                                    <button type="button" onclick="openInfo('klasse')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charClass" class="w-full p-2 rounded-sm bg-rift-900 text-rift-300 focus:border-rift-500">
+                                    <option value="Nicht angegeben">- Klasse wählen -</option>
+                                    <option value="Wandler">Wandler</option>
+                                    <option value="Jäger">Jäger</option>
+                                    <option value="Assassine">Assassine</option>
+                                    <option value="Magier">Magier</option>
+                                    <option value="Krieger">Krieger</option>
+                                    <option value="Vampir">Vampir</option>
+                                    <option value="Werwesen">Werwesen</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Fähigkeit
+                                    <button type="button" onclick="openInfo('faehigkeit')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <input type="text" id="charAbility" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500" placeholder="Magie, Wandler, etc.">
+                            </div>
+
+                            <!-- Custom Race Textarea -->
+                            <div id="customRaceContainer" class="hidden md:col-span-3 bg-rift-900/50 border border-rift-500/30 p-4 rounded-sm mt-2 shadow-[0_0_15px_rgba(217,70,239,0.05)]">
+                                <label class="text-xs font-tech uppercase text-rift-400 mb-2 flex justify-between items-center">
+                                    Daten der neuen Rasse
+                                    <button type="button" onclick="openInfo('neueRasse')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <textarea id="charCustomRaceDesc" rows="3" class="w-full p-2 rounded-sm border-rift-800 bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500" placeholder="Bitte beschreibe kurz das Aussehen und die Besonderheiten deiner neuen Rasse..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Professions -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Hauptberuf
+                                    <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charMainProf" class="w-full p-2 rounded-sm bg-rift-900 text-rift-300 focus:border-rift-500">
+                                    <option value="Ohne Beruf">- Ohne Beruf -</option>
+                                    <option value="Waffenschmied">Waffenschmied</option>
+                                    <option value="Rüstschmied">Rüstschmied</option>
+                                    <option value="Juwelier">Juwelier</option>
+                                    <option value="Bogner">Bogner</option>
+                                    <option value="Alchemist">Alchemist</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    Nebenberuf
+                                    <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charSubProf" class="w-full p-2 rounded-sm bg-rift-900 text-rift-300 focus:border-rift-500">
+                                    <option value="Ohne Beruf">- Ohne Beruf -</option>
+                                    <option value="Sklavenhändler">Sklavenhändler</option>
+                                    <option value="Gärtner">Gärtner</option>
+                                    <option value="Händler">Händler</option>
+                                    <option value="Koch">Koch</option>
+                                    <option value="Tierbändiger">Tierbändiger</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-bone-400 mb-1 flex justify-between items-center">
+                                    RP-Beruf
+                                    <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charRpProf" class="w-full p-2 rounded-sm bg-rift-900 text-rift-300 focus:border-rift-500">
+                                    <option value="Ohne Beruf">- Ohne Beruf -</option>
+                                    <option value="Golembauer">Golembauer</option>
+                                    <option value="Söldner">Söldner</option>
+                                    <option value="Bibliothekar">Bibliothekar</option>
+                                    <option value="Dieb">Dieb</option>
+                                    <option value="Barde">Barde</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-red-500 mb-1 flex justify-between items-center">
+                                    Heiler
+                                    <button type="button" onclick="openInfo('heiler')" class="hover:text-red-300 transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <select id="charHealer" class="w-full p-2 rounded-sm border-red-900/50 bg-rift-900 text-red-400 focus:border-red-500 focus:ring-red-500">
+                                    <option value="Nein">Nein</option>
+                                    <option value="Ja">Ja, ich bin Heiler</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Strengths & Weaknesses -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-tech uppercase text-gray-500 mb-1 flex justify-between items-center">
+                                    Persönliche Stärken
+                                    <button type="button" onclick="openInfo('staerken')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <textarea id="charStrengths" rows="3" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="text-xs font-tech uppercase text-gray-500 mb-1 flex justify-between items-center">
+                                    Persönliche Schwächen
+                                    <button type="button" onclick="openInfo('schwaechen')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                                </label>
+                                <textarea id="charWeaknesses" rows="3" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Row 6: Description -->
+                        <div>
+                            <label class="text-xs font-tech uppercase text-gray-500 mb-1 flex justify-between items-center">
+                                Allgemeine Charakterbeschreibung
+                                <button type="button" onclick="openInfo('beschreibung')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                            </label>
+                            <textarea id="charDescription" rows="4" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500"></textarea>
+                        </div>
+
+                        <!-- Row 7: Story / Background -->
+                        <div>
+                            <label class="text-xs font-tech uppercase text-gray-500 mb-1 flex justify-between items-center">
+                                Hintergrund
+                                <button type="button" onclick="openInfo('hintergrund')" class="hover:text-white transition-colors"><i data-lucide="info" class="w-4 h-4"></i></button>
+                            </label>
+                            <textarea id="charStory" rows="6" class="w-full p-2 rounded-sm bg-black/50 text-gray-300 focus:border-rift-500 focus:ring-1 focus:ring-rift-500"></textarea>
+                        </div>
+
+                        <button type="button" onclick="copyCharacter()" class="w-full bg-rift-900 border border-rift-500 text-rift-400 font-bold py-3 hover:bg-rift-500 hover:text-white transition-colors uppercase font-tech tracking-widest flex justify-center gap-2"><i data-lucide="save"></i> Daten exportieren</button>
+                    </form>
+                    <p id="copy-msg" class="text-center text-green-500 font-tech text-sm mt-2 opacity-0 transition-opacity">>> Export erfolgreich in Zwischenspeicher <<</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONNECT -->
+        <div id="connect" class="page-container">
+            <div class="py-12 md:py-20 flex flex-col items-center px-4">
+                <h2 class="font-magic text-5xl text-white mb-12 text-glow-bone text-center">Das Erwachen</h2>
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
+                    <div class="rift-panel p-8 text-center hover:bg-rift-900/80 transition-colors group cursor-pointer border-rift-800">
+                        <div class="w-20 h-20 mx-auto bg-[#5865F2] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_20px_#5865F2]"><i data-lucide="message-circle" class="w-10 h-10 text-white"></i></div>
+                        <h3 class="font-tech text-2xl text-white uppercase font-bold mb-2">Die Stimmen</h3>
+                        <p class="text-gray-400 text-sm mb-6">Tritt dem Discord bei für Whitelist und Community.</p>
+                        <a href="https://discord.gg/7TPSchdDJW" target="_blank" rel="noopener noreferrer" class="inline-block text-rift-400 border-b border-rift-400 pb-1 hover:text-white">Den Stimmen folgen &rarr;</a>
+                    </div>
+                    <div class="rift-panel p-8 text-center hover:bg-bone-900/50 transition-colors group">
+                        <div class="w-20 h-20 mx-auto bg-bone-700 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-[0_0_20px_#57534e]"><i data-lucide="globe" class="w-10 h-10 text-white"></i></div>
+                        <h3 class="font-tech text-2xl text-white uppercase font-bold mb-2">Der Eintritt</h3>
+                        <div class="bg-black/50 p-3 rounded border border-gray-700 font-mono text-bone-300 mb-4 flex justify-between items-center">
+                            <span>178.63.47.190:7777</span>
+                            <button onclick="copyIP()" class="hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                        </div>
+                        <p id="ip-msg" class="text-xs text-green-500 opacity-0 h-4">Kopiert!</p>
+                    </div>
+                </div>
+
+                <!-- Whitelist Open Button -->
+                <div class="mt-16 flex justify-center w-full">
+                    <a href="https://discord.gg/7TPSchdDJW" target="_blank" rel="noopener noreferrer" class="group relative px-8 py-4 md:px-12 md:py-6 bg-green-900/20 border border-green-500 text-white font-tech font-bold text-2xl md:text-3xl uppercase tracking-[0.2em] overflow-hidden transition-all hover:scale-105 flex items-center gap-4 shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:shadow-[0_0_50px_rgba(34,197,94,0.6)] animate-pulse">
+                        <div class="absolute inset-0 w-full h-full bg-green-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                        <div class="relative flex h-4 w-4 md:h-5 md:w-5 z-10">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-4 w-4 md:h-5 md:w-5 bg-green-500 shadow-[0_0_15px_#22c55e]"></span>
+                        </div>
+                        <span class="relative z-10" style="text-shadow: 0 0 10px rgba(34,197,94,0.8);">WHITELIST OPEN</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= IMPRESSUM ================= -->
+        <div id="legal-imprint" class="page-container">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <h2 class="font-magic text-4xl text-center text-bone-400 mb-8">Rechtliche Kennzeichnung</h2>
+                <div class="rift-panel p-8 legal-content">
+                    <p class="text-sm italic text-gray-500 mb-6">Angaben gemäß § 5 TMG / § 18 MStV</p>
+                    
+                    <h3>Verantwortlich für den Inhalt</h3>
+                    <p class="text-rift-300 font-bold border-l-2 border-red-500 pl-4 py-2 bg-red-900/10">
+                        [BITTE HIER DEIN VORNAME UND NACHNAME EINTRAGEN]<br>
+                        [BITTE HIER DEINE STRAßE UND HAUSNUMMER EINTRAGEN]<br>
+                        [BITTE HIER DEINE PLZ UND WOHNORT EINTRAGEN]<br>
+                        Deutschland
+                    </p>
+                    
+                    <h3>Kontakt</h3>
+                    <p class="text-rift-300 font-bold border-l-2 border-red-500 pl-4 py-2 bg-red-900/10">
+                        E-Mail: [BITTE HIER DEINE E-MAIL ADRESSE EINTRAGEN]<br>
+                        Discord: [OPTIONAL DEIN DISCORD NAME EINTRAGEN]
+                    </p>
+
+                    <h3>Projekt-Hinweis</h3>
+                    <p>Dies ist ein rein privates, nicht-kommerzielles Fan-Projekt im Rahmen des Spiels "Conan Exiles". Wir verfolgen keinerlei finanzielle Interessen. Alle Einnahmen (falls zutreffend über Spenden) fließen zu 100% in die Serverkosten.</p>
+
+                    <h3>Haftung für Links</h3>
+                    <p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DATENSCHUTZ ================= -->
+        <div id="legal-privacy" class="page-container">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <h2 class="font-magic text-4xl text-center text-rift-400 mb-8">Datenschutz Protokolle</h2>
+                <div class="rift-panel p-8 legal-content">
+                    <h3>1. Datenschutz auf einen Blick</h3>
+                    <h4>Allgemeine Hinweise</h4>
+                    <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie unsere Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+                    
+                    <h4>Verantwortliche Stelle</h4>
+                    <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Impressum dieser Website entnehmen.</p>
+
+                    <h3>2. Hosting (GitHub Pages)</h3>
+                    <p>Wir hosten unsere Website bei GitHub Pages. Anbieter ist die GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA (nachfolgend: GitHub).</p>
+                    <p>Wenn Sie unsere Website besuchen, erfasst GitHub verschiedene Logfiles inklusive Ihrer IP-Adressen. Diese Daten werden von GitHub erhoben, um die Funktionsfähigkeit und Sicherheit der Server zu gewährleisten. Die Verwendung von GitHub Pages erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Wir haben ein berechtigtes Interesse an einer möglichst zuverlässigen Darstellung und Bereitstellung unseres reinen Hobby-Projekts.</p>
+                    
+                    <h3>3. Datenerfassung auf dieser Website</h3>
+                    <h4>Lokale Speicherung (LocalStorage)</h4>
+                    <p>Unsere Website nutzt zur Speicherung Ihrer Entscheidung bezüglich des "Speicher-Zugriffs" (Cookie/Info-Banner) die Technologie des "Local Storage" (Lokaler Speicher) Ihres Browsers. Hierbei wird lediglich ein technischer Wert (`riftProtocolAccepted`) in Ihrem Browser abgelegt. Es werden <strong>keine</strong> Tracking-Mechanismen oder Analyse-Cookies verwendet. Dies dient der technischen Bereitstellung der Seitenfunktionen. Sie können Ihren lokalen Speicher jederzeit in den Einstellungen Ihres Browsers leeren.</p>
+                    
+                    <h4>Formular "Identitäts-Kern"</h4>
+                    <p>Das auf der Website bereitgestellte Formular zur Charakter-Erstellung ("Identitäts-Kern") dient ausschließlich dazu, die von Ihnen eingegebenen Texte zu strukturieren und in die <strong>lokale Zwischenablage (Clipboard)</strong> Ihres Gerätes zu kopieren. Es findet <strong>keine</strong> Datenübertragung an unseren Server oder an Dritte statt. Alle eingegebenen Daten verbleiben auf Ihrem Endgerät.</p>
+
+                    <h3>4. Plugins und externe Tools</h3>
+                    <h4>Google Web Fonts</h4>
+                    <p>Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten so genannte Web Fonts, die von Google bereitgestellt werden. Beim Aufruf einer Seite lädt Ihr Browser die benötigten Web Fonts in ihren Browsercache, um Texte und Schriftarten korrekt anzuzeigen. Zu diesem Zweck muss der von Ihnen verwendete Browser Verbindung zu den Servern von Google aufnehmen. Hierdurch erlangt Google Kenntnis darüber, dass über Ihre IP-Adresse diese Website aufgerufen wurde.</p>
+                    <p>Die Nutzung von Google Web Fonts erfolgt im Interesse einer einheitlichen und ansprechenden Darstellung unserer Online-Angebote. Dies stellt ein berechtigtes Interesse im Sinne von Art. 6 Abs. 1 lit. f DSGVO dar.</p>
+                    
+                    <h4>Tailwind CSS & Lucide Icons (CDNs)</h4>
+                    <p>Wir verwenden Content Delivery Networks (CDNs) zum Laden von Frameworks (Tailwind) und Symbolen (Lucide). Dies dient der schnellen und sicheren Bereitstellung unserer Webseite (Art. 6 Abs. 1 lit. f DSGVO). Dabei wird eine Verbindung zwischen Ihrem Browser und den Servern der CDN-Anbieter hergestellt, wodurch diese Ihre IP-Adresse erfahren.</p>
+
+                    <h3>5. Externe Links & Plattformen</h3>
+                    <p>Unsere Website enthält Links zu externen Websites und Plattformen Dritter (z. B. Steam, Discord). Wenn Sie diese Links anklicken, verlassen Sie unsere Seite und werden auf die Server der jeweiligen Anbieter weitergeleitet. Bei der Nutzung dieser externen Plattformen gelten ausschließlich deren jeweilige Datenschutzbestimmungen. Wir haben keinen Einfluss darauf, welche Daten dort erhoben oder verarbeitet werden, und übermitteln von unserer Seite aus keine personenbezogenen Daten an diese Anbieter, solange Sie nicht aktiv auf die Links klicken.</p>
+
+                    <div class="mt-8 pt-4 border-t border-rift-500/30">
+                        <button onclick="localStorage.removeItem('riftProtocolAccepted'); location.reload();" class="text-rift-400 underline hover:text-white font-tech uppercase text-xs tracking-wider">[ RESET SPEICHER-PROTOKOLL ]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 w-full h-8 bg-[#0a050a] border-t border-bone-800 z-50 flex items-center justify-between px-4 text-[10px] uppercase font-tech text-gray-500">
+        <div class="flex gap-4">
+            <span>Olyndra: <span class="text-rift-400">ERWACHT</span></span>
+            <span>Riss-Aktivität: <span id="rift-val">Stabil</span></span>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="switchPage('legal-imprint')" class="hover:text-rift-400 transition-colors">Impressum</button>
+            <button onclick="switchPage('legal-privacy')" class="hover:text-rift-400 transition-colors">Datenschutz</button>
+            <span>&copy; 2026 Arathion RP</span>
+        </div>
+    </footer>
+
+    <!-- Storage Cookie Banner -->
+    <div id="rift-cookie-banner" class="fixed bottom-10 right-4 max-w-sm bg-rift-900/95 backdrop-blur-xl border border-rift-500 p-6 z-[60] transform translate-y-full transition-transform duration-500 shadow-[0_0_20px_rgba(0,0,0,0.8)] hidden">
+        <div class="absolute -top-2 -left-2 w-4 h-4 bg-bone-500 border border-black"></div>
+        <h3 class="font-tech text-bone-400 text-lg mb-2 uppercase font-bold flex items-center gap-2"><i data-lucide="database"></i> System-Protokoll</h3>
+        <p class="text-xs text-gray-300 mb-4 font-mono leading-relaxed">Diese Archivseite nutzt lokale Speichereinheiten (LocalStorage) für Stabilität. Keine Überwachung.</p>
+        <div class="flex gap-2">
+            <button onclick="acceptCookies()" class="flex-1 bg-rift-900 hover:bg-rift-800 text-rift-400 border border-rift-500 font-mono text-xs py-2 uppercase transition-colors">[ AKZEPTIEREN ]</button>
+        </div>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // --- CONFIG & UTILS ---
+        const galleryConfig = {
+            folder: 'images/', 
+            files: [] 
+        };
+
+        const SURGE_DURATION = 3500; 
+        const LOADER_DURATION = 2000; 
+
+        // STATE MACHINE
+        const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
+        let currentState = STATE.IDLE;
+        let currentPageId = 'home';
+
+        // --- PARTIKEL SYSTEM (Falling Ash) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const oldWidth = canvas.width;
+                const oldHeight = canvas.height;
+                resizeCanvas();
+                if (Math.abs(oldWidth - canvas.width) > 100 || Math.abs(oldHeight - canvas.height) > 100) {
+                    initParticles();
+                }
+            }, 150);
+        });
+        
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height; 
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -100;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = Math.random() * 0.5 + 0.2; // Falling down
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.8 ? `rgba(217, 70, 239, ${this.opacity})` : `rgba(168, 162, 158, ${this.opacity})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.y > canvas.height + 10) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 150; i++) { 
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+        }
+
+        // --- GALERIE RENDERER ---
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            if(!grid) return;
+            grid.innerHTML = ''; 
+
+            if(galleryConfig.files.length === 0) {
+                grid.className = "flex flex-col items-center justify-center min-h-[400px] w-full col-span-3 text-center p-12 border border-dashed border-bone-600 rounded-lg bg-black/40";
+                grid.innerHTML = `
+                    <div class="relative mb-6">
+                        <i data-lucide="eye-off" class="w-24 h-24 text-rift-900 absolute top-0 left-0 blur-sm animate-pulse"></i>
+                        <i data-lucide="eye-off" class="w-24 h-24 text-bone-500 relative z-10 opacity-70"></i>
+                    </div>
+                    <h3 class="font-magic text-4xl text-bone-300 mb-2">Keine Visionen</h3>
+                    <p class="font-tech text-rift-400 uppercase tracking-widest text-sm animate-pulse">Der Staub verweht die Sicht... [COMING SOON]</p>
+                    <p class="text-xs text-gray-500 mt-4 font-mono">Lade Bilder in /images/ hoch...</p>
+                `;
+                lucide.createIcons(); 
+                return;
+            }
+
+            galleryConfig.files.forEach((filename, index) => {
+                const card = document.createElement('div');
+                card.className = 'holo-card rounded-lg opacity-0'; 
+                card.style.animationDelay = `${index * 0.1}s`; 
+                const title = filename.split('.')[0].replace(/[-_]/g, ' '); 
+
+                card.innerHTML = `
+                    <img src="${galleryConfig.folder}${filename}" alt="${title}" class="holo-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400/292524/d6d3d1?text=Datenfehler';">
+                    <div class="holo-overlay">
+                        <h4 class="font-tech text-white text-lg font-bold capitalize">${title}</h4>
+                        <p class="text-rift-300 text-xs">Vision #${index + 1}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- LOOP ---
+        function updateLoop(timestamp) {
+            drawParticles();
+            requestAnimationFrame(updateLoop);
+        }
+
+        // --- TRANSITIONS ---
+        function switchPage(targetId) {
+            if (currentState !== STATE.IDLE || targetId === currentPageId) return;
+            
+            currentState = STATE.SURGE;
+            
+            const loader = document.getElementById('rift-loader');
+            const tear = document.getElementById('tear-element');
+            const currentPage = document.getElementById(currentPageId);
+            const targetPage = document.getElementById(targetId);
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const isBone = btn.dataset.target === 'char';
+                const activeColor = isBone ? 'text-bone-400' : 'text-rift-400';
+                const activeBorder = isBone ? 'border-bone-500' : 'border-rift-500';
+                
+                if(btn.dataset.target === targetId) {
+                    btn.classList.add(activeColor, activeBorder); 
+                    btn.classList.remove('text-gray-400', 'border-transparent');
+                } else {
+                    btn.classList.remove(activeColor, activeBorder); 
+                    btn.classList.add('text-gray-400', 'border-transparent');
+                }
+            });
+
+            if (loader) loader.classList.add('active');
+            if (tear) setTimeout(() => tear.style.height = '100%', 100);
+
+            setTimeout(() => {
+                if (currentPage) { currentPage.classList.remove('page-active'); currentPage.style.display = 'none'; }
+                if (targetPage) { targetPage.style.display = 'block'; requestAnimationFrame(() => targetPage.classList.add('page-active')); }
+                currentPageId = targetId;
+
+                setTimeout(() => {
+                    if (tear) tear.style.height = '0%';
+                    if (loader) setTimeout(() => loader.classList.remove('active'), 500);
+                    currentState = STATE.IDLE;
+                }, 1000); 
+            }, LOADER_DURATION); 
+        }
+
+        // --- MODAL LOGIC ---
+        function closeWipModal() {
+            const modal = document.getElementById('wip-modal');
+            if (modal) {
+                modal.classList.add('hidden-modal');
+                modal.style.pointerEvents = 'none';
+                setTimeout(() => { modal.style.display = 'none'; }, 500);
+            }
+        }
+
+        const fieldInfos = {
+            name: { title: "Name", text: "Der volle Name mitsamt Titel, falls vorhanden." },
+            alter: { title: "Alter", text: "Immer unter 5000 Jahre! Bedenke die Rasse und dass dein Charakter im hohen Alter entsprechende Gepflogenheiten hat. Außerdem auch, dass dieser dementsprechend aussehen muss/könnte - also alt!" },
+            rasse: { title: "Rasse", text: "Hier trägst du deine Rasse ein! Wenn es eine neue Rasse ist, beschreibst du sie bitte kurz." },
+            klasse: { title: "Kampfklasse", text: "Hier trägst du deine Klasse ein!" },
+            berufe: { title: "Berufe", text: "Hier trägst du deinen Haupt- und Nebenberuf ein! RP-Berufe werden hier auch gewählt." },
+            heiler: { title: "Heiler", text: "Ist dein Charakter ein Heiler? (Heiler ist eine Zusatzrolle, die mit allen Berufen kombiniert werden darf)." },
+            faehigkeit: { title: "Fähigkeit", text: "Hier trägst du ein, falls und welche Magie dein Charakter beherrscht, oder ob er sich wandeln kann. Auch der Vampirismus muss hier eingetragen werden." },
+            staerken: { title: "Persönliche Stärken", text: "Keine Enginestärken! Es geht um die Persönlichkeit!" },
+            schwaechen: { title: "Persönliche Schwächen", text: "Keine Engineschwächen! Es geht um die Persönlichkeit!" },
+            beschreibung: { title: "Allgemeine Charakterbeschreibung", text: "Erzähle in einigen Sätzen, wie dein Charakter mit anderen umgeht und was für eine Person wir im RP erwarten dürfen. Achtung: Stärken und Schwächen sind keine Charakterbeschreibung!" },
+            hintergrund: { title: "Hintergrund", text: "Berichte in einigen Sätzen über die Eckpfeiler des Lebens, welches dein Charakter geführt hat. Dies sind die Gründe, warum der Charakter so ist, wie er ist. Eckpfeiler sind einschneidende Lebensereignisse. Wie kam dein Charakter dazu, bestimmte Charaktereigenschaften zu besitzen? Wie kam es zu den Fähigkeiten? Wie kam es zu dieser Berufswahl?" },
+            steam: { title: "Steam64 ID", text: "Deine Steam64 ID wird für die Server-Whitelist benötigt. Sie ist 17-stellig." },
+            discord: { title: "Discord Tag", text: "Dein Discord Name zur Kontaktaufnahme und Zuordnung der Whitelist." },
+            neueRasse: { title: "Neue Rasse", text: "Da diese Rasse in unseren Archiven noch unbekannt ist, benötigen wir eine kurze Beschreibung, um sie einordnen zu können. Gehe bitte auf das Aussehen und grobe Eigenheiten ein." }
+        };
+
+        function openInfo(key) {
+            const data = fieldInfos[key];
+            if(!data) return;
+            
+            document.getElementById('info-modal-title').innerText = data.title;
+            document.getElementById('info-modal-text').innerText = data.text;
+            
+            const modal = document.getElementById('field-info-modal');
+            modal.classList.remove('hidden-modal', 'pointer-events-none');
+            modal.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeInfoModal() {
+            const modal = document.getElementById('field-info-modal');
+            modal.classList.remove('opacity-100', 'pointer-events-auto');
+            modal.classList.add('hidden-modal', 'pointer-events-none');
+        }
+
+        function toggleCustomRace() {
+            const raceSelect = document.getElementById('charRace');
+            const customContainer = document.getElementById('customRaceContainer');
+            if (raceSelect.value === 'Neue Rasse') {
+                customContainer.classList.remove('hidden');
+            } else {
+                customContainer.classList.add('hidden');
+            }
+        }
+
+        // --- UTILS ---
+        function toggleMobile() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('opacity-0')) { 
+                menu.classList.remove('opacity-0', 'pointer-events-none'); 
+                menu.classList.add('opacity-100', 'pointer-events-auto'); 
+            } else { 
+                menu.classList.add('opacity-0', 'pointer-events-none'); 
+                menu.classList.remove('opacity-100', 'pointer-events-auto'); 
+            }
+        }
+        
+        function navigateFromMobile(targetId) {
+            if (currentState !== STATE.IDLE) return; 
+            if (targetId === currentPageId) {
+                toggleMobile();
+                return;
+            }
+            switchPage(targetId);
+            setTimeout(() => {
+                const menu = document.getElementById('mobile-menu');
+                if (menu && menu.classList.contains('opacity-100')) {
+                    menu.classList.add('opacity-0', 'pointer-events-none');
+                    menu.classList.remove('opacity-100', 'pointer-events-auto');
+                }
+            }, 3200);
+        }
+
+        async function copyIP() {
+            const ip = '178.63.47.190:7777';
+            const msg = document.getElementById('ip-msg'); 
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(ip);
+                } else {
+                    const el = document.createElement('textarea');
+                    el.value = ip;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                }
+                if(msg) { 
+                    msg.innerText = "Kopiert!";
+                    msg.className = "text-xs text-green-500 opacity-0 h-4 transition-opacity";
+                    msg.style.opacity = 1; setTimeout(() => msg.style.opacity = 0, 2000); 
+                }
+            } catch (err) {
+                if(msg) { 
+                    msg.innerText = "Fehler!";
+                    msg.className = "text-xs text-red-500 opacity-0 h-4 transition-opacity";
+                    msg.style.opacity = 1; setTimeout(() => msg.style.opacity = 0, 2000); 
+                }
+            }
+        }
+
+        function val(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+
+        async function copyCharacter() {
+            let raceValue = val('charRace');
+            if (raceValue === 'Neue Rasse') {
+                raceValue = `Neue Rasse\n**Rassen-Beschreibung:** ${val('charCustomRaceDesc')}`;
+            }
+
+            const text = `**Name:** ${val('charName')}
+**Alter:** ${val('charAge')}
+**Rasse:** ${raceValue}
+**Kampfklasse:** ${val('charClass')}
+**Berufe:** Haupt: ${val('charMainProf')} | Neben: ${val('charSubProf')} | RP: ${val('charRpProf')}
+**Heiler:** ${val('charHealer')}
+**Fähigkeit:** ${val('charAbility')}
+
+**Persönliche Stärken:**
+${val('charStrengths')}
+
+**Persönliche Schwächen:**
+${val('charWeaknesses')}
+
+**Allgemeine Charakterbeschreibung:**
+${val('charDescription')}
+
+**Hintergrund:**
+${val('charStory')}
+
+**Steam64 ID:** ${val('steamID')}
+**Discord Tag:** ${val('discordID')}`;
+            
+            const msg = document.getElementById('copy-msg'); 
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const el = document.createElement('textarea');
+                    el.value = text;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                }
+                
+                if(msg) { 
+                    msg.innerText = ">> Export erfolgreich in Zwischenspeicher <<";
+                    msg.className = "text-center text-green-500 font-tech text-sm mt-2 opacity-0 transition-opacity";
+                    msg.style.opacity = 1; setTimeout(() => msg.style.opacity = 0, 3000); 
+                }
+            } catch (err) {
+                if(msg) { 
+                    msg.innerText = ">> Fehler beim Kopieren. Bitte Text manuell kopieren. <<";
+                    msg.className = "text-center text-red-500 font-tech text-sm mt-2 opacity-0 transition-opacity";
+                    msg.style.opacity = 1; setTimeout(() => msg.style.opacity = 0, 4000); 
+                }
+                console.error("Clipboard Error:", err);
+            }
+        }
+
+        const cookieBanner = document.getElementById('rift-cookie-banner');
+        setTimeout(() => {
+            if (!localStorage.getItem('riftProtocolAccepted')) {
+                if (cookieBanner) {
+                    cookieBanner.classList.remove('hidden');
+                    requestAnimationFrame(() => { cookieBanner.classList.remove('translate-y-full'); });
+                }
+            }
+        }, 1500);
+
+        function acceptCookies() {
+            localStorage.setItem('riftProtocolAccepted', 'true');
+            if (cookieBanner) {
+                cookieBanner.classList.add('translate-y-full');
+                setTimeout(() => { cookieBanner.classList.add('hidden'); }, 500);
+            }
+        }
+
+        // Init
+        window.addEventListener('load', () => { 
+            renderGallery(); 
+            requestAnimationFrame(updateLoop); 
+        });
+    </script>
+</body>
+</html>
