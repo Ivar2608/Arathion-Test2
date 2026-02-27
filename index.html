@@ -24,10 +24,10 @@
                 extend: {
                     colors: {
                         rift: {
-                            900: '#020617', /* Tiefstes Kosmos-Blau */
+                            900: '#020617', 
                             800: '#1e1b4b', 
-                            500: '#3b82f6', /* Strahlendes Blau passend zum Logo */
-                            400: '#8b5cf6', /* Arkanes Lila für Akzente */
+                            500: '#3b82f6', 
+                            400: '#8b5cf6', 
                             300: '#c084fc',
                             glow: 'rgba(59, 130, 246, 0.6)'
                         },
@@ -49,6 +49,7 @@
                         'rift-pulse': 'rift-pulse 4s ease-in-out infinite',
                         'spin-slow': 'spin 8s linear infinite',
                         'float': 'float 6s ease-in-out infinite',
+                        'lightning-flicker': 'lightning-flicker 0.2s infinite alternate'
                     },
                     keyframes: {
                         materialize: {
@@ -148,7 +149,7 @@
             transition: height 3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- MAGIC LIGHTNING SYSTEM (Ersatz für Pipes) --- */
+        /* --- MAGIC LIGHTNING SYSTEM --- */
         .rift-sidebar {
             position: fixed; top: 0; bottom: 0; width: 40px; z-index: 50; 
             pointer-events: none; display: flex; justify-content: center; align-items: center;
@@ -183,7 +184,7 @@
         .text-glow-rift { text-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
         .text-glow-bone { text-shadow: 0 0 10px rgba(168, 162, 158, 0.5); }
 
-        /* Panels (Ehemals Tech-Panel) */
+        /* Panels */
         .rift-panel { 
             background: rgba(28, 25, 23, 0.85); 
             border: 1px solid #44403c; 
@@ -229,16 +230,16 @@
     <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80"></canvas>
 
     <!-- MAGISCHE ENERGIE-RISSE (Seiten) -->
-    <div class="rift-sidebar left pipe-system">
+    <div class="rift-sidebar left rift-surge-system">
         <div class="magic-lightning"></div>
     </div>
-    <div class="rift-sidebar right pipe-system">
+    <div class="rift-sidebar right rift-surge-system">
         <div class="magic-lightning"></div>
     </div>
 
     <!-- ARKANER RESONANZ-KOMPASS (Unten Links) -->
     <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.3)] z-50 backdrop-blur-md transition-shadow duration-500" id="rune-container">
-        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 transition-transform duration-300 ease-linear"></i>
+        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear"></i>
         <span class="absolute -bottom-6 text-[10px] text-bone-300 font-tech tracking-[0.2em] uppercase bg-black/60 px-2 py-0.5 rounded border border-bone-800">Resonanz</span>
     </div>
 
@@ -355,20 +356,12 @@
                         <span class="text-xs font-tech uppercase tracking-[0.2em] text-bone-300">Realität verzerrt • Olyndra ruft</span>
                     </div>
                     
-                    <h1 class="font-magic text-5xl md:text-7xl lg:text-8xl text-white text-glow-rift leading-tight mix-blend-overlay hidden md:block">ARATHION</h1>
-                    
-                    <div class="flex items-center justify-center gap-4">
-                        <div class="h-[1px] w-12 bg-rift-500/50"></div>
-                        <h2 class="font-tech text-xl md:text-3xl text-bone-300 uppercase tracking-[0.4em] text-glow-bone">Das Echo von Olyndra</h2>
-                        <div class="h-[1px] w-12 bg-rift-500/50"></div>
-                    </div>
-                    
                     <h1 class="font-magic text-6xl md:text-8xl lg:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay">ARATHION</h1>
                     
                     <div class="flex items-center justify-center gap-4">
-                        <div class="h-[1px] w-12 bg-bone-500"></div>
-                        <h2 class="font-tech text-xl md:text-3xl text-bone-400 uppercase tracking-[0.4em] text-glow-bone">Das Echo von Olyndra</h2>
-                        <div class="h-[1px] w-12 bg-bone-500"></div>
+                        <div class="h-[1px] w-12 md:w-20 bg-gradient-to-r from-transparent to-rift-500/50"></div>
+                        <h2 class="font-tech text-xl md:text-3xl text-bone-300 uppercase tracking-[0.4em] text-glow-bone text-center">Das Echo von Olyndra</h2>
+                        <div class="h-[1px] w-12 md:w-20 bg-gradient-to-l from-transparent to-rift-500/50"></div>
                     </div>
                     
                     <div class="text-gray-300 font-tech text-lg md:text-xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-500/50 pl-6 text-left bg-gradient-to-r from-rift-900/60 to-transparent p-6 rounded-r">
@@ -1392,6 +1385,7 @@
         let idleTarget = 15; 
         let idleCurrent = 15; 
         let lastRandomChange = 0;
+        let currentRotation = 0; // Neu: sorgt für stetige Drehung
 
         // --- PARTIKEL SYSTEM (Falling Ash & Magic Sparks) ---
         const canvas = document.getElementById('bg-canvas');
@@ -1568,8 +1562,8 @@
             }
 
             if (compass) {
-                // Rotiert und skaliert leicht basierend auf der arkanen Resonanz
-                compass.style.transform = `rotate(${value * 4}deg) scale(${1 + (value/300)})`;
+                currentRotation += (value * 0.05); // Stetige Rotation je nach Stärke
+                compass.style.transform = `rotate(${currentRotation}deg) scale(${1 + (value/300)})`;
                 if(container) {
                     container.style.boxShadow = `0 0 ${20 + (value/2)}px rgba(59,130,246, ${0.3 + (value/200)})`;
                     container.style.borderColor = `rgba(139, 92, 246, ${0.2 + (value/100)})`;
@@ -1605,7 +1599,7 @@
             });
             
             // Sidebars zum Surge animieren
-            document.querySelectorAll('.pipe-system').forEach(p => p.classList.add('system-surge'));
+            document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
             
             let startTime = performance.now();
             const startVal = Math.floor(idleCurrent);
@@ -1645,7 +1639,7 @@
         
         function startCooldown() {
             currentState = STATE.COOLDOWN;
-            const pipes = document.querySelectorAll('.pipe-system');
+            const pipes = document.querySelectorAll('.rift-surge-system');
             
             pipes.forEach(p => p.classList.remove('system-surge'));
 
