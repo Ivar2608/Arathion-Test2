@@ -50,6 +50,7 @@
                         'spin-slow': 'spin 8s linear infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'lightning-flicker': 'lightning-flicker 0.2s infinite alternate',
+                        'lightning-surge-flicker': 'lightning-surge-flicker 0.05s infinite alternate',
                         'shake': 'shake 0.1s ease-in-out infinite'
                     },
                     keyframes: {
@@ -69,6 +70,11 @@
                             '0%, 100%': { opacity: 1, transform: 'translateX(0)' },
                             '50%': { opacity: 0.6, transform: 'translateX(2px)' },
                             '75%': { opacity: 0.8, transform: 'translateX(-1px)' }
+                        },
+                        'lightning-surge-flicker': {
+                            '0%, 100%': { opacity: 1, transform: 'translateX(0) scaleX(1)' },
+                            '50%': { opacity: 0.8, transform: 'translateX(8px) scaleX(1.3)' },
+                            '75%': { opacity: 0.9, transform: 'translateX(-8px) scaleX(0.7)' }
                         },
                         shake: {
                             '0%, 100%': { transform: 'scale(1.02) translate(0, 0)' },
@@ -159,7 +165,7 @@
         .rift-sidebar.right { right: -30px; }
 
         .magic-lightning {
-            width: 4px; height: 100%;
+            width: 6px; height: 100%;
             background: #ffffff;
             box-shadow: 0 0 15px #fff, 0 0 30px #8b5cf6, 0 0 60px #3b82f6, 0 0 100px #3b82f6;
             filter: url(#lightning-displacement);
@@ -169,10 +175,10 @@
         }
         
         .system-surge .magic-lightning {
-            width: 25px;
+            width: 45px;
             background: #ffffff;
-            box-shadow: 0 0 40px #fff, 0 0 80px #fff, 0 0 150px #c084fc, 0 0 250px #8b5cf6, 0 0 400px #3b82f6;
-            animation: lightning-flicker 0.04s infinite alternate;
+            box-shadow: 0 0 50px #fff, 0 0 100px #fff, 0 0 200px #c084fc, 0 0 300px #8b5cf6, 0 0 500px #3b82f6;
+            animation: lightning-surge-flicker 0.05s infinite alternate;
             opacity: 1;
         }
 
@@ -1378,7 +1384,7 @@
             files: [] 
         };
 
-        const LOADER_DURATION = 5000; 
+        const LOADER_DURATION = 6000; 
 
         // STATE MACHINE
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
@@ -1627,8 +1633,8 @@
 
             // --- ANIMATIONS TIMELINE ---
 
-            // Schritt 1: Aufladung. Der User liest den Text, die Ränder glühen mächtig. 
-            // Nach 1.2 Sekunden schlägt der Riss vertikal ein und die Welt bebt.
+            // Schritt 1: Aufladung. Der User liest den Text, die Ränder glühen extrem auf!
+            // Ganze 2.5 Sekunden Zeit, um die Blitz-Entladung zu bewundern.
             setTimeout(() => {
                 tear.style.transition = 'height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.8s ease-out';
                 tear.style.height = '150vh';
@@ -1637,7 +1643,7 @@
                 aura.style.transform = 'translate(-50%, -50%) scale(50)';
                 
                 loader.classList.add('animate-shake'); // Das Beben beginnt
-            }, 1200);
+            }, 2500);
 
             // Schritt 2: Der Riss reißt horizontal auf und verschluckt alles (Der Schritt durchs Portal)
             setTimeout(() => {
@@ -1649,7 +1655,7 @@
                 
                 text.style.transition = 'opacity 0.2s';
                 text.style.opacity = '0'; // Text verschwindet im blendenden Licht
-            }, 2500);
+            }, 3800);
 
             // Schritt 3: Während alles grell leuchtet, wechseln wir leise im Hintergrund die Seite
             setTimeout(() => {
@@ -1659,7 +1665,7 @@
                 
                 loader.classList.remove('animate-shake'); // Beben stoppt, man ist durch
                 startCooldown(); // Die Magie der Welt beruhigt sich
-            }, 2900);
+            }, 4200);
 
             // Schritt 4: Die Energie verblasst sanft und gibt den Blick auf die Welt wieder frei
             setTimeout(() => {
@@ -1674,7 +1680,7 @@
                     tear.style.width = '4px';
                     tear.style.borderRadius = '100%';
                 }, 1500);
-            }, 3500); 
+            }, 4800); 
         }
         
         function startCooldown() {
