@@ -1718,14 +1718,14 @@
             grid.innerHTML = ''; 
 
             if(galleryConfig.files.length === 0) {
-                grid.className = "flex flex-col items-center justify-center min-h-[400px] w-full col-span-3 text-center p-12 border border-dashed border-bone-800 bg-[#050205]";
+                grid.className = "flex flex-col items-center justify-center min-h-[400px] w-full col-span-3 text-center p-12 border border-dashed border-rift-900 bg-[#050205]";
                 grid.innerHTML = `
                     <div class="relative mb-6">
-                        <i data-lucide="eye-off" class="w-20 h-20 text-bone-900 absolute top-0 left-0 blur-sm animate-pulse"></i>
-                        <i data-lucide="eye-off" class="w-20 h-20 text-bone-700 relative z-10"></i>
+                        <i data-lucide="hourglass" class="w-20 h-20 text-rift-900 absolute top-0 left-0 blur-sm animate-pulse"></i>
+                        <i data-lucide="hourglass" class="w-20 h-20 text-rift-500 relative z-10 opacity-80"></i>
                     </div>
-                    <h3 class="font-magic text-3xl text-bone-500 mb-4 tracking-widest uppercase">Keine Bilder gefunden</h3>
-                    <p class="font-lore text-gray-400 text-xl italic">Der Staub verwehrt die Sicht auf die Echos...</p>
+                    <h3 class="font-magic text-4xl text-rift-400 mb-4 tracking-[0.2em] uppercase text-glow-rift">Coming Soon</h3>
+                    <p class="font-lore text-gray-400 text-xl italic">Der Staub formt langsam neue Echos...</p>
                 `;
                 lucide.createIcons(); 
                 return;
