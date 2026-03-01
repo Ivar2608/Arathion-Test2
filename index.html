@@ -1128,120 +1128,207 @@
                     <p class="font-magic tracking-widest text-bone-400 uppercase text-sm">Überlieferungen & Werkzeuge</p>
                 </div>
 
-                <!-- Mod List Button -->
-                <div class="flex justify-center mb-16">
-                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3615903129" target="_blank" rel="noopener noreferrer" class="group relative px-8 py-4 bg-black/40 border border-bone-600 text-white font-magic tracking-widest uppercase transition-all hover:border-bone-300 hover:shadow-[0_0_20px_#a8a29e] flex items-center gap-4">
+                <!-- Mod List Button & Restartzeiten -->
+                <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-16">
+                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3615903129" target="_blank" rel="noopener noreferrer" class="group relative px-8 py-4 bg-black/40 border border-bone-600 text-white font-magic tracking-widest uppercase transition-all hover:border-bone-300 hover:shadow-[0_0_20px_#a8a29e] flex items-center gap-4 h-full">
                         <i data-lucide="book-dashed" class="w-6 h-6 text-bone-400 relative z-10"></i>
                         <span class="relative z-10 text-lg">Bibliothek der Modifikationen (Steam)</span>
                         <i data-lucide="external-link" class="w-4 h-4 text-gray-500 group-hover:text-white transition-colors relative z-10"></i>
                     </a>
+                    <div class="bg-black/40 border border-bone-800 px-8 py-4 flex flex-col justify-center items-center h-full text-center">
+                        <span class="text-bone-500 font-magic tracking-widest uppercase text-sm mb-1">Restartzeiten</span>
+                        <span class="text-bone-300 font-lore text-xl">Täglich 02 Uhr, 10 Uhr und 18 Uhr.</span>
+                    </div>
                 </div>
 
                 <div class="grid gap-6 font-lore text-xl">
+                    
+                    <!-- 1. Begriffserklärung -->
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="book-open" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Begriffe des RP</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="book-open" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Begriffserklärung</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
                                 <ul class="space-y-4">
-                                    <li><strong class="text-white font-magic tracking-wide">OOC (Out of Character):</strong> Du sprichst als Mensch hinter dem Bildschirm.</li>
-                                    <li><strong class="text-white font-magic tracking-wide">IC (In Character):</strong> Du lebst und atmest deine Rolle in Olyndra.</li>
-                                    <li><strong class="text-white font-magic tracking-wide">Metagaming:</strong> Das Verwenden von weltfremdem Wissen (z.B. OOC-Chats) innerhalb des Rollenspiels. Strengstens verboten.</li>
-                                    <li><strong class="text-white font-magic tracking-wide">Backseat Gaming:</strong> Anderen außerhalb des Spiels vorschreiben, wie sie ihre Rolle zu spielen haben.</li>
-                                    <li><strong class="text-white font-magic tracking-wide">Fail-RP:</strong> Unlogisches, die Atmosphäre zerstörendes Verhalten, das ein echtes Lebewesen nie tun würde.</li>
-                                    <li><strong class="text-white font-magic tracking-wide">Power-RP:</strong> Dem Gegenüber keine Wahl lassen (z.B. "Ich schneide dir den Kopf ab" anstatt "Ich versuche, mit meinem Schwert nach deinem Hals zu schlagen").</li>
+                                    <li><strong class="text-white font-magic tracking-wide">OOC:</strong> "Out of Character" bedeutet, dass du gerade nicht deinen Charakter im Game bespielst.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">IC:</strong> "In Character". IC bedeutet, dass du gerade deinen Roleplay Charakter bespielst.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Metagaming:</strong> das Verwenden von Informationen im Roleplay, die man außerhalb des Roleplays bekommen hat.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Backseat Gaming:</strong> Anderen Spielern OOC sagen, was sie IC mit ihren Charakteren tun sollen.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Stream Sniping:</strong> Informationen, die ihr aus einem Stream bekommt (egal ob Gesprochenes oder der Standort einer Person) die man IC verwendet.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Fail-RP:</strong> unlogisches Roleplay. Dinge, die eine reale Person nicht machen oder sagen würde.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">R-D-M:</strong> Random-Death-Match ist das absichtliche Töten von Spielern ohne triftigen Roleplay Hintergrund.</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Power-RP:</strong> Roleplay, bei dem einem Gegenüber keine Reaktionsmöglichkeit/Wahl gelassen wird.</li>
                                 </ul>
                             </div>
                         </details>
                     </div>
 
+                    <!-- 2. Engine, Lichter & Accessoires -->
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Handgriffe & Accessoires</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="settings" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Engine, Lichter & Accessoires</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
-                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4"><strong class="text-bone-300 font-magic">Accessoires:</strong> Jegliche sichtbaren Details (Tot! Custom) sind über <code>SHIFT + B</code> anzulegen.</p>
-                                <p class="mb-4"><strong class="text-bone-300 font-magic">Spuren im Staub (Footprints):</strong><br>1. <code>Shift+B</code> öffnen -> <code>Bodies</code><br>2. <code>Current Body</code> bearbeiten<br>3. Unter <code>Body</code> -> <code>Footprint</code> die Art wählen (Barfuß, Schuhe, Absätze).</p>
-                                <p class="mb-4"><strong class="text-bone-300 font-magic">Chat-Verschleierung:</strong><br>Damit das Chatfenster durchsichtig wird: Gehe in die <code>Escape-Einstellungen -> Steuerung -> Kommunikation</code>. Setze den Globalchat auf eine ungenutzte Taste. Lege 'Chat Fenster Ein/Ausblenden' auf die <code>[Enter]</code> Taste.</p>
-                                <p><strong class="text-bone-300 font-magic">Licht in der Dunkelheit:</strong><br>Platziere eine Fackel, halte <code>E</code> gedrückt und wähle 'Scripted Light'. Trage als Namen <strong>Nachtlicht</strong> ein. Sie brennt nun automatisch im Dunkeln.</p>
+                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205] space-y-6">
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Accessoires</h4>
+                                    <p>Insofern Accessoires über SHIFT + B auszurüsten sind, ist dieses zu nutzen!</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Foot Print</h4>
+                                    <p class="mb-2">Ihr müsst eure Fußabdrücke einstellen und in folgendem Tutorial findet ihr heraus, wie ihr es anpassen und ändern könnt:</p>
+                                    <ul class="list-disc pl-6 space-y-1 marker:text-bone-600">
+                                        <li>Gehe über Shift+B in deine Tot einstellungen und wähle Bodies aus</li>
+                                        <li>Gehe auf den Stift zum bearbeiten bei Current Body</li>
+                                        <li>Öffne den Bereich "Body"</li>
+                                        <li>Wähle dann den Bereich "Footprint" aus und entscheide dich für die passenden Abdrücke: Bare = Barfuß, Generic Shoes = Flache Schuhe, High Heels = mit dünnem Stiletto Absatz, Wide Heel = Mit breitem Absatz. Alles weitere sind tierische Abdrücke die im allgemeinen nicht gebraucht werden, es sei denn, man hat Hufe, Pfoten oder dergleichen</li>
+                                        <li>Nach dem Aussuchen den Abdrucks, oben links auf den Haken gehen für "Apply". Deine Fußabdrücke sind nun richtig eingestellt</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Tot! Chat</h4>
+                                    <p class="italic text-gray-400">Frage: Mein Chatfenster bleibt durchsichtig, ich muss mit der Maus reinklicken, auch wenn ich es mit [Enter] geöffnet habe. Wie ändere ich das, dass sich mein Chatfenster richtig öffnet und ich direkt schreiben kann?</p>
+                                    <p>Antwort: Begib dich in die Einstellungen, dort findest du unter dem Reiter 'Steuerung' die Kategorie “Kommunikation”. In dieser musst du zwei Tastenbelegungen ändern.<br>
+                                    Setze für den Globalchat eine Taste ein, die du niemals benutzt.<br>
+                                    Setze für 'Chat Fenster Ein/Ausblenden' die gewünschte [Enter] Taste ein.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Scripted Lights</h4>
+                                    <p class="mb-2">Jeder kann ab sofort Scripted Lights erstellen. Tagsüber sind diese Lichter aus, in der Nacht an. Dabei zu beachten/Wie Ihr sie platziert:</p>
+                                    <ul class="list-disc pl-6 space-y-1 marker:text-bone-600">
+                                        <li>Lichtquelle platzieren</li>
+                                        <li>„e“ gedrückt halten und auf scripted light klicken, der Name den ihr dort dan eintragt ist Nachtlicht</li>
+                                        <li>Wenn ihr die Lichtquelle verschieben wollt, müsst ihr das Scriptet Light zerstören und es danach erneut erstellen</li>
+                                        <li>Alle 5 Minuten gibt es eine Abfrage ob Abend ist oder Tag</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Charakter- und Klassentoken</h4>
+                                    <p>Mit /char aktualisiert/debuggt ihr euren Charakter.</p>
+                                </div>
                             </div>
                         </details>
                     </div>
 
+                    <!-- 3. Sprachen lernen -->
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="heart-pulse" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Wunden & Das Ende</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="message-square" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Sprachen lernen</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4">Bis zu 4x Bewusstlosigkeit erträgt der Körper, danach folgt das endgültige Ende. Heilung ist zwingend auszuspielen!</p>
-                                <ul class="list-disc pl-6 space-y-2 marker:text-bone-600 mb-6">
-                                    <li><strong>1. Fall:</strong> Sehr leicht verletzt (Kratzer, blaue Flecken).</li>
-                                    <li><strong>2. Fall:</strong> Leicht verletzt (Prellungen, tiefe Schnitte).</li>
-                                    <li><strong>3. Fall:</strong> Mittelschwer (Knochenbrüche, klaffende Wunden). RP-Einschränkung am Folgetag.</li>
-                                    <li><strong>4. Fall:</strong> Schwer verletzt (Am Rande des Todes). Schwere RP-Einschränkung für zwei Tage.</li>
-                                    <li><strong>5. Fall (Ende):</strong> Die Seele zersplittert. Der Charakter wird von Ängsten geplagt (per Ticket zugeteilt, 7 Tage intensives Ausspielen).</li>
+                                <p class="mb-4">Ob durch lange Reisen, gelehrte Meister oder tiefe Bande zu einem fremden Volk – wer eine Sprache erlernen will, muss sich ihr mit Hingabe widmen. Nur jene, die Zeit, Mühe und den wahren Willen zur Verständigung aufbringen, werden sich die Worte eines fremden Volkes zu eigen machen können. – der Weg zur Verständigung ist nicht leicht. Doch wer ihn beschreitet gewinnt nicht nur Wissen sondern auch Respekt.</p>
+                                <p class="mb-4 text-rift-400 italic">Außerdem noch ein mal ein kleiner Hinweis: Vier unserer Sprachen sind keine normalen Sprachen. Diese können weder geschrieben werden, noch sind sie humanoider Natur. Diese zu erlernen ist also anders, als bei den anderen Sprachen. Es könnte leichter sein. Oder aber auch so schwer, dass man sein ganzes Leben dafür benötigt.</p>
+                                <ul class="list-none space-y-4">
+                                    <li><strong class="text-white font-magic tracking-wide">Lupin:</strong> Die Sprache der Hundeartigen (Sie bellen, knurren und machen jedwede Laute dieser Art)</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Felorisch:</strong> Die Sprache der Katzenartigen (Sie mauzen, schnurren und machen jedwede Laute dieser Art)</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Arakai:</strong> Die Sprache der Vögel. (Sie zwitschern und singen ihre eigenen Lieder. Manche krächzen und machen jedwede Laute dieser Art)</li>
+                                    <li><strong class="text-white font-magic tracking-wide">Nymvalisch:</strong> Die Sprache der Natur. Kleintiere und Pflanzen. Dies ist eher eine Kommunikation der ganz anderen Art. Wenn andere hinhören, dann hören sie vermutlich eher gar nichts, vielleicht noch die Laute der Kleintiere.</li>
                                 </ul>
-                                <p class="italic text-gray-500 text-base">Hinweis: Wer die Nähe zum Tod nicht ernsthaft ausspielt, wird von den Göttern mit Sanktionen bedacht.</p>
                             </div>
                         </details>
                     </div>
 
+                    <!-- 4. Magie -->
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="cross" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Die Heilkunst</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="sparkles" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Magie</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4">Gefallene können <strong>nur von wahren Heilern</strong> zurückgeholt werden. Laien können sie lediglich aus der Gefahrenzone zerren. Lasst dem Heiler Zeit für sein RP.</p>
-                                <p class="mb-2 font-magic text-white tracking-widest">Worte der Macht (Chat-Befehle):</p>
-                                <ul class="list-none space-y-2">
-                                    <li><code>/helfen</code> <span class="text-gray-500">→ Erweckt den Gefallenen nach der Erstversorgung.</span></li>
-                                    <li><code>/heilen</code> <span class="text-gray-500">→ Setzt den Verwundungsgrad (Knocks) nach längerer Pflege zurück.</span></li>
-                                    <li><code>/HBericht</code> <span class="text-gray-500">→ Öffnet das alte Heilerbuch zur Dokumentation.</span></li>
+                                <p>Magie wird in die Grundelemente, Feuer, Wasser, Luft und Erde unterteilt. Diese bilden sich schließlich weiter. Licht, Schatten, Arkan und Seele. Dies ist auch als solches auszuspielen. Weder Blutmagie noch heilige oder unheilige Magie ist im RP zu erwähnen.</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 5. Kranken RP, Enginetod & Wiederholungstäter -->
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="heart-pulse" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Kranken RP & Enginetod</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205] space-y-6">
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Kranken RP</h4>
+                                    <p>Es gibt ein Knocksystem. Ja, man kann bis zu 4 mal bewusstlos sein. Darauf folgend stirbt man. Die Knocks setzen sich nicht automatisch zurück. Aus diesem Grund sollte man umgehend einen Heiler aufsuchen! Kranken RP ist also nötig. Wer es allerdings absichtlich auf den Tod hinauslaufen lässt, wird mit einem Malus zu rechnen haben bis hin zum Chartod. Diesen vergeben wir an jede Person einzeln.<br><br>
+                                    Wie wird das dann ausgespielt? Wir nennen euch Beispiele, ihr könnt aber auch andere Dinge in die Schwere einsortieren. Dies dient zu eurer Orientierung:<br>
+                                    1x ist sehr leicht verletzt - Du hast also vermutlich Kratzer und blaue Flecke<br>
+                                    2x ist leicht verletzt - Prellungen und Schnittwunden<br>
+                                    3x ist schon mittelschwer verletzt - Knochenbrüche und tiefere Schnittwunden<br>
+                                    4x ist schwer verletzt - Bewusstlosigkeit mit enormen Verletzungen<br>
+                                    5x ist Enginetod<br><br>
+                                    Kategorie 3x: KrankenRP auch noch am Folgetag<br>
+                                    Kategorie 4x: KrankenRP für zwei Folgetage<br><br>
+                                    Solltet ihr schwerere Verletzungen als euren Knock ausspielen, dann bedenkt auch die Konsequenzen und haltet euch an die Folgetage. Spielt ihr zu wenige Knocks aus, dann ist den Heilern gestattet euch zu powern. An dieser Stelle verweisen wir auf die oberste Serverregel. Achtet euer Leben. Denn ja, es hat seinen Wert.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Enginetod</h4>
+                                    <p>Wer so schwer verletzt wird, dass er in die Bewusstlosigkeit gerät und sogar ins Lazarett getragen werden muss, wird von der Leere korrumpiert, da die Seele schaden erleidet. Das bedeutet, dass der Spieler ein Ticket eröffnen muss und von uns Ängste zugeschrieben bekommt, welche er min. 7 Tage auszuspielen hat. Dies sind Ängste, die nicht zwingend mit dem Charakter zusammen hängen. Hat er normalerweise nur Angst vor Spinnen und Feuer, hat er plötzlich so seltsame Angstzustände in der Stille oder Panik, wenn er eine Waffe in die Hand nehmen soll.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Wiederholungstäter</h4>
+                                    <p>Fällt dem Team auf, dass dies zu häufig vorkommt, wird der Spieler einen Malus erhalten, bis hin zum endgültigen Entfernen des Charakters. Diesen wieder weg zu bekommen wird dauern. Die Konsequenzen müssen ertragen und behoben werden. Der Spieler muss im RP einen Weg finden dieses Problem zu beheben.</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 6. Die Heilkunst -->
+                    <div class="rift-panel p-0 overflow-hidden group">
+                        <details class="group">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
+                                <div class="flex items-center gap-4"><i data-lucide="cross" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Heilerneuerungen</h3></div>
+                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
+                                <p class="mb-4">Verletzte die auf dem Boden liegen, können nur von Heilern aufgehoben werden. Personen, die keine Heiler sind können weiterhin Verletzte aus der Gefahrenzone bringen. Wenn ihr einen Knock kassiert, dann gibt es auch gewisse "Liegezeiten", diese werdet ihr mit der Zeit herausfinden. Ihr benötigt hier also einen Moment Geduld oder einen Heiler in eurer Nähe.</p>
+                                <p class="mb-4">Die Hüfte ist euer Punkt ab dem Gemessen wird (ca. 1 Fundament)</p>
+                                <p class="mb-2 font-bold text-rift-400">Folgende Befehle für die Heiler:</p>
+                                <ul class="list-none space-y-2 mb-6">
+                                    <li>- /helfen --> Spieler auswählen --> Es wird euch ein Wort angezeigt, dieses müsst ihr eingeben um der Person aufzuhelfen.</li>
+                                    <li>- /heilen --> Spieler auswählen --> Knock wird heruntergenommen</li>
                                 </ul>
-                            </div>
-                        </details>
-                    </div>
-
-                    <div class="rift-panel p-0 overflow-hidden group">
-                        <details class="group">
-                            <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="message-square" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Zungen & Dialekte</h3></div>
-                                <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
-                            </summary>
-                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4">Fremde Zungen müssen mühsam erlernt werden. Vier Sprachen sind uralt, gehören keinen Menschen und können niemals niedergeschrieben werden:</p>
-                                <ul class="list-disc pl-6 space-y-2 marker:text-rift-600 mb-6">
-                                    <li><strong class="text-rift-300">Lupin:</strong> Das Heulen und Knurren der Wölfe.</li>
-                                    <li><strong class="text-rift-300">Felorisch:</strong> Das Schnurren und Fauchen der Raubkatzen.</li>
-                                    <li><strong class="text-rift-300">Arakai:</strong> Das Krächzen und Zwitschern der Lüfte.</li>
-                                    <li><strong class="text-rift-300">Nymvalisch:</strong> Das Flüstern der Wurzeln und stillen Bestien.</li>
+                                <p class="mb-2 font-bold text-rift-400">Hinweis:</p>
+                                <ul class="list-none space-y-2 mb-6">
+                                    <li>- Wenn es mal nicht geht weil er den Falschen Namen nimmt, einfach einmal weg gehen und wieder hin und neu machen oder Reloggen. Bisher hat es immer funktioniert.</li>
+                                    <li>- Es gibt kein Timer mehr für Knocks</li>
+                                    <li>- Jede Heilung wird durch ein Log gesehen</li>
                                 </ul>
-                                <p class="text-bone-500 text-sm font-magic tracking-widest uppercase border border-bone-800 inline-block px-3 py-1">Geist klären: <code>/char</code> tippen bei Problemen.</p>
+                                <p>Es gibt ab sofort ein IC-Heilerbuch. Dort notiert ihr das gleiche, was ihr auch zuvor im Discord notiert habt. Das Buch wird mit /HBericht aufgerufen. Bitte schickt einmal einen Emoji eurer Wahl in den Discord-Channel der Heiler welcher für euch dann hinterlegt wird.</p>
                             </div>
                         </details>
                     </div>
 
+                    <!-- 7. Wachstum & Entwicklung -->
                     <div class="rift-panel p-0 overflow-hidden group">
                         <details class="group">
                             <summary class="flex items-center justify-between p-6 cursor-pointer bg-black/30 hover:bg-black/60 transition-colors">
-                                <div class="flex items-center gap-4"><i data-lucide="flask-conical" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Wachstum & Lehre</h3></div>
+                                <div class="flex items-center gap-4"><i data-lucide="flask-conical" class="text-bone-400"></i><h3 class="font-magic text-2xl text-rift-300 m-0">Wachstum & Entwicklung</h3></div>
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
-                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4"><strong>Studium:</strong> Entwicklung erfordert Schweiß und Blut im Rollenspiel. Niemand lernt Schwerter schmieden, indem er im Stillen Bäume fällt. Wer sein Handwerk tief ausspielt, wird von den Architekten (Tickets) belohnt.</p>
-                                <p class="mb-6"><strong>Forschung:</strong> Entdeckungen erfordern Interaktion mit anderen. Niemand weiß alles. Wer bereit für einen Durchbruch ist, ersucht die Architekten.</p>
-                                <p class="text-red-500/80 italic text-base border-l-2 border-red-900 pl-4 py-2">Fremde Maschinen-Geister (KI wie ChatGPT) haben in Olyndra keine Macht. Nutze sie maximal, um deine Rechtschreibung zu formen, niemals um dein RP zu schreiben.</p>
+                            <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205] space-y-6">
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Charakterentwicklung</h4>
+                                    <p>Diese geschieht für jeden im eigenen Tempo. Jedoch drosseln wir euch, wenn jemand zu schnell voran schreiten will. Ihr dürft natürlich auch Items usw anfragen und erhaltet diese, nachdem wir das Anliegen geprüft haben. Wir geben hierbei keinen genauen Zeitraum vor, da wir das Gesamtgeschehen des Servers im Auge behalten. Denn du wirst dich auch an der Entwicklung deiner Mitspieler beteiligen. (Hierfür nutzt du das Supportticket)</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Training</h4>
+                                    <p>Solltest du ausspielen, dass dein Charakter trainiert, wird dies im laufenden RP geschehen erforderlich sein. Nein, es reicht nicht aus zu sagen: "Ich bin heute morgen.." Als ich offline war und an meinem Kaffee genippt habe ".. zwei Stunden um den See gerannt." Bemerken wir bei Spielern, dass dies wirklich oft und viel ausgespielt wird, kann dies belohnt werden. Bitte beachte, dass dies kein muss ist! Sollte einige Zeit vergangen sein und du hegst den Wunsch auf Verbesserung, nachdem du wirklich schon viel ausgespielt hast, dann kannst du auch ein Ticket eröffnen und den Stand der Dinge erfragen. (Hierfür nutzt du das Supportticket)</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rift-400 mb-2">Berufe & Forschungen</h4>
+                                    <p>Forschungen werden IC ausgespielt. Hierfür ist es erforderlich, dass du dich deinen Mitspielern mitteilst. Selbst wenn niemand deinen Beruf teilt, ist man bei so gut wie jeder Forschung auch auf andere angewiesen. Teile deine Ergebnisse, tausche dich aus, lerne von anderen. Irgendwann eröffnest du ein Ticket und teilst uns deinen Fortschritt mit. Wir schauen, ob du so weit bist oder mehr erforderlich ist. (Kein KI Text, da diese die Erfahrung des RPs nicht generieren können! Du darfst die KI für Korrekturzwecke nutzen.) (Hierfür nutzt du das Supportticket)</p>
+                                </div>
                             </div>
                         </details>
                     </div>
+
                 </div>
             </div>
         </div>
