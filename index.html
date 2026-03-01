@@ -12,7 +12,7 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Fonts (Neu: Cormorant Garamond für den echten Fantasy-Tome Look) -->
+    <!-- Fonts (Cleaned: Nur noch Fantasy Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -45,7 +45,7 @@
                         lore: ['Cormorant Garamond', 'serif'], 
                     },
                     animation: {
-                        'materialize': 'materialize 1s ease-out forwards', 
+                        'materialize': 'materialize 0.6s ease-out forwards', 
                         'rift-pulse': 'rift-pulse 4s ease-in-out infinite',
                         'spin-slow': 'spin 12s linear infinite',
                         'float': 'float 6s ease-in-out infinite',
@@ -77,10 +77,10 @@
                             '75%': { opacity: 0.9, transform: 'translateX(-8px) scaleX(0.7)' }
                         },
                         shake: {
-                            '0%, 100%': { transform: 'scale(1.02) translate(0, 0)' },
-                            '25%': { transform: 'scale(1.02) translate(4px, -4px)' },
-                            '50%': { transform: 'scale(1.02) translate(-4px, 4px)' },
-                            '75%': { transform: 'scale(1.02) translate(-4px, -4px)' },
+                            '0%, 100%': { transform: 'translate(0, 0)' },
+                            '25%': { transform: 'translate(4px, -4px)' },
+                            '50%': { transform: 'translate(-4px, 4px)' },
+                            '75%': { transform: 'translate(-4px, -4px)' },
                         }
                     }
                 }
@@ -94,7 +94,7 @@
             color: #d6d3d1;
             font-family: 'Cormorant Garamond', serif;
             overflow: hidden; 
-            font-size: 1.1rem; /* Leicht vergrößert für bessere Lesbarkeit bei Serifenschrift */
+            font-size: 1.1rem; 
         }
 
         /* Düsterer Hintergrund mit Vignette */
@@ -104,12 +104,12 @@
             z-index: -2;
         }
 
-        /* Staub / Noise Overlay */
+        /* Staub / Noise Overlay (Optimiert für bessere Performance) */
         .dust-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
             pointer-events: none; z-index: -1;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         /* Gallery */
@@ -129,6 +129,7 @@
             overflow-y: auto; padding-bottom: 6rem;
             padding-left: 1.5rem; padding-right: 1.5rem; 
             display: none; scrollbar-width: thin; scrollbar-color: #57534e #020617;
+            transition: opacity 0.3s ease-out; /* Für smoothe interne Wechsel */
         }
         
         .page-container::before {
@@ -140,7 +141,7 @@
             .page-container::before { height: 120px; }
         }
 
-        .page-active { display: block; animation: materialize 0.8s ease-out forwards; }
+        .page-active { display: block; animation: materialize 0.6s ease-out forwards; }
         
         /* Spezial-Regel für das Portal (Kein Menü-Abstand & Zentriert) */
         #portal { display: none; align-items: center; justify-content: center; }
@@ -154,7 +155,7 @@
         /* EPIC RIFT LOADER */
         #rift-loader { 
             background: rgba(2, 6, 23, 0.95); 
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px); /* Reduzierter Blur für Performance */
             transition: opacity 1s ease-out, visibility 1s ease-out;
             pointer-events: none;
             opacity: 0;
@@ -177,7 +178,7 @@
             filter: url(#lightning-displacement);
             animation: lightning-flicker 0.15s infinite alternate;
             opacity: 0.8;
-            transition: all 0.5s ease-out;
+            transition: all 0.3s ease-out;
         }
         
         .system-surge .magic-lightning {
@@ -236,7 +237,6 @@
         }
         
         .legal-content h3 { color: #d6d3d1; font-family: 'Cinzel', serif; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.5rem;}
-        .legal-content h4 { color: #8b5cf6; font-weight: bold; margin-top: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
         .legal-content p, .legal-content ul { color: #a8a29e; margin-bottom: 1rem; line-height: 1.6; }
         .legal-content ul { list-style-type: disc; padding-left: 1.5rem; }
     </style>
@@ -255,7 +255,7 @@
     <div class="dust-overlay"></div>
 
     <!-- FX Canvas (Asche & Funken) -->
-    <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80"></canvas>
+    <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80 pointer-events-none"></canvas>
 
     <!-- MAGISCHE ENERGIE-RISSE (Seiten) -->
     <div class="rift-sidebar left rift-surge-system">
@@ -266,7 +266,7 @@
     </div>
 
     <!-- ARKANER RESONANZ-KOMPASS (Unten Links) -->
-    <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.3)] z-50 backdrop-blur-md transition-shadow duration-500" id="rune-container">
+    <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.3)] z-50 backdrop-blur-md transition-shadow duration-500 pointer-events-none" id="rune-container">
         <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear opacity-80"></i>
         <span class="absolute -bottom-6 text-[10px] text-bone-400 font-lore tracking-[0.1em] bg-black/60 px-2 py-0.5 rounded border border-bone-800">Resonanz</span>
     </div>
@@ -301,7 +301,7 @@
         </div>
     </div>
 
-    <!-- EPIC RIFT LOADER (Neuer Überwältigender Effekt) -->
+    <!-- EPIC RIFT LOADER (Nur für den Portal-Eintritt) -->
     <div id="rift-loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center">
         <div id="rift-aura" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-rift-400 rounded-full blur-[80px] opacity-80 pointer-events-none transform scale-1"></div>
         <div class="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
@@ -380,7 +380,7 @@
                     <p class="mb-2 italic opacity-90">Ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben.</p>
                 </div>
                 
-                <button onclick="enterRift()" class="group relative px-10 py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-2xl md:text-4xl tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase">
+                <button onclick="enterRift()" class="group relative px-10 py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-2xl md:text-4xl tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase cursor-pointer">
                     <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-rift-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     <span class="relative flex items-center gap-6 text-glow-rift">Den Riss betreten <i data-lucide="flame" class="w-8 h-8 md:w-10 md:h-10 animate-pulse text-rift-400"></i></span>
                 </button>
@@ -400,11 +400,11 @@
                         <i data-lucide="sparkles" class="w-4 h-4 text-rift-400 animate-pulse"></i>
                     </div>
                     
-                    <h1 id="welcome-title" class="font-magic text-6xl md:text-8xl text-white text-glow-rift uppercase tracking-widest mb-2">Willkommen</h1>
+                    <h1 id="welcome-title" class="font-magic text-5xl md:text-7xl lg:text-8xl text-white text-glow-rift uppercase tracking-widest mb-2 leading-tight">Willkommen</h1>
                     
                     <div class="flex items-center justify-center gap-4 opacity-80 mt-4 mb-10">
                         <div class="h-[1px] w-12 md:w-20 bg-gradient-to-r from-transparent to-rift-500/50"></div>
-                        <h2 class="font-magic text-2xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Überlebender</h2>
+                        <h2 class="font-magic text-xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Überlebender</h2>
                         <div class="h-[1px] w-12 md:w-20 bg-gradient-to-l from-transparent to-rift-500/50"></div>
                     </div>
                     
@@ -571,7 +571,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
                         <!-- Class Cards -->
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 transition-colors">
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3"><i data-lucide="paw-print" class="text-rift-400 w-8 h-8 opacity-70"></i> Wandler</h4>
                             <p class="text-gray-300 font-lore text-xl mb-6 flex-grow leading-relaxed">Wandler sind Meister der Anpassung, deren Körper so wandelbar sind wie die Zeitrisse selbst. Sie können ihre Gestalt in die verschiedensten Kreaturen oder Bestien verändern, um im Kampf an vorderster Front zu bestehen oder lautlos zu spähen. Diese Vielseitigkeit macht sie unberechenbar.</p>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4">
@@ -580,7 +580,7 @@
                             </div>
                         </div>
 
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 transition-colors">
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3"><i data-lucide="crosshair" class="text-rift-400 w-8 h-8 opacity-70"></i> Jäger</h4>
                             <p class="text-gray-300 font-lore text-xl mb-6 flex-grow leading-relaxed">Jäger sind die unbestrittenen Meister des Fernkampfs und des Überlebens in der Wildnis. Ob mit dem traditionellen Langbogen oder einer modifizierten Waffe aus einem Zeitriss – sie treffen ihr Ziel mit tödlicher Präzision aus der Distanz und lesen die Spuren ihrer Feinde.</p>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4">
@@ -589,7 +589,7 @@
                             </div>
                         </div>
 
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 transition-colors">
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3"><i data-lucide="swords" class="text-rift-400 w-8 h-8 opacity-70"></i> Assassine</h4>
                             <p class="text-gray-300 font-lore text-xl mb-6 flex-grow leading-relaxed">Die Verkörperung des lautlosen Todes. In den Schatten Arathions zu Hause, nutzen sie Schnelligkeit, Tarnung und Gifte, um ihre Ziele auszuschalten, bevor der Kampf überhaupt begonnen hat. Für sie ist Ehre zweitrangig – nur das Ergebnis zählt.</p>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4">
@@ -598,7 +598,7 @@
                             </div>
                         </div>
 
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 relative overflow-hidden">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 transition-colors relative overflow-hidden">
                             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rift-500/10 blur-3xl rounded-full"></div>
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3 relative z-10"><i data-lucide="sparkles" class="text-rift-400 w-8 h-8 opacity-70"></i> Magier</h4>
                             <p class="text-gray-300 font-lore text-xl mb-4 flex-grow leading-relaxed relative z-10">Gelehrte, die die instabilen Energien der Welt manipulieren. Sie beherrschen sowohl zerstörerische Elemente als auch arkane Manipulationen. Doch diese Macht ist gefährlich und kann den Anwender verzehren.</p>
@@ -611,7 +611,7 @@
                             </div>
                         </div>
 
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-bone-500">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-bone-500 transition-colors">
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3"><i data-lucide="shield" class="text-bone-300 w-8 h-8 opacity-70"></i> Krieger</h4>
                             <p class="text-gray-300 font-lore text-xl mb-6 flex-grow leading-relaxed">Das stählerne Rückgrat einer jeden Gruppe. Ob in schwerer Platte mit Schild oder rücksichtslos mit zwei Äxten – sie suchen den direkten Kontakt zum Feind. Sie fangen den Ansturm ab und halten die Linie im Chaos der Magie.</p>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4">
@@ -620,7 +620,7 @@
                             </div>
                         </div>
 
-                        <div class="rift-panel p-8 flex flex-col h-full hover:border-red-900/50">
+                        <div class="rift-panel p-8 flex flex-col h-full hover:border-red-900/50 transition-colors">
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3"><i data-lucide="droplet" class="text-red-500 w-8 h-8 opacity-70"></i> Bluterbe (Vampir)</h4>
                             <p class="text-gray-300 font-lore text-xl mb-6 flex-grow leading-relaxed">Zeitlose Raubtiere, die oft durch uralte Risse nach Arathion gelangten. Sie besitzen übermenschliche Reflexe und enorme Kraft – solange sie ihren Durst nach Lebenskraft stillen. Oft gefürchtete Außenseiter.</p>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4">
@@ -1375,9 +1375,6 @@
             files: [] 
         };
 
-        const LOADER_DURATION = 5000; 
-
-        // STATE MACHINE
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
         let currentState = STATE.IDLE;
         let currentPageId = 'portal'; 
@@ -1388,7 +1385,7 @@
         let lastRandomChange = 0;
         let currentRotation = 0; 
 
-        // --- PARTIKEL SYSTEM (Falling Ash & Magic Sparks) ---
+        // --- PARTIKEL SYSTEM (Optimiert für Performance) ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -1466,7 +1463,9 @@
 
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 180; i++) { 
+            // Dynamische Anzahl: Weniger Partikel auf dem Handy für mehr FPS
+            const particleCount = window.innerWidth < 768 ? 60 : 150;
+            for (let i = 0; i < particleCount; i++) { 
                 particles.push(new Particle());
             }
         }
@@ -1514,7 +1513,6 @@
                 
                 currentPageId = 'home';
                 
-                // Besuche hochzählen und Text anpassen
                 visits++;
                 localStorage.setItem('visitCount', visits);
                 
@@ -1524,7 +1522,6 @@
                     welcomeTitle.innerText = "Willkommen";
                 }
                 
-                // Home Button optisch aktivieren
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     if(btn.dataset.target === 'home') {
                         btn.classList.add('text-rift-400', 'border-rift-500'); 
@@ -1587,7 +1584,7 @@
             }, 3800);
 
             setTimeout(() => {
-                // --- THE ROUTING SWITCH (Unsichtbar im Hintergrund) ---
+                // The Routing Switch
                 document.getElementById('portal').classList.remove('page-active');
                 document.getElementById('portal').style.display = 'none';
                 
@@ -1599,7 +1596,6 @@
                 
                 currentPageId = 'home';
                 
-                // Setze LocalStorage, damit der User beim Neuladen direkt reinkommt
                 localStorage.setItem('hasEnteredRift', 'true');
                 localStorage.setItem('visitCount', '1');
                 document.getElementById('welcome-title').innerText = "Willkommen";
@@ -1627,6 +1623,51 @@
                     tear.style.borderRadius = '100%';
                 }, 1500);
             }, 4800); 
+        }
+
+        // --- NORMAL MENU NAVIGATION (Schneller Wechsel) ---
+        function switchPage(targetId) {
+            if (currentState === STATE.SURGE || targetId === currentPageId) return;
+            
+            const currentPage = document.getElementById(currentPageId);
+            const targetPage = document.getElementById(targetId);
+
+            // Navigations-Knöpfe anpassen
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const isBone = btn.dataset.target === 'char';
+                const activeColor = isBone ? 'text-bone-400' : 'text-rift-400';
+                const activeBorder = isBone ? 'border-bone-500' : 'border-rift-500';
+                
+                if(btn.dataset.target === targetId) {
+                    btn.classList.add(activeColor, activeBorder); 
+                    btn.classList.remove('text-gray-400', 'border-transparent');
+                } else {
+                    btn.classList.remove(activeColor, activeBorder); 
+                    btn.classList.add('text-gray-400', 'border-transparent');
+                }
+            });
+            
+            // Kurzer Magie-Blitz beim Menüwechsel
+            document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
+            
+            if (currentPage) {
+                currentPage.style.opacity = '0'; // Sanftes Ausblenden
+                setTimeout(() => {
+                    currentPage.classList.remove('page-active');
+                    currentPage.style.display = 'none';
+                    currentPage.style.opacity = '1'; // Reset für später
+                    
+                    targetPage.style.display = 'block'; 
+                    requestAnimationFrame(() => targetPage.classList.add('page-active'));
+                    currentPageId = targetId;
+
+                    // Magie-Blitze wieder beruhigen
+                    setTimeout(() => {
+                        document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.remove('system-surge'));
+                    }, 300);
+
+                }, 300); // 300ms Fade-Out Zeit
+            }
         }
 
         // --- GALERIE RENDERER ---
@@ -1711,101 +1752,10 @@
                 }
             }
         }
-
-        // --- EPIC TRANSITION ANIMATION (Standard Navigation) ---
-        function switchPage(targetId) {
-            if (currentState !== STATE.IDLE || targetId === currentPageId) return;
-            
-            currentState = STATE.SURGE;
-            
-            const loader = document.getElementById('rift-loader');
-            const tear = document.getElementById('tear-element');
-            const aura = document.getElementById('rift-aura');
-            const text = document.getElementById('rift-text');
-            
-            const currentPage = document.getElementById(currentPageId);
-            const targetPage = document.getElementById(targetId);
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const isBone = btn.dataset.target === 'char';
-                const activeColor = isBone ? 'text-bone-400' : 'text-rift-400';
-                const activeBorder = isBone ? 'border-bone-500' : 'border-rift-500';
-                
-                if(btn.dataset.target === targetId) {
-                    btn.classList.add(activeColor, activeBorder); 
-                    btn.classList.remove('text-gray-400', 'border-transparent');
-                } else {
-                    btn.classList.remove(activeColor, activeBorder); 
-                    btn.classList.add('text-gray-400', 'border-transparent');
-                }
-            });
-            
-            document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
-            
-            tear.style.transition = 'none';
-            tear.style.height = '0%';
-            tear.style.width = '4px';
-            tear.style.borderRadius = '100%';
-            tear.style.boxShadow = '0 0 30px #fff,0 0 60px #c084fc,0 0 120px #3b82f6';
-            tear.style.background = '#fff';
-            
-            aura.style.transition = 'none';
-            aura.style.transform = 'translate(-50%, -50%) scale(1)';
-            
-            text.style.transition = 'none';
-            text.style.opacity = '1';
-            loader.classList.remove('animate-shake');
-            
-            loader.classList.add('active');
-
-            setTimeout(() => {
-                tear.style.transition = 'height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.8s ease-out';
-                tear.style.height = '150vh';
-                
-                aura.style.transition = 'transform 2s ease-in';
-                aura.style.transform = 'translate(-50%, -50%) scale(50)';
-                
-                loader.classList.add('animate-shake'); 
-            }, 1200);
-
-            setTimeout(() => {
-                tear.style.transition = 'width 0.5s cubic-bezier(0.8, 0, 0.2, 1), border-radius 0.5s, background 0.2s';
-                tear.style.width = '300vw'; 
-                tear.style.borderRadius = '0'; 
-                tear.style.background = '#ffffff';
-                tear.style.boxShadow = '0 0 200px #fff, 0 0 300px #c084fc';
-                
-                text.style.transition = 'opacity 0.2s';
-                text.style.opacity = '0'; 
-            }, 2500);
-
-            setTimeout(() => {
-                if (currentPage) { currentPage.classList.remove('page-active'); currentPage.style.display = 'none'; }
-                if (targetPage) { targetPage.style.display = 'block'; requestAnimationFrame(() => targetPage.classList.add('page-active')); }
-                currentPageId = targetId;
-                
-                loader.classList.remove('animate-shake'); 
-                startCooldown(); 
-            }, 2900);
-
-            setTimeout(() => {
-                loader.style.transition = 'opacity 1.5s ease-out, visibility 1.5s ease-out';
-                loader.classList.remove('active');
-                
-                setTimeout(() => {
-                    loader.style.transition = 'opacity 1s ease-out, visibility 1s ease-out'; 
-                    tear.style.transition = 'none';
-                    tear.style.height = '0%';
-                    tear.style.width = '4px';
-                    tear.style.borderRadius = '100%';
-                }, 1500);
-            }, 3500); 
-        }
         
         function startCooldown() {
             currentState = STATE.COOLDOWN;
             const pipes = document.querySelectorAll('.rift-surge-system');
-            
             pipes.forEach(p => p.classList.remove('system-surge'));
 
             let startVal = 120;
@@ -1916,7 +1866,7 @@
                     menu.classList.add('opacity-0', 'pointer-events-none');
                     menu.classList.remove('opacity-100', 'pointer-events-auto');
                 }
-            }, LOADER_DURATION - 2000);
+            }, 400); // Schneller ausblenden beim Menü-Klick
         }
 
         async function copyIP() {
