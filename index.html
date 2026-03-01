@@ -366,29 +366,29 @@
         
         <!-- PORTAL (Eingangsseite - Erstbesuch) -->
         <div id="portal" class="page-container page-active">
-            <div class="flex flex-col items-center justify-center w-full min-h-[90vh] px-4 relative mt-10">
+            <div class="flex flex-col items-center justify-center w-full min-h-[90vh] px-6 sm:px-10 relative mt-10">
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
                 
                 <div class="relative inline-block mb-8 group z-10">
                     <div class="absolute inset-0 bg-rift-500/20 blur-3xl rounded-full scale-110 animate-rift-pulse"></div>
-                    <img src="image_2687fc.jpg" alt="Arathion Logo" class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800">
+                    <img src="image_2687fc.jpg" alt="Arathion Logo" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800">
                 </div>
 
-                <h1 class="font-magic text-7xl md:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mb-2 z-10 tracking-widest">ARATHION</h1>
+                <h1 class="font-magic text-5xl sm:text-7xl md:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mb-2 z-10 tracking-widest text-center">ARATHION</h1>
                 
-                <div class="flex items-center justify-center gap-4 opacity-80 mb-10 z-10">
-                    <div class="h-[1px] w-12 md:w-20 bg-gradient-to-r from-transparent to-rift-500/50"></div>
-                    <h2 class="font-magic text-xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Das Echo von Olyndra</h2>
-                    <div class="h-[1px] w-12 md:w-20 bg-gradient-to-l from-transparent to-rift-500/50"></div>
+                <div class="flex items-center justify-center gap-2 sm:gap-4 opacity-80 mb-8 sm:mb-10 z-10 w-full">
+                    <div class="h-[1px] flex-grow max-w-[40px] md:max-w-[80px] bg-gradient-to-r from-transparent to-rift-500/50"></div>
+                    <h2 class="font-magic text-lg sm:text-xl md:text-3xl text-bone-300 tracking-[0.2em] sm:tracking-[0.3em] text-glow-bone text-center uppercase whitespace-nowrap">Das Echo von Olyndra</h2>
+                    <div class="h-[1px] flex-grow max-w-[40px] md:max-w-[80px] bg-gradient-to-l from-transparent to-rift-500/50"></div>
                 </div>
                 
-                <div class="text-gray-300 font-lore text-2xl max-w-3xl mx-auto leading-relaxed text-center mb-16 z-10">
+                <div class="text-gray-300 font-lore text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed text-center mb-12 sm:mb-16 z-10">
                     <p class="mb-2 italic opacity-90">Ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben.</p>
                 </div>
                 
-                <button onclick="enterRift()" class="group relative px-10 py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-2xl md:text-4xl tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase cursor-pointer">
+                <button onclick="enterRift()" class="group relative px-6 py-4 sm:px-10 sm:py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-lg sm:text-2xl md:text-4xl tracking-[0.2em] sm:tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase cursor-pointer">
                     <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-rift-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <span class="relative flex items-center gap-6 text-glow-rift">Den Riss betreten <i data-lucide="flame" class="w-8 h-8 md:w-10 md:h-10 animate-pulse text-rift-400"></i></span>
+                    <span class="relative flex items-center gap-4 sm:gap-6 text-glow-rift">Den Riss betreten <i data-lucide="flame" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 animate-pulse text-rift-400"></i></span>
                 </button>
             </div>
         </div>
@@ -400,31 +400,31 @@
                 
                 <div class="max-w-5xl w-full text-center space-y-6 z-10 mt-6">
                     
-                    <div class="inline-flex items-center gap-3 border border-bone-800 bg-black/40 px-6 py-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-rift-400 animate-pulse"></i>
-                        <span class="text-sm font-magic tracking-widest text-bone-400 uppercase">Die Welt zerbricht • Olyndra ruft</span>
-                        <i data-lucide="sparkles" class="w-4 h-4 text-rift-400 animate-pulse"></i>
+                    <div class="inline-flex items-center gap-3 border border-bone-800 bg-black/40 px-4 sm:px-6 py-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                        <i data-lucide="sparkles" class="w-3 h-3 sm:w-4 sm:h-4 text-rift-400 animate-pulse"></i>
+                        <span class="text-xs sm:text-sm font-magic tracking-widest text-bone-400 uppercase">Die Welt zerbricht • Olyndra ruft</span>
+                        <i data-lucide="sparkles" class="w-3 h-3 sm:w-4 sm:h-4 text-rift-400 animate-pulse"></i>
                     </div>
                     
-                    <h1 class="font-magic text-6xl md:text-8xl lg:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mt-2 mb-2">ARATHION</h1>
+                    <h1 class="font-magic text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mt-2 mb-2">ARATHION</h1>
                     
-                    <div class="flex items-center justify-center gap-4 opacity-80 mb-10">
-                        <div class="h-[1px] w-12 md:w-20 bg-gradient-to-r from-transparent to-rift-500/50"></div>
-                        <h2 class="font-magic text-xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Das Echo von Olyndra</h2>
-                        <div class="h-[1px] w-12 md:w-20 bg-gradient-to-l from-transparent to-rift-500/50"></div>
+                    <div class="flex items-center justify-center gap-2 sm:gap-4 opacity-80 mb-10 w-full">
+                        <div class="h-[1px] flex-grow max-w-[30px] md:max-w-[80px] bg-gradient-to-r from-transparent to-rift-500/50"></div>
+                        <h2 class="font-magic text-lg sm:text-xl md:text-3xl text-bone-300 tracking-[0.2em] sm:tracking-[0.3em] text-glow-bone text-center uppercase whitespace-nowrap">Das Echo von Olyndra</h2>
+                        <div class="h-[1px] flex-grow max-w-[30px] md:max-w-[80px] bg-gradient-to-l from-transparent to-rift-500/50"></div>
                     </div>
                     
-                    <div class="bg-black/30 border border-rift-900/50 px-8 py-3 rounded-sm shadow-[0_0_20px_rgba(0,0,0,0.5)] mb-10 inline-block">
-                        <span id="welcome-title" class="font-magic text-2xl md:text-3xl text-rift-400 tracking-widest uppercase">Willkommen</span>
-                        <span class="font-magic text-2xl md:text-3xl text-rift-400 tracking-widest uppercase ml-1 md:ml-2">Überlebender</span>
+                    <div class="bg-black/30 border border-rift-900/50 px-4 sm:px-8 py-3 rounded-sm shadow-[0_0_20px_rgba(0,0,0,0.5)] mb-10 inline-block flex flex-col sm:flex-row items-center gap-2">
+                        <span id="welcome-title" class="font-magic text-xl sm:text-2xl md:text-3xl text-rift-400 tracking-widest uppercase">Willkommen</span>
+                        <span class="font-magic text-xl sm:text-2xl md:text-3xl text-rift-400 tracking-widest uppercase">Überlebender</span>
                     </div>
                     
-                    <p class="text-gray-300 font-lore text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-800 pl-8 text-left bg-gradient-to-r from-black/50 to-transparent p-6 rounded-r italic">
+                    <p class="text-gray-300 font-lore text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-800 pl-6 sm:pl-8 text-left bg-gradient-to-r from-black/50 to-transparent p-4 sm:p-6 rounded-r italic">
                         Du bist im Staub eines ungezähmten Landes gelandet. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück. Hier zeigt sich, wer die Kraft hat, aus dem Nichts eine Existenz zu formen.
                     </p>
                 </div>
             </div>
-             <div class="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+             <div class="max-w-7xl mx-auto px-4 py-16 sm:py-20 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="rift-panel p-8 transform hover:-translate-y-2 transition-transform duration-300">
                     <i data-lucide="mic" class="w-10 h-10 text-bone-400 mb-6 opacity-70"></i>
                     <h3 class="font-magic text-2xl text-white mb-3">Stimme der Welt</h3>
