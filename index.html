@@ -280,21 +280,6 @@
         <span class="absolute -bottom-6 text-[10px] text-bone-400 font-lore tracking-[0.1em] bg-black/60 px-2 py-0.5 rounded border border-bone-800">Resonanz</span>
     </div>
 
-    <!-- WIP MODAL -->
-    <div id="wip-modal" class="info-modal-bg fixed inset-0 flex items-center justify-center p-4 z-[200]">
-        <div class="rift-panel p-6 md:p-10 max-w-lg w-full text-center relative border-bone-700">
-            <i data-lucide="skull" class="w-12 h-12 md:w-16 md:h-16 text-bone-500 mx-auto mb-4 animate-float"></i>
-            <h2 class="font-magic text-3xl text-white mb-2 tracking-widest">Die Schriften sind unvollständig</h2>
-            <div class="h-[1px] w-full bg-bone-800 my-6"></div>
-            <p class="text-gray-400 mb-8 leading-relaxed font-lore text-lg">
-                Achtung: Diese alten Aufzeichnungen befinden sich noch im Aufbau. Wissen, Rituale und Überlebens-Mechaniken können sich jederzeit im Staub wandeln.
-            </p>
-            <button onclick="closeWipModal()" class="w-full bg-[#0a050a] hover:bg-bone-900 text-bone-300 font-magic text-lg py-3 tracking-widest border border-bone-700 transition-all hover:text-white hover:border-bone-500 hover:shadow-[0_0_15px_rgba(168,162,158,0.2)]">
-                Ich verstehe
-            </button>
-        </div>
-    </div>
-
     <!-- FIELD INFO MODAL (Dynamic Form Help) -->
     <div id="field-info-modal" class="info-modal-bg hidden-modal fixed inset-0 flex items-center justify-center p-4 z-[300]">
         <div class="rift-panel p-8 max-w-md w-full relative border-rift-800">
@@ -918,7 +903,7 @@
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Bauregeln</h4>
                                     <ul class="list-disc pl-6 space-y-1 marker:text-bone-600">
-                                        <li>Bauort muss über ein Supportticket angemeldet werden</li>
+                                        <li>Bauort muss über ein Supportticket metgeldet werden</li>
                                         <li>Maximale Dekorationen pro Person → 250 Dekoteile</li>
                                         <li>Rüstungspuppen pro Person → 2 Stück</li>
                                         <li>Maximale Pflanztröge pro Clan → 4 Stück</li>
@@ -1622,7 +1607,7 @@
                     
                     <h3 class="font-bold text-xl text-white mb-2">Kontakt</h3>
                     <p class="border-l-2 border-bone-800 pl-6 py-2 mb-8 text-bone-400">
-                        E-Mail: -<br>
+                        E-Mail: denn260898@gmail.com<br>
                         Discord: dennis2608
                     </p>
 
@@ -1652,7 +1637,7 @@
                     <p class="mb-6"><strong class="text-white">Formular "Charakter-Erstellung":</strong> Das auf der Website bereitgestellte Formular zur Charakter-Erstellung ("Seelen-Inschrift") dient ausschließlich dazu, die von Ihnen eingegebenen Texte zu strukturieren und in die <strong>lokale Zwischenablage (Clipboard) Ihres eigenen Endgerätes</strong> zu kopieren. Es findet keine Datenübertragung an unsere Server oder an Dritte statt. Alle eingegebenen Daten verbleiben bei Ihnen.</p>
 
                     <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">4. Plugins und externe Tools</h3>
-                    <p class="mb-6">Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Web Fonts, die von Google bereitgestellt werden, sowie Content Delivery Networks (CDNs) für die Frameworks "Tailwind CSS" und "Lucide Icons". Beim Aufruf der Seite lädt Ihr Browser die benötigten Dateien in den Browsercache. Hierdurch erlangen die Anbieter Kenntnis darüber, dass über Ihre IP-Adresse diese Website aufgerufen wurde. Die Nutzung erfolgt im Interesse einer einheitlichen und fehlerfreien Darstellung (Art. 6 Abs. 1 lit. f DSGVO).</p>
+                    <p class="mb-6">Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Web Fonts, die von Google bereitgestellt werden, sowie Content Delivery Networks (CDNs) für die Frameworks "Tailwind CSS" und "Lucide Icons". Beim Aufruf der Seite lädt Ihr Browser die benötigten Dateien in Browsercache. Hierdurch erlangen die Anbieter Kenntnis darüber, dass über Ihre IP-Adresse diese Website aufgerufen wurde. Die Nutzung erfolgt im Interesse einer einheitlichen und fehlerfreien Darstellung (Art. 6 Abs. 1 lit. f DSGVO).</p>
 
                     <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">5. Externe Links & Plattformen</h3>
                     <p class="mb-6">Unsere Website enthält Links zu externen Websites und Plattformen Dritter (z. B. Steam, Discord). Wenn Sie diese Links anklicken, verlassen Sie unsere Seite. Bei der Nutzung dieser externen Plattformen gelten ausschließlich deren jeweilige Datenschutzbestimmungen. Wir übermitteln von unserer Seite aus keine personenbezogenen Daten an diese Anbieter.</p>
@@ -1712,7 +1697,7 @@
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
         let currentState = STATE.IDLE;
         let currentPageId = 'portal'; 
-        let isTransitioning = false; // PERFORMANCE FIX: Verhindert schnelles Doppel-Klicken
+        let isTransitioning = false; 
         
         // Idle State Variables für den Kompass
         let idleTarget = 15; 
@@ -1760,7 +1745,7 @@
                     this.speedX = (Math.random() - 0.5) * 1.2;
                     this.speedY = (Math.random() * -1.5) - 0.5; 
                     this.opacity = Math.random() * 0.6 + 0.4;
-                    // PERFORMANCE FIX: GlowColor vorberechnen, anstatt es live im Canvas 60 mal pro Sekunde neu per Regex zu erzeugen!
+                    // PERFORMANCE FIX: GlowColor vorberechnen
                     this.color = Math.random() > 0.5 ? `rgba(139, 92, 246, ${this.opacity})` : `rgba(59, 130, 246, ${this.opacity})`;
                     this.glowColor = Math.random() > 0.5 ? `rgba(139, 92, 246, ${this.opacity * 0.25})` : `rgba(59, 130, 246, ${this.opacity * 0.25})`;
                 } else {
@@ -1958,14 +1943,13 @@
                     tear.style.height = '0%';
                     tear.style.width = '4px';
                     tear.style.borderRadius = '100%';
-                    isTransitioning = false; // Blockade wieder aufheben
+                    isTransitioning = false; 
                 }, 1500);
             }, 4800); 
         }
 
         // --- NORMAL MENU NAVIGATION (Schneller Wechsel) ---
         function switchPage(targetId) {
-            // PERFORMANCE FIX: Blockiert mehrfaches Klicken durch isTransitioning
             if (currentState === STATE.SURGE || targetId === currentPageId || isTransitioning) return;
             
             isTransitioning = true;
@@ -2001,7 +1985,7 @@
 
                     setTimeout(() => {
                         document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.remove('system-surge'));
-                        isTransitioning = false; // Blockade wieder aufheben, wenn alles vorbei ist
+                        isTransitioning = false; 
                     }, 300);
 
                 }, 300); 
@@ -2117,16 +2101,6 @@
                 }
             }
             requestAnimationFrame(animateCooldown);
-        }
-
-        // --- MODAL LOGIC ---
-        function closeWipModal() {
-            const modal = document.getElementById('wip-modal');
-            if (modal) {
-                modal.classList.add('hidden-modal');
-                modal.style.pointerEvents = 'none';
-                setTimeout(() => { modal.style.display = 'none'; }, 500);
-            }
         }
 
         const fieldInfos = {
