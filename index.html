@@ -141,6 +141,11 @@
         }
 
         .page-active { display: block; animation: materialize 0.8s ease-out forwards; }
+        
+        /* Spezial-Regel für das Portal (Kein Menü-Abstand & Zentriert) */
+        #portal { display: none; align-items: center; justify-content: center; }
+        #portal::before { display: none; }
+        #portal.page-active { display: flex; }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #020617; }
@@ -309,7 +314,7 @@
     </div>
 
     <!-- NAV -->
-    <nav class="fixed top-0 left-0 w-full z-50 h-20 bg-[#020617]/80 border-b border-bone-900 backdrop-blur-md shadow-[0_5px_30px_rgba(0,0,0,0.8)]">
+    <nav id="main-nav" style="display: none;" class="fixed top-0 left-0 w-full z-50 h-20 bg-[#020617]/80 border-b border-bone-900 backdrop-blur-md shadow-[0_5px_30px_rgba(0,0,0,0.8)]">
         <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
             <div class="flex items-center gap-4 cursor-pointer group" onclick="switchPage('home')">
                 <div class="w-10 h-10 border border-rift-800 flex items-center justify-center rotate-45 group-hover:rotate-180 group-hover:border-rift-500 transition-all duration-700 bg-black/50 shadow-[0_0_10px_rgba(139,92,246,0.1)]">
@@ -359,47 +364,53 @@
     <!-- MAIN -->
     <main class="relative w-full h-full z-10">
         
-        <!-- STARTSEITE -->
-        <div id="home" class="page-container page-active">
+        <!-- PORTAL (Eingangsseite - Erstbesuch) -->
+        <div id="portal" class="page-container page-active">
+            <div class="flex flex-col items-center justify-center w-full min-h-[90vh] px-4 relative mt-10">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
+                
+                <div class="relative inline-block mb-8 group z-10">
+                    <div class="absolute inset-0 bg-rift-500/20 blur-3xl rounded-full scale-110 animate-rift-pulse"></div>
+                    <img src="image_2687fc.jpg" alt="Arathion Logo" class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800">
+                </div>
+
+                <h1 class="font-magic text-7xl md:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mb-6 z-10 tracking-widest">ARATHION</h1>
+                
+                <div class="text-gray-300 font-lore text-2xl max-w-3xl mx-auto leading-relaxed text-center mb-16 z-10">
+                    <p class="mb-2 italic opacity-90">Ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben.</p>
+                </div>
+                
+                <button onclick="enterRift()" class="group relative px-10 py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-2xl md:text-4xl tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-rift-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <span class="relative flex items-center gap-6 text-glow-rift">Den Riss betreten <i data-lucide="flame" class="w-8 h-8 md:w-10 md:h-10 animate-pulse text-rift-400"></i></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STARTSEITE (Inneres Olyndra) -->
+        <div id="home" class="page-container">
             <div class="py-12 md:py-20 flex flex-col items-center px-4 relative">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[500px] bg-rift-500/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
                 
                 <div class="max-w-5xl w-full text-center space-y-8 z-10 mt-6">
                     
-                    <!-- LOGO INTEGRATION -->
-                    <div class="relative inline-block mb-4 group">
-                        <div class="absolute inset-0 bg-rift-500/20 blur-3xl rounded-full scale-110 group-hover:scale-125 transition-transform duration-1000"></div>
-                        <img src="image_2687fc.jpg" alt="Arathion Runen-Logo" class="w-48 h-48 md:w-64 md:h-64 object-cover rounded-full mx-auto relative z-10 animate-float shadow-[0_0_40px_rgba(59,130,246,0.3)] border border-rift-800">
-                    </div>
-
-                    <div class="inline-flex items-center gap-3 border border-rift-800 bg-black/40 px-6 py-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                    <div class="inline-flex items-center gap-3 border border-bone-800 bg-black/40 px-6 py-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                         <i data-lucide="sparkles" class="w-4 h-4 text-rift-400 animate-pulse"></i>
                         <span class="text-sm font-magic tracking-widest text-bone-400 uppercase">Die Welt zerbricht • Olyndra ruft</span>
                         <i data-lucide="sparkles" class="w-4 h-4 text-rift-400 animate-pulse"></i>
                     </div>
                     
-                    <h1 class="font-magic text-6xl md:text-8xl lg:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay">ARATHION</h1>
+                    <h1 id="welcome-title" class="font-magic text-6xl md:text-8xl text-white text-glow-rift uppercase tracking-widest mb-2">Willkommen</h1>
                     
-                    <div class="flex items-center justify-center gap-4 opacity-80">
+                    <div class="flex items-center justify-center gap-4 opacity-80 mt-4 mb-10">
                         <div class="h-[1px] w-12 md:w-20 bg-gradient-to-r from-transparent to-rift-500/50"></div>
-                        <h2 class="font-magic text-xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Das Echo von Olyndra</h2>
+                        <h2 class="font-magic text-2xl md:text-3xl text-bone-300 tracking-[0.3em] text-glow-bone text-center uppercase">Überlebender</h2>
                         <div class="h-[1px] w-12 md:w-20 bg-gradient-to-l from-transparent to-rift-500/50"></div>
                     </div>
                     
-                    <div class="text-gray-300 font-lore text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-800 pl-8 text-left bg-gradient-to-r from-black/50 to-transparent p-6 rounded-r">
-                        <p class="mb-4">Wer auf der Seite von Olyndra aus dem Riss tritt, fällt nicht weich. Man landet im Staub eines ungezähmten Landes. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück.</p>
-                        <p class="text-rift-400 italic font-semibold">Hier zeigt sich, wer die Kraft hat, aus dem Nichts eine Existenz zu formen.</p>
-                    </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
-                        <button onclick="switchPage('connect')" class="group relative px-8 py-4 bg-black/50 border border-rift-500 text-white font-magic tracking-widest overflow-hidden transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]">
-                            <div class="absolute inset-0 w-full h-full bg-rift-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                            <span class="relative flex items-center gap-3 uppercase">Den Riss betreten <i data-lucide="flame" class="w-4 h-4"></i></span>
-                        </button>
-                        <button onclick="switchPage('lore')" class="group px-8 py-4 bg-black/30 border border-bone-700 text-bone-300 font-magic tracking-widest transition-all hover:text-white hover:border-bone-400 uppercase">
-                            Das Echo lesen
-                        </button>
-                    </div>
+                    <p class="text-gray-300 font-lore text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed border-l-2 border-rift-800 pl-8 text-left bg-gradient-to-r from-black/50 to-transparent p-6 rounded-r italic">
+                        Du bist im Staub eines ungezähmten Landes gelandet. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück. Hier zeigt sich, wer die Kraft hat, aus dem Nichts eine Existenz zu formen.
+                    </p>
                 </div>
             </div>
              <div class="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1316,7 +1327,7 @@
                     <p class="mb-6">Unsere Website enthält Links zu externen Websites und Plattformen Dritter (z. B. Steam, Discord). Wenn Sie diese Links anklicken, verlassen Sie unsere Seite. Bei der Nutzung dieser externen Plattformen gelten ausschließlich deren jeweilige Datenschutzbestimmungen. Wir übermitteln von unserer Seite aus keine personenbezogenen Daten an diese Anbieter.</p>
 
                     <div class="mt-12 pt-6 border-t border-rift-900 text-center">
-                        <button onclick="localStorage.removeItem('riftProtocolAccepted'); location.reload();" class="text-rift-500 hover:text-white font-sans text-sm tracking-widest uppercase transition-colors">[ LocalStorage & Banner-Zustimmung zurücksetzen ]</button>
+                        <button onclick="localStorage.removeItem('riftProtocolAccepted'); localStorage.removeItem('hasEnteredRift'); localStorage.removeItem('visitCount'); location.reload();" class="text-rift-500 hover:text-white font-sans text-sm tracking-widest uppercase transition-colors">[ LocalStorage & Banner-Zustimmung zurücksetzen ]</button>
                     </div>
                 </div>
             </div>
@@ -1325,7 +1336,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500">
+    <footer id="main-footer" style="display: none;" class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500">
         <div class="flex gap-6">
             <span>Olyndra: <span class="text-rift-500">Erwacht</span></span>
             <span class="hidden sm:inline">Portal: <span id="rift-val">Stabil</span></span>
@@ -1369,7 +1380,7 @@
         // STATE MACHINE
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
         let currentState = STATE.IDLE;
-        let currentPageId = 'home';
+        let currentPageId = 'portal'; 
         
         // Idle State Variables für den Kompass
         let idleTarget = 15; 
@@ -1469,6 +1480,155 @@
             });
         }
 
+        // --- ROUTING SYSTEM ---
+        function initRouting() {
+            const hasEntered = localStorage.getItem('hasEnteredRift') === 'true';
+            const nav = document.getElementById('main-nav');
+            const footer = document.getElementById('main-footer');
+            const portalPage = document.getElementById('portal');
+            const homePage = document.getElementById('home');
+            const welcomeTitle = document.getElementById('welcome-title');
+            
+            let visits = parseInt(localStorage.getItem('visitCount') || '0');
+
+            if (!hasEntered) {
+                // Erstbesuch - Das Portal wird gezeigt
+                nav.style.display = 'none';
+                footer.style.display = 'none';
+                
+                portalPage.style.display = 'flex';
+                portalPage.classList.add('page-active');
+                homePage.style.display = 'none';
+                homePage.classList.remove('page-active');
+                
+                currentPageId = 'portal';
+            } else {
+                // Wiederkehrer - Inneres Olyndra wird direkt gezeigt
+                nav.style.display = 'flex'; 
+                footer.style.display = 'flex';
+                
+                portalPage.style.display = 'none';
+                portalPage.classList.remove('page-active');
+                homePage.style.display = 'block';
+                homePage.classList.add('page-active');
+                
+                currentPageId = 'home';
+                
+                // Besuche hochzählen und Text anpassen
+                visits++;
+                localStorage.setItem('visitCount', visits);
+                
+                if (visits > 1) {
+                    welcomeTitle.innerText = "Willkommen zurück";
+                } else {
+                    welcomeTitle.innerText = "Willkommen";
+                }
+                
+                // Home Button optisch aktivieren
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if(btn.dataset.target === 'home') {
+                        btn.classList.add('text-rift-400', 'border-rift-500'); 
+                        btn.classList.remove('text-gray-400', 'border-transparent');
+                    }
+                });
+            }
+        }
+
+        // --- EPIC PORTAL ENTRY (Vom Portal nach Olyndra) ---
+        function enterRift() {
+            if (currentState !== STATE.IDLE) return;
+            
+            currentState = STATE.SURGE;
+            
+            const loader = document.getElementById('rift-loader');
+            const tear = document.getElementById('tear-element');
+            const aura = document.getElementById('rift-aura');
+            const text = document.getElementById('rift-text');
+            const nav = document.getElementById('main-nav');
+            const footer = document.getElementById('main-footer');
+            
+            document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
+            
+            tear.style.transition = 'none';
+            tear.style.height = '0%';
+            tear.style.width = '4px';
+            tear.style.borderRadius = '100%';
+            tear.style.boxShadow = '0 0 30px #fff,0 0 60px #c084fc,0 0 120px #3b82f6';
+            tear.style.background = '#fff';
+            
+            aura.style.transition = 'none';
+            aura.style.transform = 'translate(-50%, -50%) scale(1)';
+            
+            text.style.transition = 'none';
+            text.style.opacity = '1';
+            loader.classList.remove('animate-shake');
+            
+            loader.classList.add('active');
+
+            setTimeout(() => {
+                tear.style.transition = 'height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.8s ease-out';
+                tear.style.height = '150vh';
+                
+                aura.style.transition = 'transform 2s ease-in';
+                aura.style.transform = 'translate(-50%, -50%) scale(50)';
+                
+                loader.classList.add('animate-shake'); 
+            }, 2500);
+
+            setTimeout(() => {
+                tear.style.transition = 'width 0.5s cubic-bezier(0.8, 0, 0.2, 1), border-radius 0.5s, background 0.2s';
+                tear.style.width = '300vw'; 
+                tear.style.borderRadius = '0'; 
+                tear.style.background = '#ffffff';
+                tear.style.boxShadow = '0 0 200px #fff, 0 0 300px #c084fc';
+                
+                text.style.transition = 'opacity 0.2s';
+                text.style.opacity = '0'; 
+            }, 3800);
+
+            setTimeout(() => {
+                // --- THE ROUTING SWITCH (Unsichtbar im Hintergrund) ---
+                document.getElementById('portal').classList.remove('page-active');
+                document.getElementById('portal').style.display = 'none';
+                
+                document.getElementById('home').style.display = 'block';
+                requestAnimationFrame(() => document.getElementById('home').classList.add('page-active'));
+                
+                nav.style.display = 'flex';
+                footer.style.display = 'flex';
+                
+                currentPageId = 'home';
+                
+                // Setze LocalStorage, damit der User beim Neuladen direkt reinkommt
+                localStorage.setItem('hasEnteredRift', 'true');
+                localStorage.setItem('visitCount', '1');
+                document.getElementById('welcome-title').innerText = "Willkommen";
+                
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if(btn.dataset.target === 'home') {
+                        btn.classList.add('text-rift-400', 'border-rift-500'); 
+                        btn.classList.remove('text-gray-400', 'border-transparent');
+                    }
+                });
+
+                loader.classList.remove('animate-shake'); 
+                startCooldown(); 
+            }, 4200);
+
+            setTimeout(() => {
+                loader.style.transition = 'opacity 1.5s ease-out, visibility 1.5s ease-out';
+                loader.classList.remove('active');
+                
+                setTimeout(() => {
+                    loader.style.transition = 'opacity 1s ease-out, visibility 1s ease-out'; 
+                    tear.style.transition = 'none';
+                    tear.style.height = '0%';
+                    tear.style.width = '4px';
+                    tear.style.borderRadius = '100%';
+                }, 1500);
+            }, 4800); 
+        }
+
         // --- GALERIE RENDERER ---
         function renderGallery() {
             const grid = document.getElementById('gallery-grid');
@@ -1489,70 +1649,7 @@
                 return;
             }
 
-            galleryConfig.files.forEach((filename, index) => {
-                const card = document.createElement('div');
-                card.className = 'holo-card rounded-sm opacity-0'; 
-                card.style.animationDelay = `${index * 0.1}s`; 
-                const title = filename.split('.')[0].replace(/[-_]/g, ' '); 
-
-                card.innerHTML = `
-                    <img src="${galleryConfig.folder}${filename}" alt="${title}" class="holo-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1c1917/a8a29e?text=Kein+Bild';">
-                    <div class="holo-overlay">
-                        <h4 class="font-magic text-white text-xl tracking-widest capitalize">${title}</h4>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        // --- LOOP ---
-        function updateLoop(timestamp) {
-            drawParticles();
-            if (currentState === STATE.IDLE) {
-                updateIdle(timestamp);
-            }
-            requestAnimationFrame(updateLoop);
-        }
-        
-        function updateIdle(timestamp) {
-            if (timestamp - lastRandomChange > 2000 + Math.random() * 3000) {
-                if (Math.random() > 0.75) {
-                    idleTarget = 50 + Math.random() * 50; 
-                } else {
-                    idleTarget = 10 + Math.random() * 20; 
-                }
-                lastRandomChange = timestamp;
-            }
-
-            const jitter = Math.sin(timestamp / 300) * 2;
-            const activeTarget = idleTarget + jitter;
-            idleCurrent += (activeTarget - idleCurrent) * 0.02; 
-            updateUI(idleCurrent);
-        }
-
-        // --- UI UPDATE ---
-        function updateUI(value) {
-            const compass = document.getElementById('rune-compass');
-            const container = document.getElementById('rune-container');
-            const riftValText = document.getElementById('rift-val');
-
-            if (riftValText) {
-                if(value > 60) riftValText.innerText = "Kritisch";
-                else if(value > 30) riftValText.innerText = "Erhöht";
-                else riftValText.innerText = "Stabil";
-            }
-
-            if (compass) {
-                currentRotation += (value * 0.05); 
-                compass.style.transform = `rotate(${currentRotation}deg) scale(${1 + (value/300)})`;
-                if(container) {
-                    container.style.boxShadow = `0 0 ${20 + (value/2)}px rgba(59,130,246, ${0.3 + (value/200)})`;
-                    container.style.borderColor = `rgba(139, 92, 246, ${0.2 + (value/100)})`;
-                }
-            }
-        }
-
-        // --- EPIC TRANSITION ANIMATION ---
+        // --- EPIC TRANSITION ANIMATION (Standard Navigation) ---
         function switchPage(targetId) {
             if (currentState !== STATE.IDLE || targetId === currentPageId) return;
             
@@ -1870,6 +1967,7 @@ ${val('charStory')}
 
         // Init
         window.addEventListener('load', () => { 
+            initRouting();
             renderGallery(); 
             requestAnimationFrame(updateLoop); 
         });
