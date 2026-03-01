@@ -1649,6 +1649,69 @@
                 return;
             }
 
+            galleryConfig.files.forEach((filename, index) => {
+                const card = document.createElement('div');
+                card.className = 'holo-card rounded-sm opacity-0'; 
+                card.style.animationDelay = `${index * 0.1}s`; 
+                const title = filename.split('.')[0].replace(/[-_]/g, ' '); 
+
+                card.innerHTML = `
+                    <img src="${galleryConfig.folder}${filename}" alt="${title}" class="holo-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1c1917/a8a29e?text=Kein+Bild';">
+                    <div class="holo-overlay">
+                        <h4 class="font-magic text-white text-xl tracking-widest capitalize">${title}</h4>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- LOOP ---
+        function updateLoop(timestamp) {
+            drawParticles();
+            if (currentState === STATE.IDLE) {
+                updateIdle(timestamp);
+            }
+            requestAnimationFrame(updateLoop);
+        }
+        
+        function updateIdle(timestamp) {
+            if (timestamp - lastRandomChange > 2000 + Math.random() * 3000) {
+                if (Math.random() > 0.75) {
+                    idleTarget = 50 + Math.random() * 50; 
+                } else {
+                    idleTarget = 10 + Math.random() * 20; 
+                }
+                lastRandomChange = timestamp;
+            }
+
+            const jitter = Math.sin(timestamp / 300) * 2;
+            const activeTarget = idleTarget + jitter;
+            idleCurrent += (activeTarget - idleCurrent) * 0.02; 
+            updateUI(idleCurrent);
+        }
+
+        // --- UI UPDATE ---
+        function updateUI(value) {
+            const compass = document.getElementById('rune-compass');
+            const container = document.getElementById('rune-container');
+            const riftValText = document.getElementById('rift-val');
+
+            if (riftValText) {
+                if(value > 60) riftValText.innerText = "Kritisch";
+                else if(value > 30) riftValText.innerText = "Erhöht";
+                else riftValText.innerText = "Stabil";
+            }
+
+            if (compass) {
+                currentRotation += (value * 0.05); 
+                compass.style.transform = `rotate(${currentRotation}deg) scale(${1 + (value/300)})`;
+                if(container) {
+                    container.style.boxShadow = `0 0 ${20 + (value/2)}px rgba(59,130,246, ${0.3 + (value/200)})`;
+                    container.style.borderColor = `rgba(139, 92, 246, ${0.2 + (value/100)})`;
+                }
+            }
+        }
+
         // --- EPIC TRANSITION ANIMATION (Standard Navigation) ---
         function switchPage(targetId) {
             if (currentState !== STATE.IDLE || targetId === currentPageId) return;
