@@ -12,7 +12,7 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Fonts (Cleaned: Nur noch Fantasy Fonts) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -97,6 +97,13 @@
             font-size: 1.1rem; 
         }
 
+        /* HARDWARE ACCELERATION CLASSES */
+        .gpu-accel {
+            transform: translateZ(0);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
         /* Düsterer Hintergrund mit Vignette */
         .world-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -104,7 +111,7 @@
             z-index: -2;
         }
 
-        /* Staub / Noise Overlay (Optimiert für bessere Performance) */
+        /* Staub / Noise Overlay (Optimiert für Performance) */
         .dust-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
@@ -129,7 +136,7 @@
             overflow-y: auto; padding-bottom: 6rem;
             padding-left: 1.5rem; padding-right: 1.5rem; 
             display: none; scrollbar-width: thin; scrollbar-color: #57534e #020617;
-            transition: opacity 0.3s ease-out; /* Für smoothe interne Wechsel */
+            transition: opacity 0.3s ease-out;
         }
         
         .page-container::before {
@@ -143,7 +150,7 @@
 
         .page-active { display: block; animation: materialize 0.6s ease-out forwards; }
         
-        /* Spezial-Regel für das Portal (Kein Menü-Abstand & Zentriert) */
+        /* Spezial-Regel für das Portal */
         #portal { display: none; align-items: center; justify-content: center; }
         #portal::before { display: none; }
         #portal.page-active { display: flex; }
@@ -155,7 +162,7 @@
         /* EPIC RIFT LOADER */
         #rift-loader { 
             background: rgba(2, 6, 23, 0.95); 
-            backdrop-filter: blur(15px); /* Reduzierter Blur für Performance */
+            backdrop-filter: blur(15px);
             transition: opacity 1s ease-out, visibility 1s ease-out;
             pointer-events: none;
             opacity: 0;
@@ -179,6 +186,7 @@
             animation: lightning-flicker 0.15s infinite alternate;
             opacity: 0.8;
             transition: all 0.3s ease-out;
+            will-change: width, filter, box-shadow;
         }
         
         .system-surge .magic-lightning {
@@ -236,6 +244,7 @@
             box-shadow: 0 4px 10px -4px rgba(139, 92, 246, 0.2);
         }
         
+        /* Rechtliche Texte (Klar und leserlich) */
         .legal-content h3 { color: #d6d3d1; font-family: 'Cinzel', serif; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.5rem;}
         .legal-content p, .legal-content ul { color: #a8a29e; margin-bottom: 1rem; line-height: 1.6; }
         .legal-content ul { list-style-type: disc; padding-left: 1.5rem; }
@@ -251,23 +260,23 @@
         </filter>
     </svg>
 
-    <div class="world-bg"></div>
-    <div class="dust-overlay"></div>
+    <div class="world-bg gpu-accel"></div>
+    <div class="dust-overlay gpu-accel"></div>
 
-    <!-- FX Canvas (Asche & Funken) -->
-    <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80 pointer-events-none"></canvas>
+    <!-- FX Canvas (Asche & Funken - Optimiert) -->
+    <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80 pointer-events-none gpu-accel"></canvas>
 
     <!-- MAGISCHE ENERGIE-RISSE (Seiten) -->
-    <div class="rift-sidebar left rift-surge-system">
+    <div class="rift-sidebar left rift-surge-system gpu-accel">
         <div class="magic-lightning"></div>
     </div>
-    <div class="rift-sidebar right rift-surge-system">
+    <div class="rift-sidebar right rift-surge-system gpu-accel">
         <div class="magic-lightning"></div>
     </div>
 
     <!-- ARKANER RESONANZ-KOMPASS (Unten Links) -->
-    <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.3)] z-50 backdrop-blur-md transition-shadow duration-500 pointer-events-none" id="rune-container">
-        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear opacity-80"></i>
+    <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.2)] z-50 backdrop-blur-md pointer-events-none gpu-accel" id="rune-container">
+        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear opacity-80 will-change-transform"></i>
         <span class="absolute -bottom-6 text-[10px] text-bone-400 font-lore tracking-[0.1em] bg-black/60 px-2 py-0.5 rounded border border-bone-800">Resonanz</span>
     </div>
 
@@ -303,11 +312,11 @@
 
     <!-- EPIC RIFT LOADER (Nur für den Portal-Eintritt) -->
     <div id="rift-loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center">
-        <div id="rift-aura" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-rift-400 rounded-full blur-[80px] opacity-80 pointer-events-none transform scale-1"></div>
+        <div id="rift-aura" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-rift-400 rounded-full blur-[80px] opacity-80 pointer-events-none transform scale-1 gpu-accel"></div>
         <div class="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
-            <div id="tear-element" class="w-[4px] h-0 bg-white rounded-[100%] shadow-[0_0_30px_#fff,0_0_60px_#c084fc,0_0_120px_#3b82f6]"></div>
+            <div id="tear-element" class="w-[4px] h-0 bg-white rounded-[100%] shadow-[0_0_30px_#fff,0_0_60px_#c084fc,0_0_120px_#3b82f6] gpu-accel"></div>
         </div>
-        <div id="rift-text" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center space-y-4 z-20 w-full px-4 transition-opacity duration-300">
+        <div id="rift-text" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center space-y-4 z-20 w-full px-4 transition-opacity duration-300 gpu-accel">
             <h3 class="font-magic text-4xl md:text-6xl text-white tracking-[0.2em] md:tracking-[0.3em] text-glow-rift animate-pulse">DER SCHRITT INS NICHTS</h3>
             <p class="font-lore text-bone-300 text-lg md:text-xl italic tracking-[0.1em] md:tracking-[0.2em] drop-shadow-[0_0_8px_#000]">Du lässt die alte Welt hinter dir...</p>
         </div>
@@ -317,7 +326,7 @@
     <nav id="main-nav" style="display: none;" class="fixed top-0 left-0 w-full z-50 h-20 bg-[#020617]/80 border-b border-bone-900 backdrop-blur-md shadow-[0_5px_30px_rgba(0,0,0,0.8)]">
         <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
             <div class="flex items-center gap-4 cursor-pointer group" onclick="switchPage('home')">
-                <div class="w-10 h-10 border border-rift-800 flex items-center justify-center rotate-45 group-hover:rotate-180 group-hover:border-rift-500 transition-all duration-700 bg-black/50 shadow-[0_0_10px_rgba(139,92,246,0.1)]">
+                <div class="w-10 h-10 border border-rift-800 flex items-center justify-center rotate-45 group-hover:rotate-180 group-hover:border-rift-500 transition-all duration-700 bg-black/50 shadow-[0_0_10px_rgba(139,92,246,0.1)] gpu-accel">
                     <div class="w-3 h-3 bg-rift-500/50 rounded-full animate-pulse shadow-[0_0_10px_#8b5cf6]"></div>
                 </div>
                 <div>
@@ -347,12 +356,12 @@
 
     <!-- MOBILE MENU -->
     <div id="mobile-menu" class="fixed inset-0 z-[60] bg-rift-900/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-opacity duration-300 opacity-0 pointer-events-none">
-        <button onclick="navigateFromMobile('home')" class="text-2xl font-magic tracking-widest text-rift-400 hover:scale-105 transition-transform">Staub (Start)</button>
-        <button onclick="navigateFromMobile('classes')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Wesen (Klassen)</button>
-        <button onclick="navigateFromMobile('lore')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Echos (Lore)</button>
+        <button onclick="navigateFromMobile('home')" class="text-2xl font-magic tracking-widest text-rift-400 hover:scale-105 transition-transform">Staub</button>
+        <button onclick="navigateFromMobile('classes')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Wesen</button>
+        <button onclick="navigateFromMobile('lore')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Echos</button>
         <button onclick="navigateFromMobile('gallery')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Visionen</button>
         <button onclick="navigateFromMobile('rules')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Gesetze</button>
-        <button onclick="navigateFromMobile('faq')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Wissen (FAQ)</button>
+        <button onclick="navigateFromMobile('faq')" class="text-2xl font-magic tracking-widest text-gray-400 hover:text-white hover:scale-105 transition-transform">Wissen</button>
         <button onclick="navigateFromMobile('char')" class="text-2xl font-magic tracking-widest text-bone-400 hover:scale-105 transition-transform">Identität</button>
         <button onclick="navigateFromMobile('connect')" class="text-2xl font-magic tracking-widest text-white bg-black/50 border border-bone-700 px-8 py-2 hover:bg-bone-900 transition-colors">Erwachen</button>
         <div class="h-[1px] w-24 bg-bone-800"></div>
@@ -367,11 +376,11 @@
         <!-- PORTAL (Eingangsseite - Erstbesuch) -->
         <div id="portal" class="page-container page-active">
             <div class="flex flex-col items-center justify-center w-full min-h-[90vh] px-6 sm:px-10 relative mt-10">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0 gpu-accel"></div>
                 
                 <div class="relative inline-block mb-8 group z-10">
                     <div class="absolute inset-0 bg-rift-500/20 blur-3xl rounded-full scale-110 animate-rift-pulse"></div>
-                    <img src="image_2687fc.jpg" alt="Arathion Logo" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800">
+                    <img src="image_2687fc.jpg" alt="Arathion Logo" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800 gpu-accel">
                 </div>
 
                 <h1 class="font-magic text-5xl sm:text-7xl md:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mb-2 z-10 tracking-widest text-center">ARATHION</h1>
@@ -387,7 +396,7 @@
                 </div>
                 
                 <button onclick="enterRift()" class="group relative px-6 py-4 sm:px-10 sm:py-6 md:px-16 md:py-8 bg-[#050205] border-2 border-rift-800 text-white font-magic text-lg sm:text-2xl md:text-4xl tracking-[0.2em] sm:tracking-[0.3em] overflow-hidden transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.6)] hover:border-rift-400 z-10 uppercase cursor-pointer">
-                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-rift-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-rift-500/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 gpu-accel"></div>
                     <span class="relative flex items-center gap-4 sm:gap-6 text-glow-rift">Den Riss betreten <i data-lucide="flame" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 animate-pulse text-rift-400"></i></span>
                 </button>
             </div>
@@ -396,7 +405,7 @@
         <!-- STARTSEITE (Inneres Olyndra) -->
         <div id="home" class="page-container">
             <div class="py-12 md:py-20 flex flex-col items-center px-4 relative">
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[500px] bg-rift-500/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[500px] bg-rift-500/10 blur-[150px] rounded-full pointer-events-none z-0 gpu-accel"></div>
                 
                 <div class="max-w-5xl w-full text-center space-y-6 z-10 mt-6">
                     
@@ -567,7 +576,7 @@
                         </div>
 
                         <div class="bg-black/50 border border-rift-800 p-6 shadow-lg md:col-span-2 lg:col-span-2 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-rift-500/10 blur-2xl rounded-full"></div>
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-rift-500/10 blur-2xl rounded-full gpu-accel"></div>
                             <h4 class="font-magic text-rift-300 text-xl tracking-widest mb-4 border-b border-rift-900 pb-2 relative z-10">Zivilisation</h4>
                             <div class="flex flex-wrap gap-3 font-lore text-lg relative z-10 items-center">
                                 <span class="text-gray-300">Menschen</span> <span class="text-bone-700">•</span>
@@ -610,7 +619,7 @@
                         </div>
 
                         <div class="rift-panel p-8 flex flex-col h-full hover:border-rift-800 transition-colors relative overflow-hidden">
-                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rift-500/10 blur-3xl rounded-full"></div>
+                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rift-500/10 blur-3xl rounded-full gpu-accel"></div>
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3 relative z-10"><i data-lucide="sparkles" class="text-rift-400 w-8 h-8 opacity-70"></i> Magier</h4>
                             <p class="text-gray-300 font-lore text-xl mb-4 flex-grow leading-relaxed relative z-10">Gelehrte, die die instabilen Energien der Welt manipulieren. Sie beherrschen sowohl zerstörerische Elemente als auch arkane Manipulationen. Doch diese Macht ist gefährlich und kann den Anwender verzehren.</p>
                             <div class="bg-red-950/20 border border-red-900/50 p-3 mb-4 text-sm font-lore text-gray-300 relative z-10">
@@ -771,7 +780,7 @@
 
                     <div class="flex justify-center mt-10">
                         <a href="https://docs.google.com/document/d/1tQsupKtN3iaNzVfWIeNrVAhXLPpuslz7bQYz6O-ea4c/edit?tab=t.y1f7hvqyqjbh" target="_blank" rel="noopener noreferrer" class="group relative px-8 py-4 bg-black/50 border border-rift-500 text-white font-magic tracking-widest uppercase transition-all hover:shadow-[0_0_20px_#d946ef] flex items-center gap-3">
-                            <div class="absolute inset-0 w-full h-full bg-rift-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 w-full h-full bg-rift-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 gpu-accel"></div>
                             <i data-lucide="scroll" class="w-5 h-5 text-rift-400 relative z-10"></i>
                             <span class="relative z-10">Manuskripte der Formen (Bilder)</span>
                         </a>
@@ -1245,7 +1254,7 @@
         <!-- CONNECT -->
         <div id="connect" class="page-container">
             <div class="py-12 md:py-20 flex flex-col items-center px-4 relative">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0 gpu-accel"></div>
                 
                 <h2 class="font-magic text-6xl text-white mb-16 text-glow-rift text-center relative z-10">Das Erwachen</h2>
                 <div class="grid md:grid-cols-2 gap-10 max-w-4xl w-full relative z-10">
@@ -1347,7 +1356,7 @@
     </main>
 
     <!-- Footer -->
-    <footer id="main-footer" style="display: none;" class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500">
+    <footer id="main-footer" style="display: none;" class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500 gpu-accel">
         <div class="flex gap-6">
             <span>Olyndra: <span class="text-rift-500">Erwacht</span></span>
             <span class="hidden sm:inline">Portal: <span id="rift-val">Stabil</span></span>
@@ -1359,7 +1368,7 @@
     </footer>
 
     <!-- Storage Cookie Banner (Standard & Sachlich) -->
-    <div id="rift-cookie-banner" class="fixed bottom-14 right-4 md:bottom-16 md:right-8 max-w-md bg-gray-900 border border-gray-700 p-6 z-[60] rounded-md shadow-2xl transform translate-y-[150%] transition-transform duration-700 hidden font-sans">
+    <div id="rift-cookie-banner" class="fixed bottom-14 right-4 md:bottom-16 md:right-8 max-w-md bg-gray-900 border border-gray-700 p-6 z-[60] rounded-md shadow-2xl transform translate-y-[150%] transition-transform duration-700 hidden font-sans gpu-accel">
         <h3 class="font-bold text-white text-lg mb-2 flex items-center gap-2">
             <i data-lucide="info" class="w-5 h-5 text-gray-400"></i> Hinweis zum Datenschutz
         </h3>
@@ -1457,18 +1466,19 @@
                 }
             }
             draw() {
+                // Hauptkörper zeichnen
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                
-                if(this.isSpark) {
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = this.color;
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-                
                 ctx.fill();
+                
+                // PERFORMANCE FIX: Falscher Glow statt teurem shadowBlur
+                if(this.isSpark) {
+                    ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, (this.opacity * 0.25) + ')');
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
         }
 
@@ -1502,7 +1512,6 @@
             let visits = parseInt(localStorage.getItem('visitCount') || '0');
 
             if (!hasEntered) {
-                // Erstbesuch - Das Portal wird gezeigt
                 nav.style.display = 'none';
                 footer.style.display = 'none';
                 
@@ -1513,7 +1522,6 @@
                 
                 currentPageId = 'portal';
             } else {
-                // Wiederkehrer - Inneres Olyndra wird direkt gezeigt
                 nav.style.display = 'flex'; 
                 footer.style.display = 'flex';
                 
@@ -1595,7 +1603,6 @@
             }, 3800);
 
             setTimeout(() => {
-                // The Routing Switch
                 document.getElementById('portal').classList.remove('page-active');
                 document.getElementById('portal').style.display = 'none';
                 
@@ -1643,7 +1650,6 @@
             const currentPage = document.getElementById(currentPageId);
             const targetPage = document.getElementById(targetId);
 
-            // Navigations-Knöpfe anpassen
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 const isBone = btn.dataset.target === 'char';
                 const activeColor = isBone ? 'text-bone-400' : 'text-rift-400';
@@ -1658,26 +1664,25 @@
                 }
             });
             
-            // Kurzer Magie-Blitz beim Menüwechsel
+            // Kurzer Magie-Blitz beim Menüwechsel (PERFORMANCE FIX: Trennung vom epischen Loader)
             document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
             
             if (currentPage) {
-                currentPage.style.opacity = '0'; // Sanftes Ausblenden
+                currentPage.style.opacity = '0'; 
                 setTimeout(() => {
                     currentPage.classList.remove('page-active');
                     currentPage.style.display = 'none';
-                    currentPage.style.opacity = '1'; // Reset für später
+                    currentPage.style.opacity = '1'; 
                     
                     targetPage.style.display = 'block'; 
                     requestAnimationFrame(() => targetPage.classList.add('page-active'));
                     currentPageId = targetId;
 
-                    // Magie-Blitze wieder beruhigen
                     setTimeout(() => {
                         document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.remove('system-surge'));
                     }, 300);
 
-                }, 300); // 300ms Fade-Out Zeit
+                }, 300); 
             }
         }
 
@@ -1742,25 +1747,20 @@
             updateUI(idleCurrent);
         }
 
-        // --- UI UPDATE ---
+        // --- UI UPDATE (PERFORMANCE FIX: GPU Rotation anstatt box-shadow Repaints) ---
         function updateUI(value) {
             const compass = document.getElementById('rune-compass');
-            const container = document.getElementById('rune-container');
             const riftValText = document.getElementById('rift-val');
 
             if (riftValText) {
                 if(value > 60) riftValText.innerText = "Kritisch";
-                else if(value > 30) riftValText.innerText = "Erhöht";
-                else riftValText.innerText = "Stabil";
+                else if(value > 30) riftValText.innerText = "Fluktuierend";
+                else riftValText.innerText = "Ruhig";
             }
 
             if (compass) {
                 currentRotation += (value * 0.05); 
-                compass.style.transform = `rotate(${currentRotation}deg) scale(${1 + (value/300)})`;
-                if(container) {
-                    container.style.boxShadow = `0 0 ${20 + (value/2)}px rgba(59,130,246, ${0.3 + (value/200)})`;
-                    container.style.borderColor = `rgba(139, 92, 246, ${0.2 + (value/100)})`;
-                }
+                compass.style.transform = `rotate(${currentRotation}deg) scale(${1 + (value/300)}) translateZ(0)`;
             }
         }
         
@@ -1877,7 +1877,7 @@
                     menu.classList.add('opacity-0', 'pointer-events-none');
                     menu.classList.remove('opacity-100', 'pointer-events-auto');
                 }
-            }, 400); // Schneller ausblenden beim Menü-Klick
+            }, 400); 
         }
 
         async function copyIP() {
