@@ -276,7 +276,7 @@
 
     <!-- ARKANER RESONANZ-KOMPASS (Unten Links) -->
     <div class="absolute bottom-20 left-6 md:left-12 w-16 h-16 md:w-20 md:h-20 rounded-full border border-rift-800 bg-black/80 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.2)] z-50 backdrop-blur-md pointer-events-none gpu-accel" id="rune-container">
-        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear opacity-80 will-change-transform"></i>
+        <i data-lucide="orbit" id="rune-compass" class="w-8 h-8 md:w-10 md:h-10 text-rift-400 ease-linear opacity-80"></i>
         <span class="absolute -bottom-6 text-[10px] text-bone-400 font-lore tracking-[0.1em] bg-black/60 px-2 py-0.5 rounded border border-bone-800">Resonanz</span>
     </div>
 
@@ -1339,7 +1339,7 @@
                 <h2 class="font-magic text-5xl text-center text-white mb-4 text-glow-bone">Seelen-Inschrift</h2>
                 <p class="text-center text-gray-400 font-lore text-xl mb-12 italic">Verankere deine Existenz im Buch von Olyndra.</p>
                 
-                <div class="bg-[#050205] border border-bone-800 p-8 md:p-12 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative">
+                <div class="bg-[#050205] border border-bone-800 p-6 sm:p-8 md:p-12 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative">
                     <!-- Mystische Ecken -->
                     <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-rift-800"></div>
                     <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-rift-800"></div>
@@ -1398,6 +1398,7 @@
                                     <optgroup label="--- Naturvölker ---" class="bg-black text-gray-300">
                                         <option value="Elfen">Elfen</option>
                                         <option value="Halblinge">Halblinge</option>
+                                        <option value="Fee">Fee</option>
                                     </optgroup>
                                     <optgroup label="--- Berg & Stein ---" class="bg-black text-gray-300">
                                         <option value="Zwerge">Zwerge</option>
@@ -1609,20 +1610,20 @@
             <div class="max-w-3xl mx-auto px-4 py-12">
                 <h2 class="font-magic text-4xl text-center text-bone-400 mb-8">Impressum</h2>
                 <div class="bg-[#050205] border border-bone-900 p-10 text-base font-sans text-gray-300 leading-relaxed shadow-lg">
-                    <p class="text-sm text-gray-500 mb-8">Angaben gemäß § 5 TMG / § 18 MStV</p>
+                    <p class="text-sm text-gray-500 mb-8">Angaben gemäß § 5 DDG (ehemals TMG) / § 18 MStV</p>
                     
                     <h3 class="font-bold text-xl text-white mb-2">Verantwortlich für den Inhalt</h3>
                     <p class="border-l-2 border-bone-800 pl-6 py-2 mb-8 text-bone-400">
-                        [BITTE HIER DEIN VORNAME UND NACHNAME EINTRAGEN]<br>
-                        [BITTE HIER DEINE STRAßE UND HAUSNUMMER EINTRAGEN]<br>
-                        [BITTE HIER DEINE PLZ UND WOHNORT EINTRAGEN]<br>
+                        Dennis Heitz<br>
+                        Am Ehrenkamp 25<br>
+                        33659 Bielefeld<br>
                         Deutschland
                     </p>
                     
                     <h3 class="font-bold text-xl text-white mb-2">Kontakt</h3>
                     <p class="border-l-2 border-bone-800 pl-6 py-2 mb-8 text-bone-400">
-                        E-Mail: [BITTE HIER DEINE E-MAIL ADRESSE EINTRAGEN]<br>
-                        Discord: [OPTIONAL DEIN DISCORD NAME EINTRAGEN]
+                        E-Mail: -<br>
+                        Discord: dennis2608
                     </p>
 
                     <h3 class="font-bold text-xl text-white mb-2">Projekt-Hinweis</h3>
@@ -1647,7 +1648,7 @@
                     Wenn Sie unsere Website besuchen, erfasst GitHub verschiedene Logfiles inklusive Ihrer IP-Adressen. Dies geschieht zur Bereitstellung und Sicherung der Website. Die Verwendung von GitHub Pages erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Wir haben ein berechtigtes Interesse an einer möglichst zuverlässigen Darstellung und Bereitstellung unseres reinen Fan-Projekts.</p>
                     
                     <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">3. Datenerfassung auf dieser Website</h3>
-                    <p class="mb-4"><strong class="text-white">Lokale Speicherung (LocalStorage):</strong> Unsere Website nutzt zur Speicherung Ihrer Entscheidung bezüglich des Info-Banners die Technologie des "Local Storage" Ihres Browsers. Hierbei wird lediglich ein technischer Wert (`riftProtocolAccepted`) abgelegt, damit das Banner nicht bei jedem Neuladen erscheint. Es werden <strong>keine</strong> Tracking-Mechanismen oder Analyse-Cookies verwendet.</p>
+                    <p class="mb-4"><strong class="text-white">Lokale Speicherung (LocalStorage):</strong> Unsere Website nutzt zur Speicherung von einfachen Einstellungen die Technologie des "Local Storage" Ihres Browsers. Hierbei werden lediglich technische Werte (<code>riftProtocolAccepted</code>, <code>hasEnteredRift</code>, <code>visitCount</code>) abgelegt, um Ihre Zustimmung zum Banner zu speichern und das einmalige Portal-Intro ("Riss betreten") sowie eine angepasste Begrüßung zu ermöglichen. Es werden <strong>keine</strong> Tracking-Mechanismen oder Analyse-Cookies verwendet.</p>
                     <p class="mb-6"><strong class="text-white">Formular "Charakter-Erstellung":</strong> Das auf der Website bereitgestellte Formular zur Charakter-Erstellung ("Seelen-Inschrift") dient ausschließlich dazu, die von Ihnen eingegebenen Texte zu strukturieren und in die <strong>lokale Zwischenablage (Clipboard) Ihres eigenen Endgerätes</strong> zu kopieren. Es findet keine Datenübertragung an unsere Server oder an Dritte statt. Alle eingegebenen Daten verbleiben bei Ihnen.</p>
 
                     <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">4. Plugins und externe Tools</h3>
@@ -1655,6 +1656,9 @@
 
                     <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">5. Externe Links & Plattformen</h3>
                     <p class="mb-6">Unsere Website enthält Links zu externen Websites und Plattformen Dritter (z. B. Steam, Discord). Wenn Sie diese Links anklicken, verlassen Sie unsere Seite. Bei der Nutzung dieser externen Plattformen gelten ausschließlich deren jeweilige Datenschutzbestimmungen. Wir übermitteln von unserer Seite aus keine personenbezogenen Daten an diese Anbieter.</p>
+
+                    <h3 class="font-bold text-xl text-white mb-3 mt-8 border-b border-bone-800 pb-2">6. Ihre Rechte</h3>
+                    <p class="mb-6">Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung oder Löschung dieser Daten. Des Weiteren steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
 
                     <div class="mt-12 pt-6 border-t border-rift-900 text-center">
                         <button onclick="localStorage.removeItem('riftProtocolAccepted'); localStorage.removeItem('hasEnteredRift'); localStorage.removeItem('visitCount'); location.reload();" class="text-rift-500 hover:text-white font-sans text-sm tracking-widest uppercase transition-colors">[ LocalStorage & Banner-Zustimmung zurücksetzen ]</button>
@@ -1708,6 +1712,7 @@
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
         let currentState = STATE.IDLE;
         let currentPageId = 'portal'; 
+        let isTransitioning = false; // PERFORMANCE FIX: Verhindert schnelles Doppel-Klicken
         
         // Idle State Variables für den Kompass
         let idleTarget = 15; 
@@ -1755,7 +1760,9 @@
                     this.speedX = (Math.random() - 0.5) * 1.2;
                     this.speedY = (Math.random() * -1.5) - 0.5; 
                     this.opacity = Math.random() * 0.6 + 0.4;
+                    // PERFORMANCE FIX: GlowColor vorberechnen, anstatt es live im Canvas 60 mal pro Sekunde neu per Regex zu erzeugen!
                     this.color = Math.random() > 0.5 ? `rgba(139, 92, 246, ${this.opacity})` : `rgba(59, 130, 246, ${this.opacity})`;
+                    this.glowColor = Math.random() > 0.5 ? `rgba(139, 92, 246, ${this.opacity * 0.25})` : `rgba(59, 130, 246, ${this.opacity * 0.25})`;
                 } else {
                     this.y = Math.random() * -100; 
                     this.size = Math.random() * 2 + 0.5;
@@ -1763,6 +1770,7 @@
                     this.speedY = Math.random() * 0.5 + 0.2; 
                     this.opacity = Math.random() * 0.4 + 0.1;
                     this.color = `rgba(168, 162, 158, ${this.opacity})`; 
+                    this.glowColor = 'transparent';
                 }
             }
             update() {
@@ -1782,9 +1790,9 @@
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // PERFORMANCE FIX: Falscher Glow statt teurem shadowBlur
                 if(this.isSpark) {
-                    ctx.fillStyle = this.color.replace(/[\d.]+\)$/g, (this.opacity * 0.25) + ')');
+                    // Nutzt jetzt die vorgebaute Farbe, spart massive CPU Last!
+                    ctx.fillStyle = this.glowColor;
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size * 3.5, 0, Math.PI * 2);
                     ctx.fill();
@@ -1862,9 +1870,10 @@
 
         // --- EPIC PORTAL ENTRY (Vom Portal nach Olyndra) ---
         function enterRift() {
-            if (currentState !== STATE.IDLE) return;
+            if (currentState !== STATE.IDLE || isTransitioning) return;
             
             currentState = STATE.SURGE;
+            isTransitioning = true;
             
             const loader = document.getElementById('rift-loader');
             const tear = document.getElementById('tear-element');
@@ -1949,14 +1958,17 @@
                     tear.style.height = '0%';
                     tear.style.width = '4px';
                     tear.style.borderRadius = '100%';
+                    isTransitioning = false; // Blockade wieder aufheben
                 }, 1500);
             }, 4800); 
         }
 
         // --- NORMAL MENU NAVIGATION (Schneller Wechsel) ---
         function switchPage(targetId) {
-            if (currentState === STATE.SURGE || targetId === currentPageId) return;
+            // PERFORMANCE FIX: Blockiert mehrfaches Klicken durch isTransitioning
+            if (currentState === STATE.SURGE || targetId === currentPageId || isTransitioning) return;
             
+            isTransitioning = true;
             const currentPage = document.getElementById(currentPageId);
             const targetPage = document.getElementById(targetId);
 
@@ -1974,7 +1986,6 @@
                 }
             });
             
-            // Kurzer Magie-Blitz beim Menüwechsel (PERFORMANCE FIX: Trennung vom epischen Loader)
             document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.add('system-surge'));
             
             if (currentPage) {
@@ -1990,6 +2001,7 @@
 
                     setTimeout(() => {
                         document.querySelectorAll('.rift-surge-system').forEach(p => p.classList.remove('system-surge'));
+                        isTransitioning = false; // Blockade wieder aufheben, wenn alles vorbei ist
                     }, 300);
 
                 }, 300); 
@@ -2012,7 +2024,7 @@
                     <h3 class="font-magic text-4xl text-rift-400 mb-4 tracking-[0.2em] uppercase text-glow-rift">Coming Soon</h3>
                     <p class="font-lore text-gray-400 text-xl italic">Der Staub formt langsam neue Echos...</p>
                 `;
-                lucide.createIcons(); 
+                if(typeof lucide !== 'undefined') { lucide.createIcons(); }
                 return;
             }
 
@@ -2057,7 +2069,7 @@
             updateUI(idleCurrent);
         }
 
-        // --- UI UPDATE (PERFORMANCE FIX: GPU Rotation anstatt box-shadow Repaints) ---
+        // --- UI UPDATE ---
         function updateUI(value) {
             const compass = document.getElementById('rune-compass');
             const riftValText = document.getElementById('rift-val');
@@ -2175,7 +2187,7 @@
         }
         
         function navigateFromMobile(targetId) {
-            if (currentState !== STATE.IDLE) return; 
+            if (currentState !== STATE.IDLE || isTransitioning) return; 
             if (targetId === currentPageId) {
                 toggleMobile();
                 return;
@@ -2301,6 +2313,7 @@ ${val('charStory')}
 
         // Init
         window.addEventListener('load', () => { 
+            if(typeof lucide !== 'undefined') { lucide.createIcons(); }
             initRouting();
             renderGallery(); 
             requestAnimationFrame(updateLoop); 
