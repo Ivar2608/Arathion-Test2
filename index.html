@@ -126,12 +126,12 @@
         .holo-card {
             position: relative; overflow: hidden;
             border: 1px solid rgba(168, 162, 158, 0.2); background: rgba(28, 25, 23, 0.8);
-            transition: all 0.4s ease; opacity: 0; animation: materialize 0.8s ease-out forwards;
+            transition: all 0.4s ease;
         }
         .holo-card:hover { border-color: #d946ef; box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); transform: translateY(-5px); }
-        .holo-img { width: 100%; height: 200px; object-fit: cover; filter: grayscale(0.6) sepia(0.3) hue-rotate(250deg) brightness(0.7); transition: filter 0.5s; }
-        .holo-card:hover .holo-img { filter: grayscale(0.2) sepia(0) hue-rotate(0) brightness(1); }
-        .holo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #020617, transparent); padding: 1rem; }
+        .holo-img { width: 100%; height: 250px; object-fit: cover; filter: grayscale(0.6) sepia(0.3) hue-rotate(250deg) brightness(0.7); transition: all 0.7s ease; }
+        .holo-card:hover .holo-img { filter: grayscale(0.2) sepia(0) hue-rotate(0) brightness(1); transform: scale(1.1); }
+        .holo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #020617, transparent); padding: 1rem; z-index: 10; }
 
         /* Page Layout */
         .page-container {
@@ -263,8 +263,8 @@
         </filter>
     </svg>
 
-    <div class="world-bg gpu-accel"></div>
-    <div class="dust-overlay gpu-accel"></div>
+    <div class="world-bg"></div>
+    <div class="dust-overlay"></div>
 
     <!-- FX Canvas (Asche & Funken - Optimiert) -->
     <canvas id="bg-canvas" class="fixed inset-0 z-0 opacity-80 pointer-events-none gpu-accel"></canvas>
@@ -286,7 +286,7 @@
     <!-- FIELD INFO MODAL (Dynamic Form Help) -->
     <div id="field-info-modal" class="info-modal-bg hidden-modal fixed inset-0 flex items-center justify-center p-4 z-[300]">
         <div class="rift-panel p-8 max-w-md w-full relative border-rift-800">
-            <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <button aria-label="Schließen" onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
             <div class="flex items-center gap-3 mb-4 border-b border-rift-900 pb-4">
                 <i data-lucide="book-open" class="text-rift-400 w-6 h-6"></i>
                 <h3 id="info-modal-title" class="font-magic text-2xl text-white text-glow-rift m-0">Wissen</h3>
@@ -295,6 +295,16 @@
             <button onclick="closeInfoModal()" class="w-full mt-8 bg-black/50 border border-rift-800 text-rift-400 hover:border-rift-500 hover:text-white font-magic text-lg py-2 tracking-widest transition-colors">
                 Schriftrolle schließen
             </button>
+        </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX MODAL -->
+    <div id="image-modal" class="info-modal-bg hidden-modal fixed inset-0 flex items-center justify-center p-4 z-[400]" onclick="closeImageModal()">
+        <button aria-label="Schließen" onclick="closeImageModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-50">
+            <i data-lucide="x" class="w-10 h-10 drop-shadow-md"></i>
+        </button>
+        <div class="relative max-w-7xl w-full max-h-[90vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+           <img id="modal-img" src="" alt="Großansicht" class="max-w-full max-h-[80vh] object-contain border border-rift-800 shadow-[0_0_50px_rgba(139,92,246,0.3)] bg-black/50">
         </div>
     </div>
 
@@ -336,7 +346,7 @@
                     Erwachen
                 </button>
             </div>
-            <button onclick="toggleMobile()" class="md:hidden text-rift-400 hover:text-white">
+            <button aria-label="Menü öffnen" onclick="toggleMobile()" class="md:hidden text-rift-400 hover:text-white">
                 <i data-lucide="menu" class="w-8 h-8"></i>
             </button>
         </div>
@@ -355,20 +365,20 @@
         <div class="h-[1px] w-24 bg-bone-800"></div>
         <button onclick="navigateFromMobile('legal-imprint')" class="text-lg font-lore text-bone-500 hover:text-white">Impressum</button>
         <button onclick="navigateFromMobile('legal-privacy')" class="text-lg font-lore text-bone-500 hover:text-white">Datenschutz</button>
-        <button onclick="toggleMobile()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <button aria-label="Menü schließen" onclick="toggleMobile()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-8 h-8"></i></button>
     </div>
 
     <!-- MAIN -->
     <main class="relative w-full h-full z-10">
         
         <!-- PORTAL (Eingangsseite - Erstbesuch) -->
-        <div id="portal" class="page-container page-active">
+        <div id="portal" class="page-container">
             <div class="flex flex-col items-center justify-center w-full min-h-[90vh] px-6 sm:px-10 relative mt-10">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0 gpu-accel"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
                 
                 <div class="relative inline-block mb-8 group z-10">
                     <div class="absolute inset-0 bg-rift-500/20 blur-3xl rounded-full scale-110 animate-rift-pulse"></div>
-                    <img src="ARALOGO.png" alt="Arathion Logo" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800 gpu-accel">
+                    <img src="ARALOGO.png" alt="Arathion Logo" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full mx-auto relative z-10 shadow-[0_0_60px_rgba(59,130,246,0.4)] border border-rift-800">
                 </div>
 
                 <h1 class="font-magic text-5xl sm:text-7xl md:text-9xl text-white text-glow-rift leading-tight mix-blend-overlay mb-2 z-10 tracking-widest text-center">ARATHION</h1>
@@ -470,7 +480,7 @@
                         <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-10">
                             <h3 class="font-magic text-3xl text-white mb-4">Der Riss im Himmel</h3>
                             <p class="text-gray-300 font-lore text-xl leading-relaxed">
-                                In der Stille von Olyndra klafft ein Riss im Himmel. Dieser Riss ist das letzte Echo des Zusammenbruchs, der Städte, Häuser und auch Wesen verschlang. Dieses Phänomen ist kein stabiler Durchgang sondern ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben. Es ist ein Riss, der nicht heilt sondern wie eine glühende Wunde über der kargen Landschaft von Olyndra schwebt und alles anzieht, was im Gefüge der Realitäten keinen Platz mehr findet oder finden will.
+                                In der Stille von Olyndra klafft ein Riss im Himmel. Dieser Riss ist das letzte Echo des Zusammenbruchs, der Städte, Häuser und auch Wesen verschlang. Dieses Phänomen ist kein stabiler Durchgang, sondern ein offenes Fenster für alle, die in ihren alten Welten nichts mehr zu verlieren haben. Es ist ein Riss, der nicht heilt, sondern wie eine glühende Wunde über der kargen Landschaft von Olyndra schwebt und alles anzieht, was im Gefüge der Realitäten keinen Platz mehr findet oder finden will.
                             </p>
                         </div>
                     </div>
@@ -482,7 +492,7 @@
                         <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-10">
                             <h3 class="font-magic text-3xl text-bone-300 mb-4">Der letzte freie Wille</h3>
                             <p class="text-gray-300 font-lore text-xl leading-relaxed">
-                                Jeder Wanderer, der heute in Olyndra eintrifft, stand einst auf der anderen Seite. Sie sahen das Flimmern in der Luft, das Flüstern der Energie und spürten etwas was an ihnen zerrte. Der Schritt durch den Riss ist kein Zufall sondern der letzte Akt des freien Willens in einer Welt, die ihnen den Rücken gekehrt hat.
+                                Jeder Wanderer, der heute in Olyndra eintrifft, stand einst auf der anderen Seite. Sie sahen das Flimmern in der Luft, das Flüstern der Energie und spürten etwas, das an ihnen zerrte. Der Schritt durch den Riss ist kein Zufall, sondern der letzte Akt des freien Willens in einer Welt, die ihnen den Rücken gekehrt hat.
                             </p>
                         </div>
                     </div>
@@ -494,7 +504,7 @@
                         <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-10">
                             <h3 class="font-magic text-3xl text-white mb-4">Ein Wimpernschlag</h3>
                             <p class="text-gray-300 font-lore text-xl leading-relaxed">
-                                Sobald man den Entschluss fasst und den Schleier durchschreitet, gibt es kein Zögern mehr. Die Realität biegt sich, die Farben der alten Welt verblassen zu einem fahlen Grau, und für einen Wimpernschlag existiert man außerhalb von Zeit und Raum. Es ist ein schmerzhafter, reinigender Prozess. Alles, was man war wird abgestreift. Alles, was man sein wird liegt auf der anderen Seite.
+                                Sobald man den Entschluss fasst und den Schleier durchschreitet, gibt es kein Zögern mehr. Die Realität biegt sich, die Farben der alten Welt verblassen zu einem fahlen Grau, und für einen Wimpernschlag existiert man außerhalb von Zeit und Raum. Es ist ein schmerzhafter, reinigender Prozess. Alles, was man war, wird abgestreift. Alles, was man sein wird, liegt auf der anderen Seite.
                             </p>
                         </div>
                     </div>
@@ -506,7 +516,7 @@
                         <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] rift-panel p-6 md:p-10">
                             <h3 class="font-magic text-3xl text-bone-300 mb-4">Im Staub von Olyndra</h3>
                             <p class="text-gray-300 font-lore text-xl leading-relaxed">
-                                Wer auf der Seite von Olyndra aus dem Riss tritt fällt nicht weich. Man landet im Staub eines ungezähmten Landes. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück.<br><br>
+                                Wer auf der Seite von Olyndra aus dem Riss tritt, fällt nicht weich. Man landet im Staub eines ungezähmten Landes. Der Blick zurück zeigt nur die flimmernde Spalte am Himmel. Unerreichbar hoch und ohne Weg zurück.<br><br>
                                 Die Ankömmlinge finden sich in einer Welt wieder, die leer ist. Keine Taverne empfängt sie, kein Heiler eilt herbei. Nur das ferne Gebrüll der wilden Bestien und das Misstrauen derer, die bereits vor ihnen durch den Riss traten, bilden den Empfangsausschuss. Hier zeigt sich, wer die Kraft hat, aus dem Nichts eine Existenz zu formen.
                             </p>
                         </div>
@@ -625,7 +635,7 @@
                             <h4 class="font-magic text-white text-3xl mb-4 flex items-center gap-3 relative z-10"><i data-lucide="sparkles" class="text-rift-400 w-8 h-8 opacity-70"></i> Magier</h4>
                             <p class="text-gray-300 font-lore text-xl mb-4 flex-grow leading-relaxed relative z-10">Magier sind Gelehrte, die die instabilen Energien der Welt manipulieren. Sie beherrschen sowohl die zerstörerischen Elemente als auch arkane Manipulationen, um das Schlachtfeld zu kontrollieren. Ein Magier kann Feuer regnen lassen oder die Realität krümmen, doch diese Macht ist gefährlich. Wer die arkane Energie nicht mit eisernem Willen führt, läuft Gefahr, von der Magie, die er beschwört, selbst verzehrt zu werden.</p>
                             <div class="bg-red-950/20 border border-red-900/50 p-3 mb-4 text-sm font-lore text-gray-300 relative z-10">
-                                <span class="text-red-400 font-bold">ACHTUNG:</span> Wer die Seelenmagie wählt, hat keine andere Wahl, als sich mit Spinnen auseinander zu setzen! Dies liegt am AOC System. Wir empfehlen also dies mit einer so enorm ausgeprägten Arachnophobie zu vermeiden!
+                                <span class="text-red-400 font-bold">ACHTUNG:</span> Wer die Seelenmagie wählt, hat keine andere Wahl, als sich mit Spinnen auseinanderzusetzen! Dies liegt am AoC-System. Wir empfehlen also, dies mit einer stark ausgeprägten Arachnophobie zu vermeiden!
                             </div>
                             <div class="font-lore text-gray-400 border-t border-bone-800 pt-4 relative z-10">
                                 <p><span class="text-bone-500">Rüstung:</span> leichte Rüstung</p>
@@ -839,7 +849,7 @@
                                         <li>Die obersten Regeln sind natürlich “Sei kein Idiot” & “Schütze dein Leben”</li>
                                         <li>IC und OOC sind strikt zu trennen!</li>
                                         <li>Unwissenheit schützt vor Strafe nicht. Lieber einmal zu viel als einmal zu wenig gefragt.</li>
-                                        <li>Alles was im RP passiert, sollte sinnig dem RP sein.</li>
+                                        <li>Alles, was im RP passiert, sollte sinnig für das RP sein.</li>
                                         <li>Handlungen können Konsequenzen mit sich bringen, welche auch auszuspielen sind!</li>
                                     </ul>
                                 </div>
@@ -847,7 +857,7 @@
                                     <h4 class="font-bold text-rift-400 mb-2">Ticketübersicht</h4>
                                     <ul class="list-none space-y-1">
                                         <li><strong class="text-bone-300">Support:</strong> Technische Fragen/Probleme</li>
-                                        <li><strong class="text-bone-300">Live Action Reaktion:</strong> Tickets, die eine schnelle Reaktion im Rp benötigen</li>
+                                        <li><strong class="text-bone-300">Live Action Reaktion:</strong> Tickets, die eine schnelle Reaktion im RP benötigen</li>
                                         <li><strong class="text-bone-300">Admin:</strong> Nur für Admin-Themen</li>
                                     </ul>
                                 </div>
@@ -858,17 +868,17 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Rp-Server</h4>
-                                    <p>Wir stellen das RP in den Fokus und das spiegelt sich auch in den Servereinstellungen wieder.</p>
+                                    <p>Wir stellen das RP in den Fokus und das spiegelt sich auch in den Servereinstellungen wider.</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Alte-Freunde-Regel</h4>
-                                    <p>Bei uns ist es möglich, andere Charaktere in die Story mit hineinzuschreiben. Jedoch müssen die Namen bereits bei der Einreichung in der Story des Nachzügler’s hinterlegt sein.</p>
+                                    <p>Bei uns ist es möglich, andere Charaktere in die Story mit hineinzuschreiben. Jedoch müssen die Namen bereits bei der Einreichung in der Story des Nachzüglers hinterlegt sein.</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Voice RP</h4>
                                     <p>Unser Server legt den Fokus klar auf Voice-RP, um ein intensives und immersives Spielerlebnis zu schaffen. Dennoch gibt es Situationen und Ausnahmen, in denen es sinnvoll oder notwendig sein kann, vorübergehend auf Schreib-RP umzusteigen. Beispiele hierfür sind:</p>
                                     <ul class="list-disc pl-6 space-y-1 marker:text-bone-600 mt-2">
-                                        <li><strong>Mehrere Gespräche gleichzeitig:</strong> Wenn viele Spieler in einer Szene interagieren (z. B. 10 Personen in 5 Gesprächen) kann Schreib-RP helfen, Ordnung und Übersicht zu bewahren.</li>
+                                        <li><strong>Mehrere Gespräche gleichzeitig:</strong> Wenn viele Spieler in einer Szene interagieren (z. B. 10 Personen in 5 Gesprächen), kann Schreib-RP helfen, Ordnung und Übersicht zu bewahren.</li>
                                         <li><strong>Emotionale Ausnahmesituationen:</strong> Wenn es euch aufgrund eurer Rolle oder eurer realen Verfassung schwerfällt, eure Emotionen stimmlich auszudrücken.</li>
                                         <li><strong>Technische oder persönliche Einschränkungen:</strong> Etwa wenn ihr euch in einer Situation befindet, in der ihr vorübergehend nicht sprechen könnt.</li>
                                     </ul>
@@ -881,7 +891,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Schlusswort</h4>
-                                    <p>Die Teilnahme am Spielbetrieb ist nur mit Vollendung des 18. Lebensjahres erlaubt. Das Spiel Conan Exiles unterliegt der Einstufung FSK 18. Der dazugehörende Discordserver verlangt ebenso das Mindestalter von 18 Jahren.<br>
+                                    <p>Die Teilnahme am Spielbetrieb ist nur mit Vollendung des 18. Lebensjahres erlaubt. Das Spiel Conan Exiles unterliegt der Einstufung USK 18. Der dazugehörende Discordserver verlangt ebenso das Mindestalter von 18 Jahren.<br>
                                     Mit eurer Anmeldung stimmt ihr zu, dass die uneingeschränkten und zeitlich unbefristeten Nutzungsrechte, sämtlicher von euch im Rahmen der Plattform oder des Servers generierten Inhalte, unentgeltlich und exklusiv an die Serverleitung übergehen. Das bedeutet, dass man ebenso akzeptiert, dass Streamer / Video Creator Aufnahmen live / sowie als abrufbaren Inhalt (VOD) über eine Plattform wie Youtube, Twitch oder ähnliches zur Verfügung stellen können und man keine Ansprüche bezüglich persönlicher Inhalte geltend machen darf.</p>
                                 </div>
                                 <div class="bg-black/50 border-l-2 border-rift-500 p-4">
@@ -901,7 +911,7 @@
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205] space-y-6">
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Clans</h4>
-                                    <p>maximale Mitglieder → 40 Stück</p>
+                                    <p>maximale Mitglieder → 40 Personen</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Bauregeln</h4>
@@ -910,23 +920,23 @@
                                         <li>Maximale Dekorationen pro Person → 250 Dekoteile</li>
                                         <li>Rüstungspuppen pro Person → 2 Stück</li>
                                         <li>Maximale Pflanztröge pro Clan → 4 Stück</li>
-                                        <li>Maximale Strukturen pro Clan in pro Kachel → 3000 Bauteile</li>
-                                        <li>Maximale Dekorationen pro Clan in pro Kachel → 1000 Deko Teile</li>
+                                        <li>Maximale Strukturen pro Clan pro Kachel → 3000 Bauteile</li>
+                                        <li>Maximale Dekorationen pro Clan pro Kachel → 1000 Deko Teile</li>
                                         <li>Glockentiere pro Spieler → 1 Tier</li>
                                         <li>Conan Haustier (Cat) pro Spieler → 1 Tier</li>
                                     </ul>
-                                    <p class="mt-2 text-bone-400 italic">Abweichungen können im Ticket angefragt werden! Es muss damit gerechnet werden das es abgelehnt wird, selbst wenn der Grund gut und solide ist!</p>
+                                    <p class="mt-2 text-bone-400 italic">Abweichungen können im Ticket angefragt werden! Es muss damit gerechnet werden, dass sie abgelehnt werden, selbst wenn der Grund gut und solide ist!</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Werkbänke</h4>
-                                    <p>Das anpassen der größe der Werkbänke ist im Rplichen Rahmen gestattet. Kleine und große Charaktere dürfen die jeweilige Werkbank anpassen um RPlich angenehm an ihnen Arbeiten zu können. Das größer und kleiner Ziehen der Werkbänke um Platz zu sparen oder zu füllen ist nicht gestattet.</p>
-                                    <p class="mt-2"><strong>Für Clan’s gilt:</strong><br>
+                                    <p>Das Anpassen der Größe der Werkbänke ist im RP-lichen Rahmen gestattet. Kleine und große Charaktere dürfen die jeweilige Werkbank anpassen, um RPlich angenehm an ihnen arbeiten zu können. Das größer und kleiner Ziehen der Werkbänke um Platz zu sparen oder zu füllen, ist nicht gestattet.</p>
+                                    <p class="mt-2"><strong>Für Clans gilt:</strong><br>
                                     Maximal 2 Werkbänke gleicher Art und Nutzung pro Clan.<br>
                                     Maximal 2 Öfen pro Clan</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Lagerräume</h4>
-                                    <p>Jede Siedlung, unabhängig der Bewohner, kann einen “externen” Lagerraum anfragen um die Materialien außerhalb zu lagern und somit die Performance zu schonen. Jedoch sind diese Lagerräume nur für die jeweilige Siedlung und somit ist rp darin und es als AFK-Fläche nutzen verboten.</p>
+                                    <p>Jede Siedlung, unabhängig der Bewohner, kann einen “externen” Lagerraum anfragen, um die Materialien außerhalb zu lagern und somit die Performance zu schonen. Jedoch sind diese Lagerräume nur für die jeweilige Siedlung und somit ist RP darin und es als AFK-Fläche zu nutzen, verboten.</p>
                                 </div>
                             </div>
                         </details>
@@ -959,11 +969,11 @@
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Thralls</h4>
                                     <ul class="list-disc pl-6 space-y-2 marker:text-bone-600">
-                                        <li>Magischen Thralls dürfen die Plaketten nicht entnommen werden [Auch nicht bei tot] ! Die Plaketten dürfen auch nicht anderen Thralls gegeben werden! Werkbank-Thralls zählen ins Limit mit rein!</li>
+                                        <li>Magischen Thralls dürfen die Plaketten nicht entnommen werden [Auch nicht bei Tod]! Die Plaketten dürfen auch nicht anderen Thralls gegeben werden! Werkbank-Thralls zählen ins Limit mit rein!</li>
                                         <li>Die Nutzung von AoC Thralls ist auf unserem Server nur nach vorheriger Absprache mit dem Team gestattet.</li>
                                         <li>Vor der Verwendung muss ein Support- oder Story-Ticket eröffnet werden.</li>
                                         <li>Auch wenn die Thralls über den Barmann anzuheuern sind, gilt: Ohne Genehmigung ist ihr Einsatz nicht erlaubt!</li>
-                                        <li>AoC Thralls werden bewusst vom Team vergeben, da sie starke und besondere Begleiter darstellen. Ihr Einsatz soll etwas Besonderes bleiben</li>
+                                        <li>AoC Thralls werden bewusst vom Team vergeben, da sie starke und besondere Begleiter darstellen. Ihr Einsatz soll etwas Besonderes bleiben.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -984,26 +994,26 @@
                                         <li>PvP ist mit RP Hintergrund erlaubt.</li>
                                         <li>Angriffe auf Thralls und Pets gelten auch zum PvP!</li>
                                         <li>Zeitgemäße Sprache (kein Digga)</li>
-                                        <li>Diebstahl ist erlaubt, aber nur in realistischen Mengen. Ausgenommen sind Magie und Plot Gegenstände, bei diesen ist der Diebstahl komplett untersagt. Es ist auch ein Poi zu hinterlassen, welches eine Spur hinterlässt! Dazu sollte ein Ticket geöffnet werden, Support oder Admin!</li>
+                                        <li>Diebstahl ist erlaubt, aber nur in realistischen Mengen. Ausgenommen sind Magie und Plot Gegenstände, bei diesen ist der Diebstahl komplett untersagt. Es ist auch ein POI zu hinterlassen, der eine Spur hinterlässt! Dazu sollte ein Ticket geöffnet werden, Support oder Admin!</li>
                                         <li>Wenn das Clanwappen einmal gewählt wurde, ist es nur mit Zustimmung des Teams zu ändern. Mehrfache Nutzung des selben Symbols muss IC geregelt werden.</li>
-                                        <li>Jeder muss das Geschlecht bespielen, mit dem er/sie sich OOC Identifiziert.</li>
+                                        <li>Jeder muss das Geschlecht bespielen, mit dem er/sie sich OOC identifiziert.</li>
                                         <li>IC wird nicht OOC gesprochen.</li>
                                         <li>Flugregel: Man kann niemanden im Flug tragen, man kann nicht kämpfen oder Magie wirken beim Fliegen</li>
                                         <li>Dinge wie Meta / RDM / Power RP / Fail RP / Stream Sniping / Backseat Gaming, sind verboten. (Unten die Begriffserklärung)</li>
-                                        <li>Ausgeloggte Spieler, so wie AFK Spieler dürfen nicht ausgeraubt, missbraucht oder getötet werden.</li>
+                                        <li>Ausgeloggte Spieler sowie AFK-Spieler dürfen nicht ausgeraubt, missbraucht oder getötet werden.</li>
                                         <li>Das Verwenden von Glitches und Bugs ist strikt verboten. (Bsp.: Kisten, Bomben oder Sklavenräder zum Teil in Felsen/Map Untergrund verstecken etc.)</li>
-                                        <li>Maskierte Spieler dürfen nicht anhand der Stimme erkannt werden. Es müssen tatkräftige Beweise vorliegen. Erst dann darf eine Maskierung entlarvt werden. Bsp. für Beweise: Tattoos, Narben, besondere Merkmale, Kleidung, die der Spieler den ganzen Tag trug. (Rassenmerkmale wie Ohren, Hörner ect zählen nicht als tatkräftiger Beweis).</li>
-                                        <li>Voicechanger sind ohne Genehmigung vom Team Verboten.</li>
+                                        <li>Maskierte Spieler dürfen nicht anhand der Stimme erkannt werden. Es müssen tatkräftige Beweise vorliegen. Erst dann darf eine Maskierung entlarvt werden. Bsp. für Beweise: Tattoos, Narben, besondere Merkmale, Kleidung, die der Spieler den ganzen Tag trug. (Rassenmerkmale wie Ohren, Hörner etc. zählen nicht als stichhaltiger Beweis).</li>
+                                        <li>Voicechanger sind ohne Genehmigung vom Team verboten.</li>
                                         <li>Sex- oder Anstößiges-RP ist nur in den Stundenzimmern des Bordells oder in Privatgemächern erlaubt.</li>
                                         <li>Sex- und/oder Anstößiges-RP ist nur im gegenseitigen Einverständnis erlaubt.</li>
                                         <li>Das Streamen auf unserem Server benötigt keine gesonderte Erlaubnis (ausgenommen Team-Räumen, Support-Räumen, allgemein im DC). Es ist im Stream Titel zu vermerken, dass ihr auf unserem Server spielt. Im Support könnt ihr euch die Streamer-Rolle und unser Emblem geben lassen.</li>
                                         <li>Jeder, der auf unserem Discord und/oder auf dem Server ist, hat sich dazu bereit erklärt, unwiderruflich in Streams und Videos aufgenommen zu werden (Char + Stimme).</li>
-                                        <li>Rückerstattungen von Dingen bekommt man nur mit Beweis, sei es Video Bilder oder auch Logs, bitte bedenkt, dass nicht jeder immer ehrlich ist und daher eine Kontrolle sein muss.</li>
+                                        <li>Rückerstattungen von Dingen bekommt man nur mit Beweis, sei es Video, Bilder oder auch Logs, bitte bedenkt, dass nicht jeder immer ehrlich ist und daher eine Kontrolle sein muss.</li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Magische Waffen</h4>
-                                    <p>Magische Waffen mit sichtbaren magischen Effekten dürfen nur von Charakteren benutzt werden, die über die nötige magische Fähigkeit oder Klasse verfügen, um die Magie zu kontrollieren. Charaktere ohne Magie können solche Waffen nicht einsetzen. Keine Magie? → Keine magische Waffe! Schattenmagie? → rote bis schwarze Effekte Arkanmagie? → Lila Effekte usw… Nur vom Team ausgegebene Waffen sind gestattet!</p>
+                                    <p>Magische Waffen mit sichtbaren magischen Effekten dürfen nur von Charakteren benutzt werden, die über die nötige magische Fähigkeit oder Klasse verfügen, um die Magie zu kontrollieren. Charaktere ohne Magie können solche Waffen nicht einsetzen. Keine Magie? → Keine magische Waffe! Schattenmagie? → rote bis schwarze Effekte, Arkanmagie? → Lila Effekte usw… Nur vom Team ausgegebene Waffen sind gestattet!</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Wissenswertes zu den Rassen/Klassen/Fähigkeiten/Charakter</h4>
@@ -1012,7 +1022,7 @@
                                         <li>
                                             <strong class="text-bone-300">Rassen</strong><br>
                                             <em class="text-gray-400 block mb-1">Mehrere Gestalten eines Charakters</em>
-                                            Es ist möglich mehrere Darstellungen zu haben, jedoch ist es auch notwendig das diese regelmäßig ausgespielt werden. Werden diese Darstellungen nicht regelmäßig ausgespielt, dann verliert der Charakter die Fähigkeit und behält nur noch seine Ausgangsgestalt (z.B. Dämon: Menschliche und dämonische Gestalt. Es wird aber nur die menschliche Gestalt ausgespielt, dann verliert der Charakter die dämonische Form)<br>
+                                            Es ist möglich mehrere Darstellungen zu haben, jedoch ist es auch notwendig, dass diese regelmäßig ausgespielt werden. Werden diese Darstellungen nicht regelmäßig ausgespielt, dann verliert der Charakter die Fähigkeit und behält nur noch seine Ausgangsgestalt (z.B. Dämon: Menschliche und dämonische Gestalt. Es wird aber nur die menschliche Gestalt ausgespielt, dann verliert der Charakter die dämonische Form)<br>
                                             <em class="text-gray-400 block mt-2 mb-1">Verschiedene Größen der Rassen</em>
                                             Mindestgröße: 100<br>
                                             Maximalgröße: 240
@@ -1025,11 +1035,11 @@
                                         <li>
                                             <strong class="text-bone-300">Charaktere</strong><br>
                                             <em class="text-gray-400 block mb-1">Charakterboni (Indrid’s)</em>
-                                            Jeder Charakter hat bestimmten Fähigkeiten. Jedoch legen wir Wert darauf, dass das Gleichgewicht gewahrt bleibt.
+                                            Jeder Charakter hat bestimmte Fähigkeiten. Jedoch legen wir Wert darauf, dass das Gleichgewicht gewahrt bleibt.
                                         </li>
                                         <li>
                                             <strong class="text-bone-300">Magie</strong><br>
-                                            Magie wird in die Grundelemente unterteilt. Feuer, Wasser, Luft, Erde. Diese bilden sich schließlich weiter: Licht, Schatten, Arkan, Seele. Weder Blutmagie noch heilige oder unheilige Magie ist im RP zu erwähnen! Grundsätzlich ist jeder dazu in der Lage sich eine Magie anzueignen und voran zu treiben, lediglich die Magier können nach und nach mehr als eine Magieart erlernen.
+                                            Magie wird in die Grundelemente unterteilt. Feuer, Wasser, Luft, Erde. Diese bilden sich schließlich weiter: Licht, Schatten, Arkan, Seele. Weder Blutmagie noch heilige oder unheilige Magie ist im RP zu erwähnen! Grundsätzlich ist jeder dazu in der Lage sich eine Magie anzueignen und voranzutreiben, lediglich die Magier können nach und nach mehr als eine Magieart erlernen.
                                         </li>
                                     </ul>
                                 </div>
@@ -1056,14 +1066,14 @@
                                     <ul class="list-disc pl-6 mt-2 space-y-1 marker:text-red-600 text-bone-300">
                                         <li>Flask of Repair</li>
                                         <li>Trank des Tierinstinkts</li>
-                                        <li>Perk "Lastentier wird verboten!"</li>
+                                        <li>Perk "Lastentier" wird verboten!</li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-red-400 mb-2">Generell verbotenes</h4>
                                     <ul class="list-disc pl-6 space-y-1 marker:text-red-600">
                                         <li>Das Bauen von Altären zur Magie Herstellung ist den Magiern vorbehalten.</li>
-                                        <li>die Farmingtools sind nur von Magiern herzustellen und zu nutzen!</li>
+                                        <li>Die Farmingtools sind nur von Magiern herzustellen und zu nutzen!</li>
                                         <li>RP-Verweigerung</li>
                                     </ul>
                                 </div>
@@ -1169,15 +1179,15 @@
                                     <h4 class="font-bold text-rift-400 mb-2">Foot Print</h4>
                                     <p class="mb-2">Ihr müsst eure Fußabdrücke einstellen und in folgendem Tutorial findet ihr heraus, wie ihr es anpassen und ändern könnt:</p>
                                     <ul class="list-disc pl-6 space-y-1 marker:text-bone-600">
-                                        <li>Gehe über Shift+B in deine Tot einstellungen und wähle Bodies aus</li>
+                                        <li>Gehe über Shift+B in deine ToT-Einstellungen und wähle Bodies aus</li>
                                         <li>Gehe auf den Stift zum bearbeiten bei Current Body</li>
                                         <li>Öffne den Bereich "Body"</li>
                                         <li>Wähle dann den Bereich "Footprint" aus und entscheide dich für die passenden Abdrücke: Bare = Barfuß, Generic Shoes = Flache Schuhe, High Heels = mit dünnem Stiletto Absatz, Wide Heel = Mit breitem Absatz. Alles weitere sind tierische Abdrücke die im allgemeinen nicht gebraucht werden, es sei denn, man hat Hufe, Pfoten oder dergleichen</li>
-                                        <li>Nach dem Aussuchen den Abdrucks, oben links auf den Haken gehen für "Apply". Deine Fußabdrücke sind nun richtig eingestellt</li>
+                                        <li>Nach dem Aussuchen des Abdrucks, oben links auf den Haken gehen für "Apply". Deine Fußabdrücke sind nun richtig eingestellt</li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-rift-400 mb-2">Tot! Chat</h4>
+                                    <h4 class="font-bold text-rift-400 mb-2">ToT! Chat</h4>
                                     <p class="italic text-gray-400">Frage: Mein Chatfenster bleibt durchsichtig, ich muss mit der Maus reinklicken, auch wenn ich es mit [Enter] geöffnet habe. Wie ändere ich das, dass sich mein Chatfenster richtig öffnet und ich direkt schreiben kann?</p>
                                     <p>Antwort: Begib dich in die Einstellungen, dort findest du unter dem Reiter 'Steuerung' die Kategorie “Kommunikation”. In dieser musst du zwei Tastenbelegungen ändern.<br>
                                     Setze für den Globalchat eine Taste ein, die du niemals benutzt.<br>
@@ -1188,9 +1198,9 @@
                                     <p class="mb-2">Jeder kann ab sofort Scripted Lights erstellen. Tagsüber sind diese Lichter aus, in der Nacht an. Dabei zu beachten/Wie Ihr sie platziert:</p>
                                     <ul class="list-disc pl-6 space-y-1 marker:text-bone-600">
                                         <li>Lichtquelle platzieren</li>
-                                        <li>„e“ gedrückt halten und auf scripted light klicken, der Name den ihr dort dan eintragt ist Nachtlicht</li>
-                                        <li>Wenn ihr die Lichtquelle verschieben wollt, müsst ihr das Scriptet Light zerstören und es danach erneut erstellen</li>
-                                        <li>Alle 5 Minuten gibt es eine Abfrage ob Abend ist oder Tag</li>
+                                        <li>„e“ gedrückt halten und auf scripted light klicken, der Name, den ihr dort dann eintragt, ist Nachtlicht</li>
+                                        <li>Wenn ihr die Lichtquelle verschieben wollt, müsst ihr das Scripted Light zerstören und es danach erneut erstellen</li>
+                                        <li>Alle 5 Minuten gibt es eine Abfrage, ob Abend ist oder Tag</li>
                                     </ul>
                                 </div>
                                 <div>
@@ -1210,7 +1220,7 @@
                             </summary>
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
                                 <p class="mb-4">Ob durch lange Reisen, gelehrte Meister oder tiefe Bande zu einem fremden Volk – wer eine Sprache erlernen will, muss sich ihr mit Hingabe widmen. Nur jene, die Zeit, Mühe und den wahren Willen zur Verständigung aufbringen, werden sich die Worte eines fremden Volkes zu eigen machen können. – der Weg zur Verständigung ist nicht leicht. Doch wer ihn beschreitet gewinnt nicht nur Wissen sondern auch Respekt.</p>
-                                <p class="mb-4 text-rift-400 italic">Außerdem noch ein mal ein kleiner Hinweis: Vier unserer Sprachen sind keine normalen Sprachen. Diese können weder geschrieben werden, noch sind sie humanoider Natur. Diese zu erlernen ist also anders, als bei den anderen Sprachen. Es könnte leichter sein. Oder aber auch so schwer, dass man sein ganzes Leben dafür benötigt.</p>
+                                <p class="mb-4 text-rift-400 italic">Außerdem noch einmal ein kleiner Hinweis: Vier unserer Sprachen sind keine normalen Sprachen. Diese können weder geschrieben werden, noch sind sie humanoider Natur. Diese zu erlernen ist also anders, als bei den anderen Sprachen. Es könnte leichter sein. Oder aber auch so schwer, dass man sein ganzes Leben dafür benötigt.</p>
                                 <ul class="list-none space-y-4">
                                     <li><strong class="text-white font-magic tracking-wide">Lupin:</strong> Die Sprache der Hundeartigen (Sie bellen, knurren und machen jedwede Laute dieser Art)</li>
                                     <li><strong class="text-white font-magic tracking-wide">Felorisch:</strong> Die Sprache der Katzenartigen (Sie mauzen, schnurren und machen jedwede Laute dieser Art)</li>
@@ -1244,24 +1254,24 @@
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205] space-y-6">
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Kranken RP</h4>
-                                    <p>Es gibt ein Knocksystem. Ja, man kann bis zu 4 mal bewusstlos sein. Darauf folgend stirbt man. Die Knocks setzen sich nicht automatisch zurück. Aus diesem Grund sollte man umgehend einen Heiler aufsuchen! Kranken RP ist also nötig. Wer es allerdings absichtlich auf den Tod hinauslaufen lässt, wird mit einem Malus zu rechnen haben bis hin zum Chartod. Diesen vergeben wir an jede Person einzeln.<br><br>
+                                    <p>Es gibt ein Knocksystem. Ja, man kann bis zu 4-mal bewusstlos sein. Darauf folgend stirbt man. Die Knocks setzen sich nicht automatisch zurück. Aus diesem Grund sollte man umgehend einen Heiler aufsuchen! Kranken RP ist also nötig. Wer es allerdings absichtlich auf den Tod hinauslaufen lässt, wird mit einem Malus zu rechnen haben bis hin zum Chartod. Diesen vergeben wir an jede Person einzeln.<br><br>
                                     Wie wird das dann ausgespielt? Wir nennen euch Beispiele, ihr könnt aber auch andere Dinge in die Schwere einsortieren. Dies dient zu eurer Orientierung:<br>
-                                    1x ist sehr leicht verletzt - Du hast also vermutlich Kratzer und blaue Flecke<br>
+                                    1x ist sehr leicht verletzt - Du hast also vermutlich Kratzer und blaue Flecken<br>
                                     2x ist leicht verletzt - Prellungen und Schnittwunden<br>
                                     3x ist schon mittelschwer verletzt - Knochenbrüche und tiefere Schnittwunden<br>
                                     4x ist schwer verletzt - Bewusstlosigkeit mit enormen Verletzungen<br>
                                     5x ist Enginetod<br><br>
-                                    Kategorie 3x: KrankenRP auch noch am Folgetag<br>
-                                    Kategorie 4x: KrankenRP für zwei Folgetage<br><br>
+                                    Kategorie 3x: Kranken-RP auch noch am Folgetag<br>
+                                    Kategorie 4x: Kranken-RP für zwei Folgetage<br><br>
                                     Solltet ihr schwerere Verletzungen als euren Knock ausspielen, dann bedenkt auch die Konsequenzen und haltet euch an die Folgetage. Spielt ihr zu wenige Knocks aus, dann ist den Heilern gestattet euch zu powern. An dieser Stelle verweisen wir auf die oberste Serverregel. Achtet euer Leben. Denn ja, es hat seinen Wert.</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Enginetod</h4>
-                                    <p>Wer so schwer verletzt wird, dass er in die Bewusstlosigkeit gerät und sogar ins Lazarett getragen werden muss, wird von der Leere korrumpiert, da die Seele schaden erleidet. Das bedeutet, dass der Spieler ein ticket eröffnen muss und von uns Ängste zugeschrieben bekommt, welche er min. 7 Tage auszuspielen hat. Dies sind Ängste, die nicht zwingend mit dem Charakter zusammen hängen. Hat er normalerweise nur Angst vor Spinnen und Feuer, hat er plötzlich so seltsame Angstzustände in der Stille oder Panik, wenn er eine Waffe in die Hand nehmen soll.</p>
+                                    <p>Wer so schwer verletzt wird, dass er in die Bewusstlosigkeit gerät und sogar ins Lazarett getragen werden muss, wird von der Leere korrumpiert, da die Seele schaden erleidet. Das bedeutet, dass der Spieler ein Ticket eröffnen muss und von uns Ängste zugeschrieben bekommt, welche er min. 7 Tage auszuspielen hat. Dies sind Ängste, die nicht zwingend mit dem Charakter zusammenhängen. Hat er normalerweise nur Angst vor Spinnen und Feuer, hat er plötzlich so seltsame Angstzustände in der Stille oder Panik, wenn er eine Waffe in die Hand nehmen soll.</p>
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-rift-400 mb-2">Wiederholungstäter</h4>
-                                    <p>Fällt dem Team auf, dass dies zu häufig vorkommt, wird der Spieler einen Malus erhalten, bis hin zum endgültigen Entfernen des Charakters. Diesen wieder weg zu bekommen wird dauern. Die Konsequenzen müssen ertragen und behoben werden. Der Spieler muss im RP einen Weg finden dieses Problem zu beheben.</p>
+                                    <p>Fällt dem Team auf, dass dies zu häufig vorkommt, wird der Spieler einen Malus erhalten, bis hin zum endgültigen Entfernen des Charakters. Diesen wieder wegzubekommen, wird dauern. Die Konsequenzen müssen ertragen und behoben werden. Der Spieler muss im RP einen Weg finden dieses Problem zu beheben.</p>
                                 </div>
                             </div>
                         </details>
@@ -1275,7 +1285,7 @@
                                 <span class="text-rift-500 group-open:rotate-180 transition-transform arrow-icon"><i data-lucide="chevron-down"></i></span>
                             </summary>
                             <div class="p-8 text-gray-300 leading-relaxed border-t border-bone-800 bg-[#050205]">
-                                <p class="mb-4">Verletzte die auf dem Boden liegen, können nur von Heilern aufgehoben werden. Personen, die keine Heiler sind können weiterhin Verletzte aus der Gefahrenzone bringen. Wenn ihr einen Knock kassiert, dann gibt es auch gewisse "Liegezeiten", diese werdet ihr mit der Zeit herausfinden. Ihr benötigt hier also einen Moment Geduld oder einen Heiler in eurer Nähe.</p>
+                                <p class="mb-4">Verletzte, die auf dem Boden liegen, können nur von Heilern aufgehoben werden. Personen, die keine Heiler sind, können weiterhin Verletzte aus der Gefahrenzone bringen. Wenn ihr einen Knock kassiert, dann gibt es auch gewisse "Liegezeiten", diese werdet ihr mit der Zeit herausfinden. Ihr benötigt hier also einen Moment Geduld oder einen Heiler in eurer Nähe.</p>
                                 <p class="mb-4">Die Hüfte ist euer Punkt ab dem Gemessen wird (ca. 1 Fundament)</p>
                                 <p class="mb-2 font-bold text-rift-400">Folgende Befehle für die Heiler:</p>
                                 <ul class="list-none space-y-2 mb-6">
@@ -1284,7 +1294,7 @@
                                 </ul>
                                 <p class="mb-2 font-bold text-rift-400">Hinweis:</p>
                                 <ul class="list-none space-y-2 mb-6">
-                                    <li>- Wenn es mal nicht geht weil er den Falschen Namen nimmt, einfach einmal weg gehen und wieder hin und neu machen oder Reloggen. Bisher hat es immer funktioniert.</li>
+                                    <li>- Wenn es mal nicht geht, weil er den falschen Namen nimmt, einfach einmal weggehen und wieder hin und neu machen oder Reloggen. Bisher hat es immer funktioniert.</li>
                                     <li>- Es gibt kein Timer mehr für Knocks</li>
                                     <li>- Jede Heilung wird durch ein Log gesehen</li>
                                 </ul>
@@ -1336,17 +1346,16 @@
 
                     <form class="space-y-10 font-lore text-lg">
                         
-                        <!-- Row 1: System IDs -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-rift-400 mb-2 flex justify-between items-center uppercase">
+                                <label for="steamID" class="text-sm font-magic tracking-widest text-rift-400 mb-2 flex justify-between items-center uppercase">
                                     Aura-Signatur (Steam64)
                                     <button type="button" onclick="openInfo('steam')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
                                 <input type="text" id="steamID" class="w-full p-3 bg-transparent border-b border-bone-800 text-white focus:border-rift-500 transition-colors">
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-rift-400 mb-2 flex justify-between items-center uppercase">
+                                <label for="discordID" class="text-sm font-magic tracking-widest text-rift-400 mb-2 flex justify-between items-center uppercase">
                                     Rufname (Discord Tag)
                                     <button type="button" onclick="openInfo('discord')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1356,17 +1365,16 @@
 
                         <div class="w-full h-px bg-bone-900/50 my-8"></div>
 
-                        <!-- Row 2: Basic Info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
+                                <label for="charName" class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
                                     Der Name
                                     <button type="button" onclick="openInfo('name')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
                                 <input type="text" id="charName" class="w-full p-3 bg-transparent border-b border-bone-800 text-white focus:border-bone-400 transition-colors" placeholder="Wie wurdest du gerufen?">
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
+                                <label for="charAge" class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
                                     Gezeichnete Jahre (Alter)
                                     <button type="button" onclick="openInfo('alter')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1374,10 +1382,9 @@
                             </div>
                         </div>
 
-                        <!-- Row 3: Character Specifics -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
+                                <label for="charRace" class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
                                     Blut (Volk)
                                     <button type="button" onclick="openInfo('rasse')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1415,7 +1422,7 @@
                                 </select>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
+                                <label for="charClass" class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
                                     Pfad (Klasse)
                                     <button type="button" onclick="openInfo('klasse')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1431,16 +1438,15 @@
                                 </select>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
+                                <label for="charAbility" class="text-sm font-magic tracking-widest text-bone-300 mb-2 flex justify-between items-center uppercase">
                                     Gabe (Fähigkeit)
                                     <button type="button" onclick="openInfo('faehigkeit')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
                                 <input type="text" id="charAbility" class="w-full p-3 bg-transparent border-b border-bone-800 text-white focus:border-bone-400 transition-colors" placeholder="Verborgene Mächte...">
                             </div>
 
-                            <!-- Custom Race Textarea -->
                             <div id="customRaceContainer" class="hidden md:col-span-3 bg-[#1e1b4b]/20 border-l-2 border-rift-500 p-6 mt-4">
-                                <label class="text-sm font-magic tracking-widest text-rift-400 mb-4 flex justify-between items-center uppercase">
+                                <label for="charCustomRaceDesc" class="text-sm font-magic tracking-widest text-rift-400 mb-4 flex justify-between items-center uppercase">
                                     Notizen zum Vergessenen Blut
                                     <button type="button" onclick="openInfo('neueRasse')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1448,10 +1454,9 @@
                             </div>
                         </div>
 
-                        <!-- Row 4: Professions -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
+                                <label for="charMainProf" class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
                                     Handwerk
                                     <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1465,7 +1470,7 @@
                                 </select>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
+                                <label for="charSubProf" class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
                                     Tätigkeit
                                     <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1479,7 +1484,7 @@
                                 </select>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
+                                <label for="charRpProf" class="text-sm font-magic tracking-widest text-bone-500 mb-2 flex justify-between items-center uppercase">
                                     Ruf
                                     <button type="button" onclick="openInfo('berufe')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1493,7 +1498,7 @@
                                 </select>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-red-700 mb-2 flex justify-between items-center uppercase">
+                                <label for="charHealer" class="text-sm font-magic tracking-widest text-red-700 mb-2 flex justify-between items-center uppercase">
                                     Heiler
                                     <button type="button" onclick="openInfo('heiler')" class="hover:text-red-400 transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1506,17 +1511,16 @@
 
                         <div class="w-full h-px bg-bone-900/50 my-8"></div>
 
-                        <!-- Row 5: Strengths & Weaknesses -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
+                                <label for="charStrengths" class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
                                     Eiserner Wille (Stärken)
                                     <button type="button" onclick="openInfo('staerken')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
                                 <textarea id="charStrengths" rows="3" class="w-full p-4 bg-black/20 border border-bone-800 text-white focus:border-bone-400 transition-colors"></textarea>
                             </div>
                             <div class="relative group">
-                                <label class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
+                                <label for="charWeaknesses" class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
                                     Sprödes Fleisch (Schwächen)
                                     <button type="button" onclick="openInfo('schwaechen')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                                 </label>
@@ -1524,18 +1528,16 @@
                             </div>
                         </div>
 
-                        <!-- Row 6: Description -->
                         <div class="relative group">
-                            <label class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
+                            <label for="charDescription" class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
                                 Das Antlitz (Charakterbeschreibung)
                                 <button type="button" onclick="openInfo('beschreibung')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                             </label>
                             <textarea id="charDescription" rows="4" class="w-full p-4 bg-black/20 border border-bone-800 text-white focus:border-bone-400 transition-colors"></textarea>
                         </div>
 
-                        <!-- Row 7: Story / Background -->
                         <div class="relative group">
-                            <label class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
+                            <label for="charStory" class="text-sm font-magic tracking-widest text-gray-500 mb-3 flex justify-between items-center uppercase">
                                 Das alte Leben (Hintergrund)
                                 <button type="button" onclick="openInfo('hintergrund')" class="hover:text-white transition-colors opacity-50 hover:opacity-100"><i data-lucide="info" class="w-4 h-4"></i></button>
                             </label>
@@ -1554,7 +1556,7 @@
         <!-- CONNECT -->
         <div id="connect" class="page-container">
             <div class="py-12 md:py-20 flex flex-col items-center px-4 relative">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0 gpu-accel"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[600px] bg-rift-500/10 blur-[180px] rounded-full pointer-events-none z-0"></div>
                 
                 <h2 class="font-magic text-6xl text-white mb-16 text-glow-rift text-center relative z-10">Das Erwachen</h2>
                 <div class="grid md:grid-cols-2 gap-10 max-w-4xl w-full relative z-10">
@@ -1576,7 +1578,7 @@
                         <p class="text-gray-400 font-lore text-xl mb-6">Trage diese Runen in dein Spiel ein, um Olyndra zu betreten.</p>
                         <div class="bg-black p-4 border border-bone-800 font-lore text-2xl text-bone-300 mb-6 flex justify-between items-center tracking-widest">
                             <span>178.63.47.190:7777</span>
-                            <button onclick="copyIP()" class="hover:text-white transition-colors"><i data-lucide="copy" class="w-5 h-5"></i></button>
+                            <button aria-label="IP kopieren" onclick="copyIP()" class="hover:text-white transition-colors"><i data-lucide="copy" class="w-5 h-5"></i></button>
                         </div>
                         <p id="ip-msg" class="text-sm font-magic tracking-widest text-bone-600 opacity-0 h-5 transition-opacity uppercase">In den Geist geschrieben</p>
                     </div>
@@ -1659,7 +1661,7 @@
     </main>
 
     <!-- Footer -->
-    <footer id="main-footer" style="display: none;" class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500 gpu-accel">
+    <footer id="main-footer" style="display: none;" class="fixed bottom-0 left-0 w-full h-10 bg-[#02040a] border-t border-bone-900 z-50 flex items-center justify-between px-6 text-[12px] uppercase font-magic tracking-widest text-gray-500">
         <div class="flex gap-6">
             <span>Olyndra: <span class="text-rift-500">Erwacht</span></span>
             <span class="hidden sm:inline">Portal: <span id="rift-val">Stabil</span></span>
@@ -1671,7 +1673,7 @@
     </footer>
 
     <!-- Storage Cookie Banner (Standard & Sachlich) -->
-    <div id="rift-cookie-banner" class="fixed bottom-14 right-4 md:bottom-16 md:right-8 max-w-md bg-gray-900 border border-gray-700 p-6 z-[60] rounded-md shadow-2xl transform translate-y-[150%] transition-transform duration-700 hidden font-sans gpu-accel">
+    <div id="rift-cookie-banner" class="fixed bottom-14 right-4 md:bottom-16 md:right-8 max-w-md bg-gray-900 border border-gray-700 p-6 z-[60] rounded-md shadow-2xl transform translate-y-[150%] transition-transform duration-700 hidden font-sans">
         <h3 class="font-bold text-white text-lg mb-2 flex items-center gap-2">
             <i data-lucide="info" class="w-5 h-5 text-gray-400"></i> Hinweis zum Datenschutz
         </h3>
@@ -1689,13 +1691,23 @@
     </div>
 
     <script>
-        // Init Icons
-        lucide.createIcons();
-
         // --- CONFIG & UTILS ---
         const galleryConfig = {
-            folder: 'images/', 
-            files: [] 
+            folder: '', // Sucht exakt im selben Ordner wie die index.html
+            files: [
+                'image1.png',
+                'image2.png',
+                'image3.png',
+                'image4.png',
+                'image5.png',
+                'image6.png',
+                'image7.png',
+                'image8.png',
+                'image9.png',
+                'image_A.png',
+                'image_B.png',
+                'image_C.png'
+            ] 
         };
 
         const STATE = { IDLE: 'IDLE', SURGE: 'SURGE', COOLDOWN: 'COOLDOWN' };
@@ -1984,6 +1996,7 @@
                     currentPage.style.opacity = '1'; 
                     
                     targetPage.style.display = 'block'; 
+                    targetPage.scrollTop = 0;
                     requestAnimationFrame(() => targetPage.classList.add('page-active'));
                     currentPageId = targetId;
 
@@ -2016,20 +2029,55 @@
                 return;
             }
 
+            // Gitter-Klassen wiederherstellen, falls sie durch den leeren Zustand überschrieben wurden
+            grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+
             galleryConfig.files.forEach((filename, index) => {
                 const card = document.createElement('div');
-                card.className = 'holo-card rounded-sm opacity-0'; 
+                // HIER DER FIX: "opacity-0" wurde entfernt, damit die Karten sichtbar sind!
+                card.className = 'holo-card rounded-sm cursor-pointer group shadow-lg'; 
                 card.style.animationDelay = `${index * 0.1}s`; 
                 const title = filename.split('.')[0].replace(/[-_]/g, ' '); 
+                const imgSrc = galleryConfig.folder ? `${galleryConfig.folder}${filename}` : filename;
+
+                // Klick-Event für die Großansicht
+                card.onclick = () => openImageModal(imgSrc, title);
 
                 card.innerHTML = `
-                    <img src="${galleryConfig.folder}${filename}" alt="${title}" class="holo-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1c1917/a8a29e?text=Kein+Bild';">
-                    <div class="holo-overlay">
-                        <h4 class="font-magic text-white text-xl tracking-widest capitalize">${title}</h4>
-                    </div>
+                    <div class="relative w-full h-full overflow-hidden bg-black/50">
+                        <img src="${imgSrc}" alt="${title}" class="holo-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1c1917/a8a29e?text=Kein+Bild';">
+                        <div class="absolute inset-0 bg-rift-500/0 group-hover:bg-rift-500/20 transition-colors duration-500 flex items-center justify-center z-20">
+                            <i data-lucide="zoom-in" class="text-white w-12 h-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"></i>
+                        </div>
+                        </div>
                 `;
                 grid.appendChild(card);
             });
+            
+            // Icons für die neuen Lupe-Symbole initialisieren
+            if(typeof lucide !== 'undefined') { lucide.createIcons(); }
+        }
+
+        // --- BILDER MODAL LOGIK ---
+        function openImageModal(src, title) {
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+
+            img.src = src;
+
+            modal.classList.remove('hidden-modal', 'pointer-events-none');
+            modal.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('opacity-100', 'pointer-events-auto');
+            modal.classList.add('hidden-modal', 'pointer-events-none');
+            
+            // Bild-URL verzögert leeren, damit es beim Ausblenden keinen Sprung gibt
+            setTimeout(() => {
+                document.getElementById('modal-img').src = '';
+            }, 300);
         }
 
         // --- LOOP ---
@@ -2111,7 +2159,7 @@
             name: { title: "Name", text: "Der Name oder Rufname deiner Seele, mitsamt Titel falls zutreffend." },
             alter: { title: "Alter", text: "Wähle das Alter passend zu deinem Volk (maximal 5000 Jahre). Bedenke: Ein altes Wesen sieht auch entsprechend aus und trägt alte Lasten." },
             rasse: { title: "Blutlinie (Volk)", text: "Welchem Volk gehörst du an? Falls du von einer fremden Welt stammst, beschreibe deine Natur kurz." },
-            klasse: { title: "Pfad des Kampfes", text: "Die Art, wie du im gnadenlosen Staub überlebst und feindest." },
+            klasse: { title: "Pfad des Kampfes", text: "Die Art, wie du im gnadenlosen Staub überlebst und kämpfst." },
             berufe: { title: "Handwerk", text: "Dein Beitrag zum Überleben der Gemeinschaft. Haupt-, Neben- und reine Erzähl-Berufe." },
             heiler: { title: "Heiler", text: "Verfügst du über die Kunst, Wunden zu schließen und vom Tode zu retten? (Zusätzlich zu anderen Berufen möglich)." },
             faehigkeit: { title: "Gabe", text: "Beherrschst du alte Magie, das Wandeln der Gestalt oder trägst du das Bluterbe der Vampire in dir?" },
@@ -2189,6 +2237,8 @@
                 } else {
                     const el = document.createElement('textarea');
                     el.value = ip;
+                    el.style.position = 'absolute';
+                    el.style.left = '-9999px';
                     document.body.appendChild(el);
                     el.select();
                     document.execCommand('copy');
@@ -2214,6 +2264,19 @@
         }
 
         async function copyCharacter() {
+            // --- NEU: Formular-Validierung ---
+            if (!val('charName') || !val('steamID')) {
+                const msg = document.getElementById('copy-msg');
+                if(msg) {
+                    msg.innerText = ">> Bitte fülle mindestens deinen Namen und deine Steam-ID aus. <<";
+                    msg.className = "text-center text-red-500 font-magic tracking-widest text-lg mt-6 opacity-0 transition-opacity";
+                    msg.style.opacity = 1; 
+                    setTimeout(() => msg.style.opacity = 0, 4000);
+                }
+                return; // Bricht das Kopieren ab
+            }
+            // ---------------------------------
+
             let raceValue = val('charRace');
             if (raceValue === 'Neue Rasse') {
                 raceValue = `Unbekanntes Blut\n**Beschreibung:** ${val('charCustomRaceDesc')}`;
@@ -2250,6 +2313,8 @@ ${val('charStory')}
                 } else {
                     const el = document.createElement('textarea');
                     el.value = text;
+                    el.style.position = 'absolute';
+                    el.style.left = '-9999px';
                     document.body.appendChild(el);
                     el.select();
                     document.execCommand('copy');
@@ -2290,9 +2355,9 @@ ${val('charStory')}
         }
 
         // Init
-        window.addEventListener('load', () => { 
-            if(typeof lucide !== 'undefined') { lucide.createIcons(); }
-            initRouting();
+        document.addEventListener('DOMContentLoaded', () => { 
+            // Routing als allererstes ausführen, um Flackern zu verhindern!
+            initRouting(); 
             renderGallery(); 
             requestAnimationFrame(updateLoop); 
         });
