@@ -1,0 +1,159 @@
+body {
+    background-color: #020617;
+    color: #d6d3d1;
+    font-family: 'Cormorant Garamond', serif;
+    overflow: hidden; 
+    font-size: 1.1rem; 
+}
+
+/* HARDWARE ACCELERATION CLASSES */
+.gpu-accel {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Düsterer Hintergrund mit Vignette */
+.world-bg {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 70%);
+    z-index: -2;
+}
+
+/* Staub / Noise Overlay (Optimiert für Performance) */
+.dust-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+    pointer-events: none; z-index: -1;
+    opacity: 0.5;
+}
+
+/* Gallery */
+.holo-card {
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(168, 162, 158, 0.2); background: rgba(28, 25, 23, 0.8);
+    transition: all 0.4s ease;
+}
+.holo-card:hover { border-color: #d946ef; box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); transform: translateY(-5px); }
+.holo-img { width: 100%; height: 250px; object-fit: cover; filter: grayscale(0.6) sepia(0.3) hue-rotate(250deg) brightness(0.7); transition: all 0.7s ease; }
+.holo-card:hover .holo-img { filter: grayscale(0.2) sepia(0) hue-rotate(0) brightness(1); transform: scale(1.1); }
+.holo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #020617, transparent); padding: 1rem; z-index: 10; }
+
+/* Page Layout */
+.page-container {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    overflow-y: auto; padding-bottom: 6rem;
+    padding-left: 1.5rem; padding-right: 1.5rem; 
+    display: none; scrollbar-width: thin; scrollbar-color: #57534e #020617;
+    transition: opacity 0.3s ease-out;
+}
+
+.page-container::before {
+    content: ''; display: block; height: 100px; width: 100%; flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .page-container { padding-left: 4rem; padding-right: 4rem; }
+    .page-container::before { height: 120px; }
+}
+
+.page-active { display: block; animation: materialize 0.6s ease-out forwards; }
+
+/* Spezial-Regel für das Portal */
+#portal { display: none; align-items: center; justify-content: center; }
+#portal::before { display: none; }
+#portal.page-active { display: flex; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #020617; }
+::-webkit-scrollbar-thumb { background: #57534e; border-radius: 3px; }
+
+/* EPIC RIFT LOADER */
+#rift-loader { 
+    background: rgba(2, 6, 23, 0.95); 
+    backdrop-filter: blur(15px);
+    transition: opacity 1s ease-out, visibility 1s ease-out;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+#rift-loader.active { opacity: 1; pointer-events: all; visibility: visible; }
+
+/* --- MAGIC LIGHTNING SYSTEM --- */
+.rift-sidebar {
+    position: fixed; top: 0; bottom: 0; width: 100px; z-index: 50; 
+    pointer-events: none; display: flex; justify-content: center; align-items: center;
+}
+.rift-sidebar.left { left: -30px; }
+.rift-sidebar.right { right: -30px; }
+
+.magic-lightning {
+    width: 6px; height: 100%;
+    background: #ffffff;
+    box-shadow: 0 0 15px #fff, 0 0 30px #8b5cf6, 0 0 60px #3b82f6, 0 0 100px #3b82f6;
+    filter: url(#lightning-displacement);
+    animation: lightning-flicker 0.15s infinite alternate;
+    opacity: 0.8;
+    transition: all 0.3s ease-out;
+    will-change: width, filter, box-shadow;
+}
+
+.system-surge .magic-lightning {
+    width: 45px;
+    background: #ffffff;
+    box-shadow: 0 0 50px #fff, 0 0 100px #fff, 0 0 200px #c084fc, 0 0 300px #8b5cf6, 0 0 500px #3b82f6;
+    animation: lightning-surge-flicker 0.05s infinite alternate;
+    opacity: 1;
+}
+
+/* Modals */
+.info-modal-bg {
+    background: rgba(2, 6, 23, 0.95);
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s ease; 
+}
+.hidden-modal { opacity: 0; pointer-events: none; }
+
+.text-glow-rift { text-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+.text-glow-bone { text-shadow: 0 0 10px rgba(168, 162, 158, 0.4); }
+
+/* Panels (Rift & Stone) */
+.rift-panel { 
+    background: linear-gradient(135deg, rgba(28, 25, 23, 0.6) 0%, rgba(10, 5, 10, 0.8) 100%);
+    border: 1px solid rgba(87, 83, 78, 0.4); 
+    position: relative; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+    backdrop-filter: blur(5px);
+}
+.rift-panel::before, .rift-panel::after {
+    content: ''; position: absolute; width: 8px; height: 8px; border: 1px solid transparent; transition: border-color 0.3s;
+}
+.rift-panel::before { top: -1px; left: -1px; border-top-color: #57534e; border-left-color: #57534e; }
+.rift-panel::after { bottom: -1px; right: -1px; border-bottom-color: #57534e; border-right-color: #57534e; }
+.rift-panel:hover::before, .rift-panel:hover::after { border-color: #8b5cf6; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] summary { border-bottom: 1px solid rgba(87, 83, 78, 0.3); }
+details[open] .arrow-icon { transform: rotate(180deg); color: #8b5cf6; }
+
+/* Magische Formular-Felder */
+input, textarea, select { 
+    background: rgba(2, 6, 23, 0.5); 
+    border: none;
+    border-bottom: 1px solid #57534e; 
+    color: #f5f5f4; 
+    font-family: 'Cormorant Garamond', serif; 
+    transition: border-color 0.3s, background 0.3s;
+}
+input:focus, textarea:focus, select:focus { 
+    border-color: #8b5cf6; 
+    background: rgba(139, 92, 246, 0.05);
+    outline: none; 
+    box-shadow: 0 4px 10px -4px rgba(139, 92, 246, 0.2);
+}
+
+/* Rechtliche Texte (Klar und leserlich) */
+.legal-content h3 { color: #d6d3d1; font-family: 'Cinzel', serif; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.5rem;}
+.legal-content p, .legal-content ul { color: #a8a29e; margin-bottom: 1rem; line-height: 1.6; }
+.legal-content ul { list-style-type: disc; padding-left: 1.5rem; }
