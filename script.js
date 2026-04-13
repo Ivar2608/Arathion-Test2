@@ -5,7 +5,9 @@ const galleryConfig = {
         'image1.png', 'image2.png', 'image3.png', 'image4.png',
         'image5.png', 'image6.png', 'image7.png', 'image8.png',
         'image9.png', 'image_A.png', 'image_B.png', 'image_C.png',
-        'image_D.png', 'image_E.png', 'image_F.png', 'image_G.png', 'image_H.png'
+        'image_D.png', 'image_E.png', 'image_F.png', 'image_G.png', 'image_H.png',
+        'image_I.png', 'image_J.png', 'image_K.png', 'image_L.png', 'image_M.png',
+        'image_N.png', 'image_O.png', 'image_P.png', 'image_Q.png', 'image_R.png',
     ] 
 };
 
